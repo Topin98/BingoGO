@@ -1,0 +1,11 @@
+insert into roles (nombre) values ("usuario");
+insert into roles (nombre) values ("administrador");
+insert into usuarios (nombre, correo, password, puntuacionTotal, fichas, fechaRegistro, imagenPerfil, idRol) values ("Dani", "correo@gmail.com", "$2a$10$qwe.rdhx61TNOIEEIbPUoOBSWbwunggHgjHV4xBVcKEWXpA1yddP6", 50, 20, current_date(), null, 1);
+insert into usuarios (nombre, correo, password, puntuacionTotal, fichas, fechaRegistro, imagenPerfil, idRol) values ("Alex", "correo2@gmail.com", "$2a$10$j1QpeH0Qr8DXLPGsW9CD.ep4dW.gYiWVDTpbqf2qOJo37X4u2bYke", 10, 60, current_date(), null, 1);
+insert into linUsuUsu (usuario1_idUsuario, usuario2_idUsuario, activo) values (1,2,true);
+insert into salas (nombre, activa, publica) values ("Sala1", false, true);
+insert into premios (nombre, descripcion, precio, imagen) values ("Camiseta", "Hecha de tela", 5, null);
+insert into linUsuPre (idUsuario, idPremio, fecha) values (1, 1, current_date());
+insert into partidas (fecha) values (current_date());
+insert into linUsuPar (usuario_idUsuario, partida_idPartida, posicion, puntuacion) values (1, 1, 1, 150);
+insert into linUsuPar (usuario_idUsuario, partida_idPartida, posicion, puntuacion) values (2, 1, 2, 140);
