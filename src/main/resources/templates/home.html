@@ -4,14 +4,13 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Iniciar sesi&oacute;n</title>
+    <title>BingoGO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
         crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
         crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="css/registro.css" />
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -48,20 +47,9 @@
             <button id="btnLogin" type="submit">Iniciar sesi&oacute;n</button>
         </form>
     </div>
+    
+    <div id="relleno"></div>
 
-    <div class="form">
-        <div class="titulo">BingoGO</div>
-        <div th:if="${param.error}" class="alert alert-danger">
-            El usuario o la contraseña son incorrectos.
-        </div>
-        <form action="/login" method="POST">
-            <input type="text" name="username" placeholder="Usuario" required />
-            <input type="password" name="password" placeholder="Contraseña" required />
-            <a href="#" class="olvidarDatos">Olvidaste tus datos?</a>
-            <button type="submit">Iniciar sesi&oacute;n</button>
-            <p class="message">No tienes una cuenta? <a href="/registro">Registrate!</a></p>
-        </form>
-    </div>
 </body>
 
 </html>

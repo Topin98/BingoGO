@@ -63,4 +63,8 @@ public interface UsuarioService {
 
 	UsuarioVO findByNombre(String nombre);
 
+	UsuarioVO findByCorreo(String correo);
+
+	UserDetails loadUserByUsername(String nombre);
+
 }

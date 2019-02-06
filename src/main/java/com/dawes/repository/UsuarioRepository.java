@@ -8,4 +8,5 @@ import com.dawes.modelo.UsuarioVO;
 @Repository
 public interface UsuarioRepository extends JpaRepository<UsuarioVO, Integer>{
 	UsuarioVO findByNombre(String nombre);
+	UsuarioVO findByCorreo(String correo);
 }

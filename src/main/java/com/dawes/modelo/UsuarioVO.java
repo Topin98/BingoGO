@@ -58,10 +58,11 @@ public class UsuarioVO {
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<UsuarioPremioVO> lUsuPre;
 	
-	@Column(nullable=false, length=30)
+	@Column(nullable=false, unique=true, length=30)
 	private String nombre;
 	
-	@Column(nullable=false)
+	//si no pones el parametro length no se aplica el unique
+	@Column(nullable=false, unique=true, length=200)
 	private String correo;
 	
 	@Column(nullable=false)

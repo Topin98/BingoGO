@@ -37,7 +37,6 @@ public class UsuarioUtils {
 				Utils.validarCadena(usuario.getPassword()) && usuario.getFechaRegistro() != null &&
 				usuario.getRol() != null;
 		
-		
 	}
 	
 }

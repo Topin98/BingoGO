@@ -154,6 +154,11 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 	public UsuarioVO findByNombre(String nombre) {
 		return usuarioRepository.findByNombre(nombre);
 	}
+	
+	@Override
+	public UsuarioVO findByCorreo(String correo) {
+		return usuarioRepository.findByCorreo(correo);
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String nombre) {
