@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Registro</title>
+    <title>Iniciar sesi&oacute;n</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
         crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
         crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/index.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/registro.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -21,7 +21,7 @@
         crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="js/home.js"></script>
+    <script src="js/index.js"></script>
 </head>
 
 <body>
@@ -29,12 +29,11 @@
     <nav class="navbar navbar-dark bg-custom navbar-expand-md fixed-top">
         <a class="navbar-brand" href="/">BingoGO</a>
         <ul class="nav navbar-nav">
-            <li class="active nav-item"><a href="#" class="nav-link">Home</a></li>
-            <li class="active nav-item"><a href="#" class="nav-link">Page 1</a></li>
+            <li sec:authorize="isAuthenticated()" class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
             <li class="active nav-item"><a href="#" class="nav-link">Page 2</a></li>
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
-            <li class="active nav-item marcado"><a href="/registro" class="nav-link"><i class="fas fa-user-plus"></i> Registrarse</a></li>
+            <li class="active nav-item"><a href="/registro" class="nav-link"><i class="fas fa-user-plus"></i> Registrarse</a></li>
             <li class="active nav-item mostrarLogin"><i class="fas fa-user"></i> Iniciar sesi&oacute;n</li>
         </ul>
     </nav>
@@ -51,19 +50,17 @@
 
     <div class="form">
         <div class="titulo">BingoGO</div>
-        <form action="/registro" method="POST" th:object="${usuario}" id="formRegistro">
-        	<div th:if="${param.error}" class="alert alert-danger" th:text="${error}"></div>
-            <input th:field="*{nombre}" type="text" placeholder="Nombre de usuario" maxlength="30" required />
-            <input th:field="*{correo}" type="email" placeholder="Email" maxlength="200" required />
-            <input th:field="*{password}" type="password" placeholder="Contraseña" required id="pw" />
-            <input type="password" placeholder="Repetir Contraseña" required id="pw2" />
-            <div id="errorPws">Las contraseñas no coinciden</div>
-            <button type="submit">Registrarse</button>
-            <p class="message">Ya tienes una cuenta? <a href="/login">Inicia sesión!</a></p>
+        <div th:if="${param.error}" class="alert alert-danger">
+            El usuario o la contraseña son incorrectos.
+        </div>
+        <form action="/login" method="POST">
+            <input type="text" name="username" placeholder="Usuario" required />
+            <input type="password" name="password" placeholder="Contraseña" required />
+            <a href="#" class="olvidarDatos">Olvidaste tus datos?</a>
+            <button type="submit">Iniciar sesi&oacute;n</button>
+            <p class="message">No tienes una cuenta? <a href="/registro">Registrate!</a></p>
         </form>
     </div>
-    
 </body>
 
 </html>
-

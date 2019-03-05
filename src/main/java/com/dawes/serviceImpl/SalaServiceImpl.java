@@ -139,6 +139,10 @@ public class SalaServiceImpl implements SalaService {
 	public <S extends SalaVO> List<S> findAll(Example<S> example, Sort sort) {
 		return salaRespository.findAll(example, sort);
 	}
-	
+
+	@Override
+	public List<SalaVO> findByActiva(boolean activa) {
+		return salaRespository.findByActiva(activa);
+	}
 	
 }

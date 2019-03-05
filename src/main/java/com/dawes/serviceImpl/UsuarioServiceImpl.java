@@ -1,10 +1,8 @@
 package com.dawes.serviceImpl;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -17,10 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.dawes.modelo.UsuarioRolVO;
 import com.dawes.modelo.UsuarioVO;
-import com.dawes.repository.RolRepository;
 import com.dawes.repository.UsuarioRepository;
 import com.dawes.service.UsuarioService;
 
@@ -165,19 +161,21 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 		
 		UsuarioVO usuario = usuarioRepository.findByNombre(nombre);
 		
-		if (usuario != null) {
+		if (usuario != null && usuario.getlUsuarioRol() != null) {
+				
+			List<GrantedAuthority> grantList = new ArrayList<GrantedAuthority>();
 			
-			//estas dos lineas se supone que luego valdran para pillar los roles
-			Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
-	        grantedAuthorities.add(new SimpleGrantedAuthority(usuario.getRol().getNombre()));
-	        
-			User user = new User(usuario.getNombre(), usuario.getPassword(), grantedAuthorities);
+			for (UsuarioRolVO usuRol : usuario.getlUsuarioRol()) {
+				
+				grantList.add(new SimpleGrantedAuthority(usuRol.getRol().getNombre()));
+			}
+			
+			UserDetails user = new User(usuario.getNombre(), usuario.getPassword(), grantList);
 			
 			return user;
+			
 		} else {
 			throw new UsernameNotFoundException("Error");
 		}
-        
-        
     }
 }

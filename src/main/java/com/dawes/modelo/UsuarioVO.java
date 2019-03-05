@@ -2,7 +2,6 @@ package com.dawes.modelo;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -32,9 +31,10 @@ public class UsuarioVO {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idUsuario;
 	
-	@ManyToOne
-	@JoinColumn(name="idRol", nullable=false, columnDefinition="int default 0")
-	private RolVO rol;
+	//para borrar un rol de la lista hay que actualiarla desde la lista de RolVO
+	@OneToMany(mappedBy = "usuario", orphanRemoval = true)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	private List<UsuarioRolVO> lUsuarioRol;
 	
 	@OneToMany(mappedBy = "usuario1", cascade=CascadeType.ALL)
 	@LazyCollection(LazyCollectionOption.FALSE)
@@ -49,10 +49,9 @@ public class UsuarioVO {
 	@NotFound(action = NotFoundAction.IGNORE)
 	private List<UsuarioPartidaVO> lUsuPar;
 	
-	@OneToMany(mappedBy = "usuario", cascade=CascadeType.ALL, orphanRemoval = true)
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@NotFound(action = NotFoundAction.IGNORE)
-	private List<UsuarioSalaVO> lUsuSal;
+	@ManyToOne
+	@JoinColumn(name="idSala")
+	private SalaVO sala;
 	
 	@OneToMany(mappedBy = "usuario", cascade=CascadeType.ALL)
 	@LazyCollection(LazyCollectionOption.FALSE)
@@ -61,8 +60,7 @@ public class UsuarioVO {
 	@Column(nullable=false, unique=true, length=30)
 	private String nombre;
 	
-	//si no pones el parametro length no se aplica el unique
-	@Column(nullable=false, unique=true, length=200)
+	@Column(nullable=false, unique=true)
 	private String correo;
 	
 	@Column(nullable=false)
@@ -77,8 +75,11 @@ public class UsuarioVO {
 	@ColumnDefault("'0'")
 	private int fichas;
 	
+	@ColumnDefault("true")
+	private boolean enabled;
+	
 	@Lob
-	private byte[] imagenPerfil;
+	private String imagenPerfil;
 	
 	@Transient
 	CartonVO carton;
@@ -86,23 +87,23 @@ public class UsuarioVO {
 	public UsuarioVO() {
 		super();
 		
+		this.lUsuarioRol = new ArrayList<UsuarioRolVO>();
 		this.lUsuUsuRequest = new ArrayList<UsuarioUsuarioVO>();
 		this.lUsuUsuReceived = new ArrayList<UsuarioUsuarioVO>();
 		this.lUsuPar = new ArrayList<UsuarioPartidaVO>();
-		this.lUsuSal = new ArrayList<UsuarioSalaVO>();
 		this.lUsuPre = new ArrayList<UsuarioPremioVO>();
 	}
 
-	public UsuarioVO(RolVO rol, List<UsuarioUsuarioVO> lUsuUsuRequest, List<UsuarioUsuarioVO> lUsuUsuReceived,
-			List<UsuarioPartidaVO> lUsuPar, List<UsuarioSalaVO> lUsuSal, List<UsuarioPremioVO> lUsuPre, String nombre,
-			String correo, String password, LocalDate fechaRegistro, int puntuacionTotal, int fichas,
-			byte[] imagenPerfil) {
+	public UsuarioVO(List<UsuarioRolVO> lUsuarioRol, List<UsuarioUsuarioVO> lUsuUsuRequest,
+			List<UsuarioUsuarioVO> lUsuUsuReceived, List<UsuarioPartidaVO> lUsuPar, SalaVO sala,
+			List<UsuarioPremioVO> lUsuPre, String nombre, String correo, String password, LocalDate fechaRegistro,
+			int puntuacionTotal, int fichas, boolean enabled, String imagenPerfil, CartonVO carton) {
 		super();
-		this.rol = rol;
+		this.lUsuarioRol = lUsuarioRol;
 		this.lUsuUsuRequest = lUsuUsuRequest;
 		this.lUsuUsuReceived = lUsuUsuReceived;
 		this.lUsuPar = lUsuPar;
-		this.lUsuSal = lUsuSal;
+		this.sala = sala;
 		this.lUsuPre = lUsuPre;
 		this.nombre = nombre;
 		this.correo = correo;
@@ -110,20 +111,22 @@ public class UsuarioVO {
 		this.fechaRegistro = fechaRegistro;
 		this.puntuacionTotal = puntuacionTotal;
 		this.fichas = fichas;
+		this.enabled = enabled;
 		this.imagenPerfil = imagenPerfil;
+		this.carton = carton;
 	}
 
-	public UsuarioVO(int idUsuario, RolVO rol, List<UsuarioUsuarioVO> lUsuUsuRequest,
-			List<UsuarioUsuarioVO> lUsuUsuReceived, List<UsuarioPartidaVO> lUsuPar, List<UsuarioSalaVO> lUsuSal,
+	public UsuarioVO(int idUsuario, List<UsuarioRolVO> lUsuarioRol, List<UsuarioUsuarioVO> lUsuUsuRequest,
+			List<UsuarioUsuarioVO> lUsuUsuReceived, List<UsuarioPartidaVO> lUsuPar, SalaVO sala,
 			List<UsuarioPremioVO> lUsuPre, String nombre, String correo, String password, LocalDate fechaRegistro,
-			int puntuacionTotal, int fichas, byte[] imagenPerfil) {
+			int puntuacionTotal, int fichas, boolean enabled, String imagenPerfil, CartonVO carton) {
 		super();
 		this.idUsuario = idUsuario;
-		this.rol = rol;
+		this.lUsuarioRol = lUsuarioRol;
 		this.lUsuUsuRequest = lUsuUsuRequest;
 		this.lUsuUsuReceived = lUsuUsuReceived;
 		this.lUsuPar = lUsuPar;
-		this.lUsuSal = lUsuSal;
+		this.sala = sala;
 		this.lUsuPre = lUsuPre;
 		this.nombre = nombre;
 		this.correo = correo;
@@ -131,7 +134,9 @@ public class UsuarioVO {
 		this.fechaRegistro = fechaRegistro;
 		this.puntuacionTotal = puntuacionTotal;
 		this.fichas = fichas;
+		this.enabled = enabled;
 		this.imagenPerfil = imagenPerfil;
+		this.carton = carton;
 	}
 
 	public int getIdUsuario() {
@@ -142,12 +147,12 @@ public class UsuarioVO {
 		this.idUsuario = idUsuario;
 	}
 
-	public RolVO getRol() {
-		return rol;
+	public List<UsuarioRolVO> getlUsuarioRol() {
+		return lUsuarioRol;
 	}
 
-	public void setRol(RolVO rol) {
-		this.rol = rol;
+	public void setlUsuarioRol(List<UsuarioRolVO> lUsuarioRol) {
+		this.lUsuarioRol = lUsuarioRol;
 	}
 
 	public List<UsuarioUsuarioVO> getlUsuUsuRequest() {
@@ -174,12 +179,12 @@ public class UsuarioVO {
 		this.lUsuPar = lUsuPar;
 	}
 
-	public List<UsuarioSalaVO> getlUsuSal() {
-		return lUsuSal;
+	public SalaVO getSala() {
+		return sala;
 	}
 
-	public void setlUsuSal(List<UsuarioSalaVO> lUsuSal) {
-		this.lUsuSal = lUsuSal;
+	public void setSala(SalaVO sala) {
+		this.sala = sala;
 	}
 
 	public List<UsuarioPremioVO> getlUsuPre() {
@@ -238,11 +243,19 @@ public class UsuarioVO {
 		this.fichas = fichas;
 	}
 
-	public byte[] getImagenPerfil() {
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public String getImagenPerfil() {
 		return imagenPerfil;
 	}
 
-	public void setImagenPerfil(byte[] imagenPerfil) {
+	public void setImagenPerfil(String imagenPerfil) {
 		this.imagenPerfil = imagenPerfil;
 	}
 
@@ -250,19 +263,8 @@ public class UsuarioVO {
 		return carton;
 	}
 
-	public void setCarton(CartonVO carton) throws Exception {
-		
-		if (carton.isPremium()) {
-			
-			if (this.fichas >= CartonVO.precio) {
-				this.fichas -= CartonVO.precio;
-			} else {
-				throw new Exception("No se ha podido asignar el carton, fichas innecesarias");
-			}
-		}
-		
+	public void setCarton(CartonVO carton) {
 		this.carton = carton;
-		
 	}
 
 	@Override
@@ -271,19 +273,20 @@ public class UsuarioVO {
 		int result = 1;
 		result = prime * result + ((carton == null) ? 0 : carton.hashCode());
 		result = prime * result + ((correo == null) ? 0 : correo.hashCode());
+		result = prime * result + (enabled ? 1231 : 1237);
 		result = prime * result + ((fechaRegistro == null) ? 0 : fechaRegistro.hashCode());
 		result = prime * result + fichas;
 		result = prime * result + idUsuario;
-		result = prime * result + Arrays.hashCode(imagenPerfil);
+		result = prime * result + ((imagenPerfil == null) ? 0 : imagenPerfil.hashCode());
 		result = prime * result + ((lUsuPar == null) ? 0 : lUsuPar.hashCode());
 		result = prime * result + ((lUsuPre == null) ? 0 : lUsuPre.hashCode());
-		result = prime * result + ((lUsuSal == null) ? 0 : lUsuSal.hashCode());
 		result = prime * result + ((lUsuUsuReceived == null) ? 0 : lUsuUsuReceived.hashCode());
 		result = prime * result + ((lUsuUsuRequest == null) ? 0 : lUsuUsuRequest.hashCode());
+		result = prime * result + ((lUsuarioRol == null) ? 0 : lUsuarioRol.hashCode());
 		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + puntuacionTotal;
-		result = prime * result + ((rol == null) ? 0 : rol.hashCode());
+		result = prime * result + ((sala == null) ? 0 : sala.hashCode());
 		return result;
 	}
 
@@ -306,6 +309,8 @@ public class UsuarioVO {
 				return false;
 		} else if (!correo.equals(other.correo))
 			return false;
+		if (enabled != other.enabled)
+			return false;
 		if (fechaRegistro == null) {
 			if (other.fechaRegistro != null)
 				return false;
@@ -315,7 +320,10 @@ public class UsuarioVO {
 			return false;
 		if (idUsuario != other.idUsuario)
 			return false;
-		if (!Arrays.equals(imagenPerfil, other.imagenPerfil))
+		if (imagenPerfil == null) {
+			if (other.imagenPerfil != null)
+				return false;
+		} else if (!imagenPerfil.equals(other.imagenPerfil))
 			return false;
 		if (lUsuPar == null) {
 			if (other.lUsuPar != null)
@@ -327,11 +335,6 @@ public class UsuarioVO {
 				return false;
 		} else if (!lUsuPre.equals(other.lUsuPre))
 			return false;
-		if (lUsuSal == null) {
-			if (other.lUsuSal != null)
-				return false;
-		} else if (!lUsuSal.equals(other.lUsuSal))
-			return false;
 		if (lUsuUsuReceived == null) {
 			if (other.lUsuUsuReceived != null)
 				return false;
@@ -341,6 +344,11 @@ public class UsuarioVO {
 			if (other.lUsuUsuRequest != null)
 				return false;
 		} else if (!lUsuUsuRequest.equals(other.lUsuUsuRequest))
+			return false;
+		if (lUsuarioRol == null) {
+			if (other.lUsuarioRol != null)
+				return false;
+		} else if (!lUsuarioRol.equals(other.lUsuarioRol))
 			return false;
 		if (nombre == null) {
 			if (other.nombre != null)
@@ -354,21 +362,21 @@ public class UsuarioVO {
 			return false;
 		if (puntuacionTotal != other.puntuacionTotal)
 			return false;
-		if (rol == null) {
-			if (other.rol != null)
+		if (sala == null) {
+			if (other.sala != null)
 				return false;
-		} else if (!rol.equals(other.rol))
+		} else if (!sala.equals(other.sala))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "UsuarioVO [idUsuario=" + idUsuario + ", rol=" + rol + ", lUsuUsuRequest=" + lUsuUsuRequest
-				+ ", lUsuUsuReceived=" + lUsuUsuReceived + ", lUsuPar=" + lUsuPar + ", lUsuSal=" + lUsuSal
+		return "UsuarioVO [idUsuario=" + idUsuario + ", lUsuarioRol=" + lUsuarioRol + ", lUsuUsuRequest="
+				+ lUsuUsuRequest + ", lUsuUsuReceived=" + lUsuUsuReceived + ", lUsuPar=" + lUsuPar + ", sala=" + sala
 				+ ", lUsuPre=" + lUsuPre + ", nombre=" + nombre + ", correo=" + correo + ", password=" + password
 				+ ", fechaRegistro=" + fechaRegistro + ", puntuacionTotal=" + puntuacionTotal + ", fichas=" + fichas
-				+ ", imagenPerfil=" + Arrays.toString(imagenPerfil) + ", carton=" + carton + "]";
+				+ ", enabled=" + enabled + ", imagenPerfil=" + imagenPerfil + ", carton=" + carton + "]";
 	}
-	
+
 }

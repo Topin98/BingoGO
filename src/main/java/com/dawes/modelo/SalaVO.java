@@ -25,7 +25,10 @@ public class SalaVO {
 	
 	@OneToMany(mappedBy = "sala")
 	@LazyCollection(LazyCollectionOption.FALSE)
-	private List<UsuarioSalaVO> lUsuSala;
+	private List<UsuarioVO> lUsuarios;
+	
+	@Column(nullable=false)
+	private int idPropietario;
 	
 	@Column(nullable=false, length=30)
 	private String nombre;
@@ -40,23 +43,26 @@ public class SalaVO {
 	public SalaVO() {
 		super();
 		
-		this.lUsuSala = new ArrayList<UsuarioSalaVO>();
+		this.lUsuarios = new ArrayList<UsuarioVO>();
 	}
 
-	public SalaVO(List<UsuarioSalaVO> lUsuSala, String nombre, boolean activa, boolean publica, String password) {
+	public SalaVO(List<UsuarioVO> lUsuarios, int idPropietario, String nombre, boolean activa, boolean publica,
+			String password) {
 		super();
-		this.lUsuSala = lUsuSala;
+		this.lUsuarios = lUsuarios;
+		this.idPropietario = idPropietario;
 		this.nombre = nombre;
 		this.activa = activa;
 		this.publica = publica;
 		this.password = password;
 	}
 
-	public SalaVO(int idSala, List<UsuarioSalaVO> lUsuSala, String nombre, boolean activa, boolean publica,
-			String password) {
+	public SalaVO(int idSala, List<UsuarioVO> lUsuarios, int idPropietario, String nombre, boolean activa,
+			boolean publica, String password) {
 		super();
 		this.idSala = idSala;
-		this.lUsuSala = lUsuSala;
+		this.lUsuarios = lUsuarios;
+		this.idPropietario = idPropietario;
 		this.nombre = nombre;
 		this.activa = activa;
 		this.publica = publica;
@@ -71,12 +77,20 @@ public class SalaVO {
 		this.idSala = idSala;
 	}
 
-	public List<UsuarioSalaVO> getlUsuSala() {
-		return lUsuSala;
+	public List<UsuarioVO> getlUsuarios() {
+		return lUsuarios;
 	}
 
-	public void setlUsuSala(List<UsuarioSalaVO> lUsuSala) {
-		this.lUsuSala = lUsuSala;
+	public void setlUsuarios(List<UsuarioVO> lUsuarios) {
+		this.lUsuarios = lUsuarios;
+	}
+
+	public int getIdPropietario() {
+		return idPropietario;
+	}
+
+	public void setIdPropietario(int idPropietario) {
+		this.idPropietario = idPropietario;
 	}
 
 	public String getNombre() {
@@ -116,8 +130,9 @@ public class SalaVO {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (activa ? 1231 : 1237);
+		result = prime * result + idPropietario;
 		result = prime * result + idSala;
-		result = prime * result + ((lUsuSala == null) ? 0 : lUsuSala.hashCode());
+		result = prime * result + ((lUsuarios == null) ? 0 : lUsuarios.hashCode());
 		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + (publica ? 1231 : 1237);
@@ -135,12 +150,14 @@ public class SalaVO {
 		SalaVO other = (SalaVO) obj;
 		if (activa != other.activa)
 			return false;
+		if (idPropietario != other.idPropietario)
+			return false;
 		if (idSala != other.idSala)
 			return false;
-		if (lUsuSala == null) {
-			if (other.lUsuSala != null)
+		if (lUsuarios == null) {
+			if (other.lUsuarios != null)
 				return false;
-		} else if (!lUsuSala.equals(other.lUsuSala))
+		} else if (!lUsuarios.equals(other.lUsuarios))
 			return false;
 		if (nombre == null) {
 			if (other.nombre != null)
@@ -159,8 +176,10 @@ public class SalaVO {
 
 	@Override
 	public String toString() {
-		return "SalaVO [idSala=" + idSala + ", lUsuSala=" + lUsuSala + ", nombre=" + nombre + ", activa=" + activa
-				+ ", publica=" + publica + ", password=" + password + "]";
+		return "SalaVO [idSala=" + idSala + ", lUsuarios=" + lUsuarios.size() + ", idPropietario=" + idPropietario
+				+ ", nombre=" + nombre + ", activa=" + activa + ", publica=" + publica + ", password=" + password + "]";
 	}
+
+	
 	
 }

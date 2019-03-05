@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.dawes.modelo.UsuarioVO;
 import com.dawes.service.RolService;
 import com.dawes.service.UsuarioService;
+import com.dawes.utils.RR;
 import com.dawes.utils.UsuarioUtils;
 
 @Controller
@@ -38,7 +39,7 @@ public class SesionController {
 	
 	@RequestMapping("/login")
 	public String mostrarFormLogin() {
-		return "login";
+		return RR.CARPETA_SESIONES + "login";
 	}
 	
 	@RequestMapping(value = "/registro", method = RequestMethod.GET)
@@ -48,7 +49,7 @@ public class SesionController {
 	    model.addAttribute("usuario", usuario);
 	    model.addAttribute("error", error);
 	    
-	    return "registro";
+	    return RR.CARPETA_SESIONES + "registro";
 	}
 	
 	@RequestMapping(value = "/registro", method = RequestMethod.POST)
@@ -56,7 +57,6 @@ public class SesionController {
 		
 		String resultado = "redirect:";
 		
-		String pw = usuario.getPassword();
 		usuarioUtils.transformarUsuario(usuario);
 		
 		//comprobamos que el nombre y la contraseña no se hayan rellenado solo con espacios en blanco
@@ -84,7 +84,7 @@ public class SesionController {
 						resultado += "Ya hay un usuario registrado con ese correo.";
 					}
 					
-					//si no es que el nombre o el error es demasiado largo
+					//si no es que el nombre o el correo son demasiados largo
 				} else {
 					resultado += "/registro?error=El usuario y/o el correo son demasiado largos";
 				}

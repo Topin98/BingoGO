@@ -2,8 +2,11 @@ package com.dawes.modelo;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,27 +27,27 @@ public class RolVO {
 	@Column(nullable=false)
 	private String nombre;
 	
-	@OneToMany(mappedBy="rol")
+	@OneToMany(mappedBy = "rol", cascade= CascadeType.ALL, orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
-	private List<UsuarioVO> lUsuarios;
+	private List<UsuarioRolVO> lUsuarioRol;
 
 	public RolVO() {
 		super();
 		
-		this.lUsuarios = new ArrayList<UsuarioVO>();
+		this.lUsuarioRol = new ArrayList<UsuarioRolVO>();
 	}
 
-	public RolVO(String nombre, List<UsuarioVO> lUsuarios) {
+	public RolVO(String nombre, List<UsuarioRolVO> lUsuarioRol) {
 		super();
 		this.nombre = nombre;
-		this.lUsuarios = lUsuarios;
+		this.lUsuarioRol = lUsuarioRol;
 	}
 
-	public RolVO(int idRol, String nombre, List<UsuarioVO> lUsuarios) {
+	public RolVO(int idRol, String nombre, List<UsuarioRolVO> lUsuarioRol) {
 		super();
 		this.idRol = idRol;
 		this.nombre = nombre;
-		this.lUsuarios = lUsuarios;
+		this.lUsuarioRol = lUsuarioRol;
 	}
 
 	public int getIdRol() {
@@ -63,12 +66,12 @@ public class RolVO {
 		this.nombre = nombre;
 	}
 
-	public List<UsuarioVO> getlUsuarios() {
-		return lUsuarios;
+	public List<UsuarioRolVO> getlUsuarioRol() {
+		return lUsuarioRol;
 	}
 
-	public void setlUsuarios(List<UsuarioVO> lUsuarios) {
-		this.lUsuarios = lUsuarios;
+	public void setlUsuarioRol(List<UsuarioRolVO> lUsuarioRol) {
+		this.lUsuarioRol = lUsuarioRol;
 	}
 
 	@Override
@@ -76,6 +79,7 @@ public class RolVO {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + idRol;
+		result = prime * result + ((lUsuarioRol == null) ? 0 : lUsuarioRol.hashCode());
 		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 		return result;
 	}
@@ -91,6 +95,11 @@ public class RolVO {
 		RolVO other = (RolVO) obj;
 		if (idRol != other.idRol)
 			return false;
+		if (lUsuarioRol == null) {
+			if (other.lUsuarioRol != null)
+				return false;
+		} else if (!lUsuarioRol.equals(other.lUsuarioRol))
+			return false;
 		if (nombre == null) {
 			if (other.nombre != null)
 				return false;
@@ -101,7 +110,7 @@ public class RolVO {
 
 	@Override
 	public String toString() {
-		return "RolVO [idRol=" + idRol + ", nombre=" + nombre + "]";
+		return "RolVO [idRol=" + idRol + ", nombre=" + nombre + ", lUsuarioRol=" + lUsuarioRol + "]";
 	}
 	
 }

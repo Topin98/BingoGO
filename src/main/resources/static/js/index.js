@@ -1,5 +1,5 @@
-//este archivo lo va a llamar home.html, login.html y registro.html
-window.onload = function () {
+//este archivo lo va a llamar index.html, login.html y registro.html
+$(function() {
 
     $(".mostrarLogin, .cerrar").click(mostrarLogin);
 
@@ -13,12 +13,16 @@ window.onload = function () {
         	pw.val("");
         	pw2.val("");
         	
-            $("#errorPws").css("display", "block");
+            //muestra el mensaje de que las contraseñas no coinciden
+        	$("#errorPws").show();
+            
+            //oculta el div que contiene los mensajes de errores procedentes del controlador
+            $(".erroresRegistro").hide();
             
             return false;
         }
     });
-}
+});
 
 function mostrarLogin() {
     $(".mostrarLogin").css("background-color", "#448AFF");

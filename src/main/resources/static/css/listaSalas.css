@@ -1,0 +1,263 @@
+html, body{
+    height: 100%;
+}
+
+body{
+    display: flex;
+    background-color: lightblue;
+}
+
+body > div{
+    margin-top: 57px;
+}
+
+#container, #chat{
+    background-color: rgb(8, 237, 253);
+}
+
+#container {
+    flex-grow: 3;
+    height: calc(100% - 57px - 71px); /* el 100% del height de la ventana menos los 57px del navbar y los 71px del buscador */
+}
+
+/* Estilos para la scrollbar personalizada */
+.scrollbar{
+	height: 100%;
+	width: 100%;
+	background: #F5F5F5;
+	overflow-y: auto;
+}
+
+#style-4::-webkit-scrollbar-track {
+	background-color: #F5F5F5;
+}
+
+#style-4::-webkit-scrollbar {
+	width: 8px;
+	background-color: #F5F5F5;
+}
+
+#style-4::-webkit-scrollbar-thumb {
+	background-color: #448AFF;
+    border: 2px solid #0288D1;
+    border-radius: 10px;
+}
+
+/* Estilos para el div que contiene los filtros y las opciones de crear sala y demas */
+.cabeceraSalas{
+    display: grid;
+    grid-template-columns: 70% 30%;
+}
+
+/* Estilos para el div que contiene los filtros */
+.filtros{
+    height: 71px;
+    display: grid;
+    grid-template-columns: 30% 20% 20%;
+    align-items: center;
+    justify-items: center;
+    background-color: #B3E5FC;
+    padding-left: 30px;
+    color: black;
+    border-right: 1px solid blue;
+}
+
+.filtros input[type="text"]{
+    width: 100%;
+    padding: 10px;
+}
+
+/* Customize the label (the container) */
+.cbFiltro, .rbPublica {
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    font-size: 22px;
+    user-select: none;
+    margin: 0;
+}
+  
+/* Hide the browser's default checkbox */
+.cbFiltro input, .rbPublica input {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+}
+  
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    height: 25px;
+    width: 25px;
+    background-color: #D8D8D8;
+}
+  
+/* When the checkbox is checked, add a blue background */
+.cbFiltro input:checked ~ .checkmark, .rbPublica input:checked ~ .checkmark {
+    background-color: #2196F3;
+}
+  
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+  
+/* Show the checkmark when checked */
+.cbFiltro input:checked ~ .checkmark:after, .rbPublica input:checked ~ .checkmark:after {
+    display: block;
+}
+  
+/* Style the checkmark/indicator */
+.cbFiltro .checkmark:after {
+    left: 10px;
+    top: 4px;
+    width: 7px;
+    height: 14px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+/* Estilos para las opciones de crear sala y demas */
+.opciones{
+    background-color: #B3E5FC;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    align-items: center;
+    justify-items: center;
+}
+
+/* Estilos para cada sala en la "lista" */
+.grid-container {
+    display: grid;
+    grid-template-columns: 20% 20% 40% 20%;
+    align-items: center;
+    justify-items: center;
+}
+
+/* el tercer div va contener el nombre de la sala */
+.grid-container > div:nth-child(1){
+    font-size: 30px;
+    margin-right: 120px;
+}
+
+/* el tercer div va contener la cantidad de gente en la sala */
+.grid-container > div:nth-child(2){
+    font-size: 20px;
+}
+
+/* el tercer div va contener las imagenes de perfil del los jugadores que estan en la sala */
+.grid-container > div:nth-child(3){
+    /* se implementara cuando se sepa como cargar las imagenes */
+}
+
+#chat {
+    flex-grow: 1;
+    height: calc(100% - 57px); /* el 100% del height de la ventana menos los 57px del navbar */
+    display: grid;
+    grid-template-rows: 92% 8%;
+    padding-bottom: 50px;
+}
+
+#containerMensajes div{
+    color: black;
+    margin-left: 20px;
+    margin-top: 5px;
+}
+
+#containerMensajes div:first-child{
+    margin-top: 10px;
+}
+
+#chat form{
+	width: 100%;
+}
+
+#chat input {
+    width: 80%;
+    padding: 15px;
+    margin-top: 15px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Popup de crear sala */
+#dialogo {
+	display: none;
+	margin: auto;
+}
+
+#dialogo input {
+    font-family: "Roboto", sans-serif;
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin-top: 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+#publica{
+	margin-left: 3px;
+	margin-top: 10px;
+}
+
+#publica > span{
+	margin-right: 40px;
+}
+
+/* todo lo demas es igual que el checkbox */
+.radiomark {
+	border-radius: 50%;
+}
+
+.rbPublica{
+	font-size: 16px;
+}
+
+.rbPublica .checkmark {
+	top: 0;
+}
+
+/* Style the indicator (dot/circle) */
+.rbPublica .checkmark:after {
+	top: 9px;
+  	left: 9px;
+  	width: 8px;
+ 	height: 8px;
+  	border-radius: 50%;
+  	background: white;
+}
+
+#errorNuevaSala {
+	height: 20px;
+    color: red;
+    text-align: left;
+    padding-left: 5px;
+}
+
+#dialogo button{
+    margin-top: 20px;
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    outline: 0;
+    background: #03A9F4;
+    width: 100%;
+    padding: 10px;
+    color: #FFFFFF;
+    cursor: pointer;
+    border: none;
+    border-radius: 25px;
+}
+
+#dialogo button:hover {
+    background: #0288D1;
+}
