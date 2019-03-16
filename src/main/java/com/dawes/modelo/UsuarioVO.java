@@ -23,6 +23,8 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="usuarios")
 public class UsuarioVO {
@@ -34,36 +36,44 @@ public class UsuarioVO {
 	//para borrar un rol de la lista hay que actualiarla desde la lista de RolVO
 	@OneToMany(mappedBy = "usuario", orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
+	@JsonIgnore
 	private List<UsuarioRolVO> lUsuarioRol;
 	
 	@OneToMany(mappedBy = "usuario1", cascade=CascadeType.ALL)
 	@LazyCollection(LazyCollectionOption.FALSE)
+	@JsonIgnore
 	private List<UsuarioUsuarioVO> lUsuUsuRequest;
 	
 	@OneToMany(mappedBy = "usuario2", cascade=CascadeType.ALL, orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
+	@JsonIgnore
 	private List<UsuarioUsuarioVO> lUsuUsuReceived;
 	
 	@OneToMany(mappedBy = "usuario", cascade=CascadeType.ALL)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@NotFound(action = NotFoundAction.IGNORE)
+	@JsonIgnore
 	private List<UsuarioPartidaVO> lUsuPar;
-	
-	@ManyToOne
-	@JoinColumn(name="idSala")
-	private SalaVO sala;
 	
 	@OneToMany(mappedBy = "usuario", cascade=CascadeType.ALL)
 	@LazyCollection(LazyCollectionOption.FALSE)
+	@JsonIgnore
 	private List<UsuarioPremioVO> lUsuPre;
+	
+	@ManyToOne
+	@JoinColumn(name="idSala")
+	@JsonIgnore
+	private SalaVO sala;
 	
 	@Column(nullable=false, unique=true, length=30)
 	private String nombre;
 	
 	@Column(nullable=false, unique=true)
+	@JsonIgnore
 	private String correo;
 	
 	@Column(nullable=false)
+	@JsonIgnore
 	private String password;
 
 	@Column(nullable=false)
@@ -76,6 +86,7 @@ public class UsuarioVO {
 	private int fichas;
 	
 	@ColumnDefault("true")
+	@JsonIgnore
 	private boolean enabled;
 	
 	@Lob

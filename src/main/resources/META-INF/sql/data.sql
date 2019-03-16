@@ -8,7 +8,7 @@ insert into linUsuRol (rol_idRol, usuario_idUsuario) values (1,2)
 insert into linUsuUsu (usuario1_idUsuario, usuario2_idUsuario, activo) values (1,2,true);
 insert into salas (nombre, idPropietario, activa, publica) values ("Sala1", 1, true, true);
 insert into salas (nombre, idPropietario, activa, publica) values ("Sala2", 1, false, true);
-insert into salas (nombre, idPropietario, activa, publica, password) values ("Sala3", 1, true, false, "pw");
+insert into salas (nombre, idPropietario, activa, publica, password) values ("Sala3", 1, true, false, "$2a$10$qwe.rdhx61TNOIEEIbPUoOBSWbwunggHgjHV4xBVcKEWXpA1yddP6");
 insert into premios (nombre, descripcion, precio, imagen) values ("Camiseta", "Hecha de tela", 5, null);
 insert into linUsuPre (idUsuario, idPremio, fecha) values (1, 1, current_date());
 insert into partidas (fecha) values (current_date());

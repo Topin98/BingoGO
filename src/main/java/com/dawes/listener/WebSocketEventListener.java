@@ -1,5 +1,6 @@
 package com.dawes.listener;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -11,6 +12,8 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import com.dawes.modelo.UsuarioVO;
 import com.dawes.service.UsuarioService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class WebSocketEventListener {
@@ -45,7 +48,15 @@ public class WebSocketEventListener {
             System.out.println("Se ha salido de la sala: " + idSala);
             
             JSONObject json = new JSONObject();
-            json.put("nombreUsuario", usuario.getNombre());
+            
+            try {
+            	
+				json.put("usuario", new ObjectMapper().writeValueAsString(usuario));
+				
+			} catch (JSONException | JsonProcessingException e) {
+				System.out.println("Error " + e.getMessage());
+			}
+            
             json.put("mensaje", usuario.getNombre() + " ha abandonado");
             json.put("tipo", 1);
             

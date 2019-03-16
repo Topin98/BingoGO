@@ -1,7 +1,10 @@
 package com.dawes.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,10 +30,12 @@ public class SalasController {
 	@Autowired
 	SalaUtils salaUtils;
 	
+	@Autowired
+	BCryptPasswordEncoder pwEncoder;
+	
 	@RequestMapping
 	public String listar(Model model, Authentication authentication) {
 		
-		model.addAttribute("usuario", usuarioService.findByNombre(authentication.getName()));
 		model.addAttribute("listaSalas", salaService.findByActiva(true));
 		model.addAttribute("nuevaSala", new SalaVO()); //sala que igual crea el usuario
 		
@@ -38,7 +43,8 @@ public class SalasController {
 	}
 	
 	@RequestMapping("/sala/{idSala}")
-	public String mostrarSala(@PathVariable("idSala") int idSala, Model model, Authentication authentication) {
+	public String mostrarSala(@PathVariable("idSala") int idSala, Model model,
+			Authentication authentication, HttpSession session) {
 		String resultado;
 		
 		UsuarioVO usuario = usuarioService.findByNombre(authentication.getName());
@@ -47,9 +53,17 @@ public class SalasController {
 		//si no esta en ninguna sala
 		if (usuario.getSala() == null) {
 			
-			model.addAttribute("sala", sala);
-			
-			resultado = RR.CARPETA_SALAS + "sala";
+			if (sala.getPassword() == null || pwEncoder.matches(session.getAttribute("pw").toString(), salaService.findById(idSala).get().getPassword())) {
+				
+				model.addAttribute("usuario", usuario);
+				model.addAttribute("sala", sala);
+				
+				resultado = RR.CARPETA_SALAS + "sala";
+				
+			} else {
+				
+				resultado = "redirect:/salas?pw=La contrase%C3%B1a no es correcta";
+			}
 			
 		} else {
 			
@@ -59,14 +73,25 @@ public class SalasController {
 		return resultado;
 	}
 	
+	@RequestMapping("/comprobarContraseña")
+	public String comprobarContraseña(String pw, int idSala, HttpSession session) {
+		
+		session.setAttribute("pw", pw);
+		
+		return "redirect:/salas/sala/" + idSala;
+	}
+	
 	@RequestMapping("/crearSala")
-	public String crearSala(Model model, SalaVO sala, Authentication authentication) {
+	public String crearSala(SalaVO sala, Authentication authentication, HttpSession session) {
 		String resultado = "redirect:";
 		
 		UsuarioVO usuario = usuarioService.findByNombre(authentication.getName());
 		
 		//si no esta en ninguna sala
 		if (usuario.getSala() == null) {
+			
+			//en la sesion iria la contraseña tal cual la recibimos del formulario
+			session.setAttribute("pw", sala.getPassword());
 			
 			salaUtils.transformarSala(sala, usuario);
 			

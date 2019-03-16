@@ -2,6 +2,10 @@ var stompClient = null;
 
 $(function() {
 	
+	//conectar al chat de la pantalla lista de salas
+	connect();
+	
+	/* dialogo para crear una sala */
     $("#dialogo").dialog({
     	autoOpen: false,
         resizable: false,
@@ -50,17 +54,40 @@ $(function() {
 		}
 	});
 	
-	connect();
-	
+	/* dialogo para pedir la contraseña de una sala */
+    $("#dialogoPw").dialog({
+    	autoOpen: false,
+        resizable: false,
+        height: "auto",
+        width: 500,
+        height: 200,
+        modal: true
+    });
+    
+    $(".grid-container:has(i.fa-lock)").click(function(){
+		
+    	$("input[name=idSala]").val($(this).attr("id"));
+    	$("#dialogoPw").dialog("open");
+    	
+    	return false;
+	});
+    
+	//formulario con el input del chat
 	var inpMensaje = $("#frmEnviarMensaje > input");
 	$("#frmEnviarMensaje").submit(function(){
-		stompClient.send("/app/salas/chat/enviarMensaje", {}, inpMensaje.val());
-		inpMensaje.val("");
+		
+		let mensaje = inpMensaje.val().trim();
+		
+		if (mensaje) {
+			stompClient.send("/app/salas/chat/enviarMensaje", {}, mensaje);
+			inpMensaje.val("");
+		}
+		
 		return false;
 	});
 	
 	
-	//comprobamos si la pagina se ha cargado a partir de que se ha intentado crear una sala con un nombre demasiado larga
+	/* comprobamos si la pagina se ha cargado a partir de que se ha intentado crear una sala con un nombre demasiado larga */
 	
 	//obtenemos el valor del parametro error
 	var error = getUrlParameter("error");
@@ -72,10 +99,11 @@ $(function() {
 		$("#dialogo").dialog("open");
 	}
 	
-	var yaEnSala = getUrlParameter("yaEnSala");
-	
+	/*var yaEnSala = getUrlParameter("yaEnSala");
 	if (yaEnSala != null) alert(yaEnSala);
 	
+	var pwIncorrecta = getUrlParameter("pw");
+	if (pwIncorrecta != null) alert(pwIncorrecta);*/
 	
 });
 

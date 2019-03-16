@@ -66,30 +66,31 @@
                 <button class="btn btn-primary">Sala aleatoria</button>
             </div>
         </div>
-        <div class="scrollbar" id="style-4">
+        <div class="scrollbar" id="scrollbar">
             <div class="list-group">
-                <a th:each="sala: ${listaSalas}" th:href="@{'/salas/sala/' + ${sala.idSala}}" class="list-group-item list-group-item-action grid-container">
+                <a th:each="sala: ${listaSalas}" th:href="@{'/salas/sala/' + ${sala.idSala}}" th:id="${sala.idSala}" class="list-group-item list-group-item-action grid-container">
                     <div th:text="${sala.nombre}"></div>
                     <div th:text="${#lists.size(sala.lUsuarios)} + ' / 5'"></div>
-                    <div>3</div>
-                    <div th:switch="${sala.publica}">
-                    	<div th:case="true">Pública <i class="fas fa-lock-open"></i></div>
-                    	<div th:case="false">Privada <i class="fas fa-lock"></i></div>
+                    <div>
+                    	<img th:each="usu: ${sala.lUsuarios}" th:src="@{'/perfil/' + ${usu.nombre} + '/imagen'}" width="45px" height="45px" />
                     </div>
+                    <th:block th:switch="${sala.publica}">
+                    	<div th:case="true">P&uacute;blica <i class="fas fa-lock-open"></i></div>
+                    	<div th:case="false">Privada <i class="fas fa-lock"></i></div>
+                    </th:block>
                 </a>
             </div>
         </div>
     </div>
     <div id="chat">
-        <div id="containerMensajes">
-        </div>
-        <form id="frmEnviarMensaje" action="" method="POST">
+        <div id="containerMensajes"></div>
+        <form id="frmEnviarMensaje">
         	<input type="text" name="mensaje" placeholder="Envía tu mensaje!" autocomplete="off" />
         </form>
     </div>
     
     <div id="dialogo" title="Nueva sala">
-        <form action="/salas/crearSala" method="POST" th:object="${nuevaSala}" id="formRegistro">
+        <form action="/salas/crearSala" method="POST" th:object="${nuevaSala}">
             <input th:field="*{nombre}" type="text" placeholder="Nombre de la sala" maxlength="30" required />
             <div id="publica">
 	            <span>P&uacute;blica</span>
@@ -107,6 +108,14 @@
             <input th:field="*{password}" type="password" placeholder="Contraseña" required />
             <div id="errorNuevaSala"></div>
             <button type="submit">Crear sala</button>
+        </form>
+    </div>
+    
+    <div id="dialogoPw" title="Introduce contraseña">
+        <form action="/salas/comprobarContraseña" method="POST">
+            <input name="pw" type="password" placeholder="Contraseña" required />
+            <input name="idSala" type="hidden" />
+            <button type="submit">Unirse</button>
         </form>
     </div>
 </body>

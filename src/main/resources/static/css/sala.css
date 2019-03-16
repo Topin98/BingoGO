@@ -1,0 +1,119 @@
+html, body{
+    height: 100%;
+}
+
+body{
+    display: flex;
+    background-color: lightblue;
+}
+
+body > div{
+    margin-top: 57px;
+}
+
+#container {
+    color: black;
+    background-color: aquamarine;
+}
+
+#chat{
+    color: black;
+    background-color: rgb(8, 237, 253);
+}
+
+#container {
+    flex-grow: 3;
+    height: calc(100% - 57px); /* el 100% del height de la ventana menos los 57px del navbar */
+    display: flex;
+}
+
+#principal {
+    width: 60%;
+    margin-left: 30px;
+}
+
+#nombreSala{
+    font-size: 50px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* div que se va mostrar como un grid de 5 filas donde se van mostrar los nombres de los jugadores */
+#listaJugadores{
+    display: grid;
+    grid-template-rows: auto;
+    grid-row-gap: 50px;
+    width: 100%;
+    margin-top: 50px;
+}
+
+#listaJugadores div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 5px;
+    font-size: 30px;
+}
+
+/* estilos para los botones de empezar partida y y abandonar sala */
+#opciones{
+    display: grid;
+    grid-template-columns: repeat(2, [column] 50%);
+    grid-column-gap: 20px;
+    width: calc(100% - 20px); /* el 60% que ocupa el div de los jugadores menos 20px del margen entre columnas */
+    height: 50px;
+    margin-top: 100px;
+}
+
+#opciones > a, #opciones > button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/*clase que se añade si el jugador no es el propietario de la sala */
+.full{
+    grid-area: 1 / 1 / 1 / 3;
+}
+
+/* estilos para la tarjeta del jugador */
+#infoJugador{
+    margin-top: 150px;
+    margin-left: 70px;
+    width: 400px;
+    height: 400px;
+    background-color: red;
+}
+
+/* Estilos del chat */
+#chat {
+    flex-grow: 1;
+    height: calc(100% - 57px); /* el 100% del height de la ventana menos los 57px del navbar */
+    display: grid;
+    grid-template-rows: 92% 8%;
+    padding-bottom: 50px;
+}
+
+#containerMensajes div{
+    color: black;
+    margin-left: 20px;
+    margin-top: 5px;
+}
+
+#containerMensajes div:first-child{
+    margin-top: 10px;
+}
+
+#chat form{
+	width: 100%;
+}
+
+#chat input {
+    width: 80%;
+    padding: 15px;
+    margin-top: 15px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

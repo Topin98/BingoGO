@@ -70,6 +70,7 @@ public class PerfilController {
 	@RequestMapping("/{nombre}/imagen")
 	public void getImagenAsBase64(@PathVariable("nombre") String nombre, HttpServletResponse response,HttpServletRequest request) 
 	          throws ServletException, IOException{
+		
 		response.setContentType("image/jpeg, image/jpg, image/png, image/gif");
 		
 		UsuarioVO usuario = usuarioService.findByNombre(nombre);
@@ -79,6 +80,7 @@ public class PerfilController {
 		    response.getOutputStream().write(Base64.getDecoder().decode(usuario.getImagenPerfil()));
 		    
 		} else {
+			//esto probablemente no va funcionar cuando lo pasemos a war
 			Resource resource = new ClassPathResource("/static/imgs/fotodefecto.jpg");
 			response.getOutputStream().write(Files.readAllBytes(resource.getFile().toPath()));
 		}
