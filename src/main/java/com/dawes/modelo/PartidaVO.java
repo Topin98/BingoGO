@@ -19,6 +19,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Table(name="partidas")
 public class PartidaVO {
 	
+	public static final int[] PREMIO_FICHAS_BINGO = {100, 50, 25, 10, 5};
+	public static final int[] PREMIO_FICHAS_LINEA = {25, 15, 10, 5, 1};
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idPartida;

@@ -1,0 +1,176 @@
+html, body{
+    height: 100%;
+    margin: 0;
+}
+
+body{
+    display: flex;
+    background-color: lightblue;
+}
+
+/* div que contiene los jugadores ordenados por posicion */
+#posiciones{
+    flex-grow: 1;
+    min-width: 171px;
+    max-width: 171px;
+    display: grid;
+    grid-template-rows: repeat(5, [row] 100px);
+    align-items: center;
+    text-align: center;
+}
+
+/* cada div del jugador */
+#posiciones > div{
+    width: 171px;
+}
+
+/* contiene la tombola, los botones de cantar linea o bingo y el carton */ 
+#container{
+    flex-grow: 3;
+    background-color: #F5F5F5;
+}
+
+/* contiene el odometer y el historial de numeros */
+.containerOdometer{
+    display: grid;
+    grid-template-columns: 40% 60%;
+    margin-top: 30px;
+    align-items: center;
+    justify-items: center;
+}
+
+#odometer {
+    font-size: 100px;
+    width: 230px;
+    text-align: center;
+}
+
+#historialNumeros{
+    width: 650px;
+    height: 100%;
+    background-color: blue;
+    display: flex;
+    overflow-x: scroll;
+}
+
+#historialNumeros > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 111px;
+    min-width: 111px;
+    border-radius: 50%;
+    background-color: white;
+    font-size: 50px;
+    margin: 3px;
+}
+
+#opciones{
+    display: grid;
+    grid-template-columns: repeat(2, [col] 50%) ;
+}
+
+#opciones > button{
+    margin: 100px;
+}
+
+/* contiene los botones que representan cada numero del carton */
+.containerCarton{
+    display: grid;
+    width: 900px;
+    grid-template-columns: repeat(9, [col] 100px) ;
+    grid-template-rows: repeat(3, [row] auto);
+    border: 5px solid blue;
+    box-sizing: content-box;
+    margin: auto;
+    margin-top: 50px;
+}
+
+/* cada numero del carton */
+.containerCarton > button{
+    padding: 20px;
+    font-size: 50px;
+    text-align: center;
+    border: 1px solid blue;
+}
+
+/* botones que contienen numeros */
+.num{
+    background-color: white;
+    color: blue;
+}
+
+/* botones sin numero */
+.containerCarton > button:not(.num){
+    background-color: lightblue;
+}
+
+/* clase que se añade a los botones cuando se marca el numero */
+.crossed {
+     background: 
+         linear-gradient(to top left,
+             rgba(0,0,0,0) 0%,
+             rgba(0,0,0,0) calc(50% - 2px),
+             rgba(0,0,0,1) 50%,
+             rgba(0,0,0,0) calc(50% + 2px),
+             rgba(0,0,0,0) 100%),
+         linear-gradient(to top right,
+             rgba(0,0,0,0) 0%,
+             rgba(0,0,0,0) calc(50% - 2px),
+             rgba(0,0,0,1) 50%,
+             rgba(0,0,0,0) calc(50% + 2px),
+             rgba(0,0,0,0) 100%);
+}
+
+#chat {
+    flex-grow: 1;
+    max-width: 360px;
+    display: grid;
+    grid-template-rows: 92% 8%;
+    margin-right: 15px;
+    padding-bottom: 50px;
+    background-color: rgb(8, 237, 253);
+    overflow-wrap: break-word;
+}
+
+#containerMensajes {
+    margin-left: 20px;
+    color: black;
+    overflow-y: auto;
+}
+
+#containerMensajes div{
+    max-width: 300px;
+    margin-top: 5px;
+}
+
+#containerMensajes div:first-child{
+    margin-top: 10px;
+}
+
+#chat form{
+	width: 100%;
+}
+
+#chat input {
+    width: 80%;
+    padding: 15px;
+    margin-top: 15px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#aVolver{
+	display: none;
+}
+
+@media (max-width: 916px){
+   
+    .containerCarton {
+        width: 300px;
+        grid-template-columns: repeat(3, [col] 100px) ;
+        grid-template-rows: repeat(9, [row] auto);
+    }
+}
+

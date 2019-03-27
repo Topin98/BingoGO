@@ -11,7 +11,7 @@ body > div{
     margin-top: 57px;
 }
 
-#container, #chat{
+#chat{
     background-color: rgb(8, 237, 253);
 }
 
@@ -24,7 +24,7 @@ body > div{
 .scrollbar{
 	height: 100%;
 	width: 100%;
-	background: #F5F5F5;
+	background-color: #F5F5F5;
 	overflow-y: auto;
 }
 

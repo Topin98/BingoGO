@@ -274,7 +274,17 @@ public class UsuarioVO {
 		return carton;
 	}
 
-	public void setCarton(CartonVO carton) {
+	public void setCarton(CartonVO carton) throws Exception {
+		
+		if (carton.isPremium()) {
+			
+			if (this.fichas >= CartonVO.PRECIO) {
+				this.fichas -= CartonVO.PRECIO;
+			} else {
+				throw new Exception("No se ha podido asignar el carton, fichas insuficientes");
+			}
+		}
+		
 		this.carton = carton;
 	}
 

@@ -37,7 +37,7 @@ $(function() {
 	//boton de empezar partida
 	$("#btnEmpezarPartida").click(function(){
 		stompClient.send(`/app/salas/sala/${idSala}/empezarPartida`);
-	})
+	});
 	
 });
 
@@ -58,7 +58,7 @@ function connect() {
 function onConnected() {
     
 	//nos suscribimos a la sala
-    suscripcion = stompClient.subscribe(`/salas/sala/${idSala}`, onNewUser);
+    stompClient.subscribe(`/salas/sala/${idSala}`, onNewUser);
  
     //indicamos nuestra llegada al servidor
     stompClient.send(`/app/salas/sala/${idSala}/newUser`);
@@ -72,10 +72,12 @@ function onNewUser(payload){
 	
 	//respuesta que contiene tipo, mensaje y usuario
 	let respuesta = JSON.parse(payload.body);
-	console.log(respuesta);
 	
-	//ponemos el mensaje en el chat
-	$("#containerMensajes").append(`<div>${respuesta.mensaje}</div>`);
+	//comprobamos que haya mensaje para que no salga en el chat "undefined"
+	if (respuesta.mensaje){
+		//ponemos el mensaje en el chat
+		$("#containerMensajes").append(`<div>${respuesta.mensaje}</div>`);
+	}
 	
 	switch(respuesta.tipo){
 		case 0: nuevoJugador(respuesta);
@@ -83,7 +85,7 @@ function onNewUser(payload){
 		case 1: seFueJugador(respuesta);
 			break;
 		case 2: empezarPartida(respuesta);
-			break;
+			break
 	}
 	
 }
@@ -120,8 +122,7 @@ function empezarPartida(respuesta){
 	
 	//replace lo que hace es que al ir para atras en el navegador en vez de ir a la sala otra vez
 	//se vaya a la lista de salas
-	//TODO: aqui iria la url de crear y empezar la partida
-	document.location.replace("/");
+	document.location.replace(`/partida/${respuesta.idPartida}/guardarPartidaSession`);
 }
 
 function onConnectedChat() {
@@ -135,4 +136,3 @@ function onNewMessage(payload){
 	
 	$("#containerMensajes").append(`<div>${payload.body}</div>`);
 }
-

@@ -53,10 +53,14 @@ public class SalasController {
 		//si no esta en ninguna sala
 		if (usuario.getSala() == null) {
 			
-			if (sala.getPassword() == null || pwEncoder.matches(session.getAttribute("pw").toString(), salaService.findById(idSala).get().getPassword())) {
+			if (sala.getPassword() == null || (session.getAttribute("pw") != null && pwEncoder.matches(session.getAttribute("pw").toString(), salaService.findById(idSala).get().getPassword()))) {
 				
 				model.addAttribute("usuario", usuario);
 				model.addAttribute("sala", sala);
+				
+				//este atributo NO es el que se usa para comprobar si se abandona o no una sala
+				//es el que se usa para volver a la sala al terminar la partida
+				session.setAttribute("idSala", idSala);
 				
 				resultado = RR.CARPETA_SALAS + "sala";
 				

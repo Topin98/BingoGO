@@ -12,5 +12,5 @@ insert into salas (nombre, idPropietario, activa, publica, password) values ("Sa
 insert into premios (nombre, descripcion, precio, imagen) values ("Camiseta", "Hecha de tela", 5, null);
 insert into linUsuPre (idUsuario, idPremio, fecha) values (1, 1, current_date());
 insert into partidas (fecha) values (current_date());
-insert into linUsuPar (usuario_idUsuario, partida_idPartida, posicion, puntuacion) values (1, 1, 1, 150);
-insert into linUsuPar (usuario_idUsuario, partida_idPartida, posicion, puntuacion) values (2, 1, 2, 140);
+insert into linUsuPar (usuario_idUsuario, partida_idPartida, posicionLinea, posicionBingo) values (1, 1, 1, 1);
+insert into linUsuPar (usuario_idUsuario, partida_idPartida, posicionLinea, posicionBingo) values (2, 1, 2, 2);

@@ -21,83 +21,73 @@ public class UsuarioPartidaVO {
 	@MapsId("idPartida")
 	private PartidaVO partida;
 	
-	private int puntuacion;
-	private int posicion;
+	private int posicionLinea;
 	
+	private int posicionBingo;
 	
 	public UsuarioPartidaVO() {
 		super();
 	}
 
-	public UsuarioPartidaVO(LinUsuParVO linUsuPar, UsuarioVO usuario, PartidaVO partida, int puntuacion, int posicion) {
+	public UsuarioPartidaVO(LinUsuParVO linUsuPar, UsuarioVO usuario, PartidaVO partida, int posicionLinea,
+			int posicionBingo) {
 		super();
 		this.linUsuPar = linUsuPar;
 		this.usuario = usuario;
 		this.partida = partida;
-		this.puntuacion = puntuacion;
-		this.posicion = posicion;
+		this.posicionLinea = posicionLinea;
+		this.posicionBingo = posicionBingo;
 	}
 
 	public LinUsuParVO getLinUsuPar() {
 		return linUsuPar;
 	}
 
-
 	public void setLinUsuPar(LinUsuParVO linUsuPar) {
 		this.linUsuPar = linUsuPar;
 	}
-
 
 	public UsuarioVO getUsuario() {
 		return usuario;
 	}
 
-
 	public void setUsuario(UsuarioVO usuario) {
 		this.usuario = usuario;
 	}
-
 
 	public PartidaVO getPartida() {
 		return partida;
 	}
 
-
 	public void setPartida(PartidaVO partida) {
 		this.partida = partida;
 	}
 
-
-	public int getPuntuacion() {
-		return puntuacion;
+	public int getPosicionLinea() {
+		return posicionLinea;
 	}
 
-
-	public void setPuntuacion(int puntuacion) {
-		this.puntuacion = puntuacion;
+	public void setPosicionLinea(int posicionLinea) {
+		this.posicionLinea = posicionLinea;
 	}
 
-
-	public int getPosicion() {
-		return posicion;
+	public int getPosicionBingo() {
+		return posicionBingo;
 	}
 
-
-	public void setPosicion(int posicion) {
-		this.posicion = posicion;
+	public void setPosicionBingo(int posicionBingo) {
+		this.posicionBingo = posicionBingo;
 	}
-
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((linUsuPar == null) ? 0 : linUsuPar.hashCode());
-		result = prime * result + posicion;
-		result = prime * result + puntuacion;
+		result = prime * result + posicionBingo;
+		result = prime * result + posicionLinea;
 		return result;
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -113,20 +103,19 @@ public class UsuarioPartidaVO {
 				return false;
 		} else if (!linUsuPar.equals(other.linUsuPar))
 			return false;
-		if (posicion != other.posicion)
+		if (posicionBingo != other.posicionBingo)
 			return false;
-		if (puntuacion != other.puntuacion)
+		if (posicionLinea != other.posicionLinea)
 			return false;
 		return true;
 	}
 
-
 	@Override
 	public String toString() {
 		return "UsuarioPartidaVO [linUsuPar=" + linUsuPar + ", usuario=" + usuario.getIdUsuario() + ", partida=" + partida.getIdPartida()
-				+ ", puntuacion=" + puntuacion + ", posicion=" + posicion + "]";
+				+ ", posicionLinea=" + posicionLinea + ", posicionBingo=" + posicionBingo + "]";
 	}
-	
+
 	
 	
 }
