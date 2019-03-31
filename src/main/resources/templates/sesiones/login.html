@@ -8,8 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
         crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-        crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" media="screen" href="css/index.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/registro.css" />
 
@@ -21,7 +19,6 @@
         crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="js/index.js"></script>
 </head>
 
 <body>
@@ -31,10 +28,6 @@
         <ul class="nav navbar-nav">
             <li sec:authorize="isAuthenticated()" class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
             <li class="active nav-item"><a href="#" class="nav-link">Page 2</a></li>
-        </ul>
-        <ul class="nav navbar-nav ml-auto btnsSesion">
-            <li class="active nav-item"><a href="/registro" class="nav-link"><i class="fas fa-user-plus"></i> Registrarse</a></li>
-            <li class="active nav-item mostrarLogin"><i class="fas fa-user"></i> Iniciar sesi&oacute;n</li>
         </ul>
     </nav>
 

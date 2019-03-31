@@ -20,7 +20,7 @@
         crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="js/index.js"></script>
+    <script th:src="@{/js/index.js}"></script>
 </head>
 
 <body>
@@ -32,8 +32,14 @@
             <li class="active nav-item"><a href="#" class="nav-link">Page 2</a></li>
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
-            <li class="active nav-item"><a href="/registro" class="nav-link"><i class="fas fa-user-plus"></i> Registrarse</a></li>
-            <li class="active nav-item mostrarLogin"><i class="fas fa-user"></i> Iniciar sesi&oacute;n</li>
+            <li sec:authorize="isAnonymous()" class="active nav-item"><a href="/registro" class="nav-link"><i class="fas fa-user-plus"></i> Registrarse</a></li>
+            <li sec:authorize="isAnonymous()" class="active nav-item mostrarLogin"><i class="fas fa-user"></i> Iniciar sesi&oacute;n</li>
+           	<li sec:authorize="isAuthenticated()" class="active nav-item infoUsuario">
+           		<a th:href="@{'/perfil/' + ${usuario.nombre}}">
+	           		<span th:text="${usuario.nombre}"></span>
+	           		<img th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="imagen" width="40x" height="40px" />
+           		</a>
+           	</li>
         </ul>
     </nav>
 

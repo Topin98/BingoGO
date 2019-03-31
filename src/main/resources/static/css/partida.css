@@ -124,7 +124,7 @@ body{
 
 #chat {
     flex-grow: 1;
-    max-width: 360px;
+    max-width: 330px;
     display: grid;
     grid-template-rows: 92% 8%;
     margin-right: 15px;
@@ -140,12 +140,16 @@ body{
 }
 
 #containerMensajes div{
-    max-width: 300px;
+    max-width: 280px;
     margin-top: 5px;
 }
 
 #containerMensajes div:first-child{
     margin-top: 10px;
+}
+
+#containerMensajes a{
+	color: red;
 }
 
 #chat form{

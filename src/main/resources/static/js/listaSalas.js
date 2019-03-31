@@ -5,6 +5,9 @@ $(function() {
 	//conectar al chat de la pantalla lista de salas
 	connect();
 	
+	//tooltips con el nombre de usuario para cada foto
+	$('[data-toggle="tooltip"]').tooltip();
+	
 	/* dialogo para crear una sala */
     $("#dialogo").dialog({
     	autoOpen: false,
@@ -86,7 +89,6 @@ $(function() {
 		return false;
 	});
 	
-	
 	/* comprobamos si la pagina se ha cargado a partir de que se ha intentado crear una sala con un nombre demasiado larga */
 	
 	//obtenemos el valor del parametro error
@@ -139,6 +141,16 @@ function onError(error) {
 }
 
 function onNewMessage(payload){
-	$("#containerMensajes").append(`<div>${payload.body}</div>`);
+	
+	let respuesta = JSON.parse(payload.body);
+	
+	if (respuesta.mensaje){
+		
+		$("#containerMensajes").append(`<div><a href="/perfil/${respuesta.nombreUsuario}/">${respuesta.nombreUsuario}</a><span>: ${respuesta.mensaje}</span></div>`);
+		
+		//desplazamos el scroll del chat abajo del todo
+	    $("#containerMensajes").scrollTop($("#containerMensajes")[0].scrollHeight);
+	}
+	
 }
 

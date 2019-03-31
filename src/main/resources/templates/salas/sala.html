@@ -6,11 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Sala</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
         integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/index.css}" />
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/sala.css}" />
 
@@ -43,9 +43,12 @@
             <li class="active nav-item"><a href="#" class="nav-link">Page 2</a></li>
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
-            <li class="active nav-item"><a href="registro.html" class="nav-link"><i class="fas fa-user-plus"></i>
-                    Registrarse</a></li>
-            <li class="active nav-item mostrarLogin"><i class="fas fa-user"></i> Iniciar sesi&oacute;n</li>
+            <li class="active nav-item infoUsuario">
+           		<a th:href="@{'/perfil/' + ${usuario.nombre}}">
+	           		<span th:text="${usuario.nombre}"></span>
+	           		<img th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="imagen" width="40x" height="40px" />
+           		</a>
+           	</li>
         </ul>
     </nav>
 
@@ -56,7 +59,7 @@
                 <div th:each="usu: ${sala.lUsuarios}" th:text="${usu.nombre}" th:id="${usu.nombre}" ></div>
             </div>
             <div id="opciones">
-                <a href="/salas" class="" th:class="${usuario.idUsuario == sala.idPropietario ? 'btn btn-primary' : 'full btn btn-primary'}">Abandonar sala</a>
+                <button id="btnAbandonarSala" th:class="${usuario.idUsuario == sala.idPropietario ? 'btn btn-primary' : 'full btn btn-primary'}">Abandonar sala</button>
                 <button th:if="${usuario.idUsuario == sala.idPropietario}" id="btnEmpezarPartida" class="btn btn-primary">Empezar partida</button>
             </div>
         </div>
@@ -64,6 +67,7 @@
             <img id="imagenJugador" th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="foto" width="150px" height="150px" />
             <div id="nombreJugador" th:text="${usuario.nombre}"></div>
             <div id="puntuacionJugador">Posiciones</div>
+            <button th:if="${usuario.idUsuario == sala.idPropietario}" id="btnExpulsarJugador" class="btn btn-primary">Expulsar jugador</button>
         </div>
     </div>
     <div id="chat">
@@ -74,6 +78,7 @@
     </div>
 
     <input id="idSala" type="hidden" th:value="${sala.idSala}" />
+    <input id="nombreUsuario" type="hidden" th:value="${usuario.nombre}" />
 </body>
 
 </html>

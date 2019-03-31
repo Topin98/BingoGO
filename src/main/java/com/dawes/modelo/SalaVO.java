@@ -19,6 +19,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Table(name="salas")
 public class SalaVO {
 	
+	//static evita automaticamente que esta propiedad vaya a base de datos
+	public static final int CAP_MAX = 5;
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idSala;
@@ -33,8 +36,8 @@ public class SalaVO {
 	@Column(nullable=false, length=30)
 	private String nombre;
 	
-	@ColumnDefault("true")
-	private boolean activa;
+	@ColumnDefault("false")
+	private boolean jugando;
 	
 	private boolean publica;
 	
@@ -46,25 +49,25 @@ public class SalaVO {
 		this.lUsuarios = new ArrayList<UsuarioVO>();
 	}
 
-	public SalaVO(List<UsuarioVO> lUsuarios, int idPropietario, String nombre, boolean activa, boolean publica,
+	public SalaVO(List<UsuarioVO> lUsuarios, int idPropietario, String nombre, boolean jugando, boolean publica,
 			String password) {
 		super();
 		this.lUsuarios = lUsuarios;
 		this.idPropietario = idPropietario;
 		this.nombre = nombre;
-		this.activa = activa;
+		this.jugando = jugando;
 		this.publica = publica;
 		this.password = password;
 	}
 
-	public SalaVO(int idSala, List<UsuarioVO> lUsuarios, int idPropietario, String nombre, boolean activa,
+	public SalaVO(int idSala, List<UsuarioVO> lUsuarios, int idPropietario, String nombre, boolean jugando,
 			boolean publica, String password) {
 		super();
 		this.idSala = idSala;
 		this.lUsuarios = lUsuarios;
 		this.idPropietario = idPropietario;
 		this.nombre = nombre;
-		this.activa = activa;
+		this.jugando = jugando;
 		this.publica = publica;
 		this.password = password;
 	}
@@ -101,12 +104,12 @@ public class SalaVO {
 		this.nombre = nombre;
 	}
 
-	public boolean isActiva() {
-		return activa;
+	public boolean isJugando() {
+		return jugando;
 	}
 
-	public void setActiva(boolean activa) {
-		this.activa = activa;
+	public void setJugando(boolean jugando) {
+		this.jugando = jugando;
 	}
 
 	public boolean isPublica() {
@@ -129,9 +132,9 @@ public class SalaVO {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (activa ? 1231 : 1237);
 		result = prime * result + idPropietario;
 		result = prime * result + idSala;
+		result = prime * result + (jugando ? 1231 : 1237);
 		result = prime * result + ((lUsuarios == null) ? 0 : lUsuarios.hashCode());
 		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
@@ -148,11 +151,11 @@ public class SalaVO {
 		if (getClass() != obj.getClass())
 			return false;
 		SalaVO other = (SalaVO) obj;
-		if (activa != other.activa)
-			return false;
 		if (idPropietario != other.idPropietario)
 			return false;
 		if (idSala != other.idSala)
+			return false;
+		if (jugando != other.jugando)
 			return false;
 		if (lUsuarios == null) {
 			if (other.lUsuarios != null)
@@ -177,9 +180,8 @@ public class SalaVO {
 	@Override
 	public String toString() {
 		return "SalaVO [idSala=" + idSala + ", lUsuarios=" + lUsuarios.size() + ", idPropietario=" + idPropietario
-				+ ", nombre=" + nombre + ", activa=" + activa + ", publica=" + publica + ", password=" + password + "]";
+				+ ", nombre=" + nombre + ", jugando=" + jugando + ", publica=" + publica + ", password=" + password
+				+ "]";
 	}
-
-	
 	
 }

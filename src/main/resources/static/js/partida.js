@@ -153,10 +153,17 @@ function onConnectedChat() {
 
 function onNewMessage(payload){
 	
-	$("#containerMensajes").append(`<div>${payload.body}</div>`);
+	let respuesta = JSON.parse(payload.body);
 	
-	//desplazamos el scroll del chat abajo del todo
-    $("#containerMensajes").scrollTop($("#containerMensajes")[0].scrollHeight);
+	if (respuesta.mensaje){
+		
+		//el perfil del usuario se abriria en una pestaña nueva al clicar sobre el nombre
+		$("#containerMensajes").append(`<div><a href="/perfil/${respuesta.nombreUsuario}/" target="_blank">${respuesta.nombreUsuario}</a><span>: ${respuesta.mensaje}</span></div>`);
+		
+		//desplazamos el scroll del chat abajo del todo
+	    $("#containerMensajes").scrollTop($("#containerMensajes")[0].scrollHeight);
+	}
+	
 }
 
 function onConnectedPosiciones(){
@@ -181,11 +188,13 @@ function actualizarPosiciones(payload){
 			break;
 		//alguien hizo linea
 		case 1: 
-			if (respuesta.mensaje) $("#containerMensajes").append(`<div>${respuesta.mensaje}</div>`);
+			if (respuesta.mensaje) {
+				$("#containerMensajes").append(`<div><a href="/perfil/${respuesta.nombreUsuario}/" target="_blank">${respuesta.nombreUsuario}</a><span> ${respuesta.mensaje}</span></div>`);
+			}
 			break;
 		//alguien hizo bingo
 		case 2:
-			if (respuesta.mensaje) $("#containerMensajes").append(`<div>${respuesta.mensaje}</div>`);
+			if (respuesta.mensaje) $("#containerMensajes").append(`<div><a href="/perfil/${respuesta.nombreUsuario}/" target="_blank">${respuesta.nombreUsuario}</a><span> ${respuesta.mensaje}</span></div>`);
 				
 			//al que hizo bingo se le muestra el enlace de volver a la sala
 			if ($("#nombreUsuario").val() == respuesta.nombreUsuario){
@@ -197,7 +206,6 @@ function actualizarPosiciones(payload){
 	
 	//desplazamos el scroll del chat abajo del todo
     $("#containerMensajes").scrollTop($("#containerMensajes")[0].scrollHeight);
-	
 	
 	
 }

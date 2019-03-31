@@ -84,25 +84,37 @@ body > div{
     width: 400px;
     height: 400px;
     background-color: red;
+    display: none;
 }
 
 /* Estilos del chat */
 #chat {
     flex-grow: 1;
+    max-width: 400px;
     height: calc(100% - 57px); /* el 100% del height de la ventana menos los 57px del navbar */
     display: grid;
     grid-template-rows: 92% 8%;
     padding-bottom: 50px;
+    overflow-wrap: break-word;
+}
+
+#containerMensajes {
+    margin-left: 20px;
+    color: black;
+    overflow-y: auto;
 }
 
 #containerMensajes div{
-    color: black;
-    margin-left: 20px;
+    max-width: 350px;
     margin-top: 5px;
 }
 
 #containerMensajes div:first-child{
     margin-top: 10px;
+}
+
+#containerMensajes a{
+	color: red;
 }
 
 #chat form{

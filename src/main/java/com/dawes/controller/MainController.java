@@ -1,19 +1,16 @@
 package com.dawes.controller;
 
-import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.dawes.modelo.RolVO;
-import com.dawes.modelo.UsuarioRolVO;
-import com.dawes.modelo.UsuarioVO;
 import com.dawes.service.RolService;
 import com.dawes.service.UsuarioService;
+import com.dawes.utils.Utils;
 
 @Controller
 @RequestMapping("/")
@@ -26,19 +23,14 @@ public class MainController {
 	RolService rolService;
 	
 	@RequestMapping
-	public String index(HttpServletRequest request, Authentication authentication) {
+	public String index(Authentication authentication, Model model) {
 		
-		if (authentication != null && authentication.isAuthenticated()) {
+		if (Utils.isLogged(authentication)) {
 			System.out.println(authentication.getPrincipal());
-			
+			model.addAttribute("usuario", usuarioService.findByNombre(authentication.getName()));
 		}
 		
 		return "index";
-	}
-	
-	@RequestMapping("/prueba")
-	public String prueba(HttpServletRequest request, Authentication authentication) {
-		return "prueba";
 	}
 	
 	@RequestMapping("/admin")

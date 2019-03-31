@@ -60,6 +60,4 @@ public interface SalaService {
 
 	<S extends SalaVO> List<S> findAll(Example<S> example, Sort sort);
 
-	List<SalaVO> findByActiva(boolean activa);
-
 }

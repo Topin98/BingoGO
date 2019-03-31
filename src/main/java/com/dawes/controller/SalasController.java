@@ -1,5 +1,7 @@
 package com.dawes.controller;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,8 @@ public class SalasController {
 	@RequestMapping
 	public String listar(Model model, Authentication authentication) {
 		
-		model.addAttribute("listaSalas", salaService.findByActiva(true));
+		model.addAttribute("usuario", usuarioService.findByNombre(authentication.getName()));
+		model.addAttribute("listaSalas", salaService.findAll());
 		model.addAttribute("nuevaSala", new SalaVO()); //sala que igual crea el usuario
 		
 		return RR.CARPETA_SALAS + "listaSalas";
@@ -48,30 +51,57 @@ public class SalasController {
 		String resultado;
 		
 		UsuarioVO usuario = usuarioService.findByNombre(authentication.getName());
-		SalaVO sala = salaService.findById(idSala).get();
+		Optional<SalaVO> optional = salaService.findById(idSala);
 		
-		//si no esta en ninguna sala
-		if (usuario.getSala() == null) {
+		//si la sala existe
+		if (optional.isPresent()) {
 			
-			if (sala.getPassword() == null || (session.getAttribute("pw") != null && pwEncoder.matches(session.getAttribute("pw").toString(), salaService.findById(idSala).get().getPassword()))) {
+			SalaVO sala = optional.get();
+			
+			//si no esta en ninguna sala
+			if (usuario.getSala() == null) {
 				
-				model.addAttribute("usuario", usuario);
-				model.addAttribute("sala", sala);
+				//si no hay partida en curso
+				if (!sala.isJugando()) {
 				
-				//este atributo NO es el que se usa para comprobar si se abandona o no una sala
-				//es el que se usa para volver a la sala al terminar la partida
-				session.setAttribute("idSala", idSala);
+					//si la sala no tiene contraseña o en sesion esta la contraseña correcta
+					if (sala.getPassword() == null || (session.getAttribute("pw") != null && pwEncoder.matches(session.getAttribute("pw").toString(), salaService.findById(idSala).get().getPassword()))) {
+						
+						//si la sala no esta completa
+						if (sala.getlUsuarios().size() < SalaVO.CAP_MAX) {
+							
+							model.addAttribute("usuario", usuario);
+							model.addAttribute("sala", sala);
+							
+							//este atributo NO es el que se usa para comprobar si se abandona o no una sala
+							//es el que se usa para volver a la sala al terminar la partida
+							session.setAttribute("idSala", idSala);
+							
+							resultado = RR.CARPETA_SALAS + "sala";
+							
+							//la sala esta llena
+						} else {
+							resultado = "redirect:/salas?salaLlena=La sala est%C3%A1 llena";
+						}
+						
+					} else {
+						
+						resultado = "redirect:/salas?pw=La contrase%C3%B1a no es correcta";
+					}
 				
-				resultado = RR.CARPETA_SALAS + "sala";
+				} else {
+					
+					resultado = "redirect:/salas?partidaEnCurso=No se puede unir a la sala mientras hay una partida en curso.";
+				}
 				
 			} else {
 				
-				resultado = "redirect:/salas?pw=La contrase%C3%B1a no es correcta";
+				resultado = "redirect:/salas?yaEnSala=Es necesario salir de la sala actual";
 			}
 			
+			//si se borro entre que se cargo y se intento unirse a ella 
 		} else {
-			
-			resultado = "redirect:/salas?yaEnSala=Es necesario salir de la sala actual";
+			resultado = "redirect:/salas?yaEnSala=La sala no existe";
 		}
 			
 		return resultado;

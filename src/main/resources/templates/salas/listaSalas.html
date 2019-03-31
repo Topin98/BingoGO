@@ -6,11 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Salas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
         integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
         integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/index.css}" />
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/listaSalas.css}" />
 
@@ -42,9 +44,12 @@
             <li class="active nav-item"><a href="#" class="nav-link">Page 2</a></li>
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
-            <li class="active nav-item"><a href="registro.html" class="nav-link"><i class="fas fa-user-plus"></i>
-                    Registrarse</a></li>
-            <li class="active nav-item mostrarLogin"><i class="fas fa-user"></i> Iniciar sesi&oacute;n</li>
+            <li class="active nav-item infoUsuario">
+           		<a th:href="@{'/perfil/' + ${usuario.nombre}}">
+	           		<span th:text="${usuario.nombre}"></span>
+	           		<img th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="imagen" width="40x" height="40px" />
+           		</a>
+           	</li>
         </ul>
     </nav>
 
@@ -68,11 +73,12 @@
         </div>
         <div class="scrollbar" id="scrollbar">
             <div class="list-group">
-                <a th:each="sala: ${listaSalas}" th:href="@{'/salas/sala/' + ${sala.idSala}}" th:id="${sala.idSala}" class="list-group-item list-group-item-action grid-container">
+                <a th:each="sala: ${listaSalas}" th:href="@{'/salas/sala/' + ${sala.idSala}}" th:id="${sala.idSala}" 
+                	th:class="${sala.jugando ? 'list-group-item list-group-item-action list-group-item-secondary grid-container' : 'list-group-item list-group-item-action grid-container'}">
                     <div th:text="${sala.nombre}"></div>
                     <div th:text="${#lists.size(sala.lUsuarios)} + ' / 5'"></div>
                     <div>
-                    	<img th:each="usu: ${sala.lUsuarios}" th:src="@{'/perfil/' + ${usu.nombre} + '/imagen'}" width="45px" height="45px" />
+                    	<img th:each="usu: ${sala.lUsuarios}" th:src="@{'/perfil/' + ${usu.nombre} + '/imagen'}" width="45px" height="45px" th:title="${usu.nombre}" data-toggle="tooltip" />
                     </div>
                     <th:block th:switch="${sala.publica}">
                     	<div th:case="true">P&uacute;blica <i class="fas fa-lock-open"></i></div>

@@ -18,6 +18,6 @@ public class SalaUtils {
 		else sala.setPassword(pwEncoder.encode(sala.getPassword()));
 		
 		sala.setIdPropietario(usuario.getIdUsuario());
-		sala.setActiva(true);
+		
 	}
 }

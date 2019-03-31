@@ -50,15 +50,30 @@ public class WebSocketController {
 	// controller para el chat de la pantalla de listas salas
 	@MessageMapping("/salas/chat/enviarMensaje")
 	@SendTo("/salas/chat")
-	public String enviarMensaje(@Payload String mensaje, Authentication authentication) {
-		return authentication.getName() + ": " + mensaje;
+	public String enviarMensaje(@Payload(required = false) String mensaje, Authentication authentication) {
+		
+		return jsonMensaje(mensaje, authentication.getName());
+	}
+	
+	//retorna el mensaje en forma de json con el nombre de usuario y el mensaje tratado
+	public String jsonMensaje(String mensaje, String nombre) {
+		
+		JSONObject json = new JSONObject();
+		
+		//null solo seria cuando desde se manda desde la consola del navegador o se cambia el js
+		if (mensaje != null) {
+			json.put("nombreUsuario", nombre);
+			json.put("mensaje", Utils.XSSProtection(mensaje));
+		}
+		
+		return json.toString();
 	}
 
 	// controller para el chat de una sala en concreto
 	@MessageMapping("/salas/sala/{idSala}/chat/enviarMensaje")
 	@SendTo("/salas/sala/{idSala}/chat")
-	public String enviarMensajeSala(@Payload String mensaje, Authentication authentication) {
-		return authentication.getName() + ": " + mensaje;
+	public String enviarMensajeSala(@Payload(required = false) String mensaje, Authentication authentication) {
+		return jsonMensaje(mensaje, authentication.getName());
 	}
 
 	// controller para cuando alguien se une a una sala
@@ -82,13 +97,57 @@ public class WebSocketController {
 			System.out.println("Se ha entrado en la sala " + idSala);
 
 			JSONObject json = new JSONObject();
-			json.put("usuario", new ObjectMapper().writeValueAsString(usuario));
 
 			//hace falta buscar otra vez la sala para que tenga el usuario que se acaba de unir en ella
 			json.put("sala", new ObjectMapper().writeValueAsString(salaService.findById(sala.getIdSala()).get()));
-			json.put("mensaje", usuario.getNombre() + " se ha unido");
+			json.put("nombreUsuario", usuario.getNombre());
+			json.put("mensaje", "se ha unido");
 			json.put("tipo", 0);
 
+			mensaje = json.toString();
+
+		} catch (Exception e) {
+			System.out.println("Error: " + e.getMessage());
+			mensaje = null;
+		}
+
+		return mensaje;
+	}
+	
+	// controller para cuando alguien se une a una sala
+	// lo llama todo el mundo que se una a una sala
+	@MessageMapping("/salas/sala/{idSala}/expulsarJugador")
+	@SendTo("/salas/sala/{idSala}")
+	public String expulsarJugador(@DestinationVariable("idSala") int idSala, @Payload(required = false) String nombreUsuarioExpulsar, StompHeaderAccessor headerAccessor,
+			Authentication authentication) {
+
+		//si el nombre del usuario a expular es null es que se llego aqui a traves de la consola del navegador
+		if (nombreUsuarioExpulsar == null) return null;
+		
+		String mensaje;
+
+		try {
+			UsuarioVO usuario = usuarioService.findByNombre(authentication.getName());
+			UsuarioVO usuExpulsar = usuarioService.findByNombre(nombreUsuarioExpulsar);
+			SalaVO sala = salaService.findById(idSala).get();
+
+			JSONObject json = new JSONObject();
+			
+			//en el caso de que alguien ejecute el js de expulsar un usuario comprobamos que haya sido el dueño de la sala
+			if (usuario.getIdUsuario() == sala.getIdPropietario()) {
+				
+				json.put("nombreUsuario", usuario.getNombre());
+				json.put("nombreUsuarioExpulsado", usuExpulsar.getNombre());
+				json.put("mensajeExpulsar", "ha expulsado a"); //como no tiene el mismo formato que los otros mensajes se trata distinto en el js
+				json.put("tipo", 2);
+				
+			} else {
+
+				// mandamos un json vacio sin mas
+				// en el js se recibira un {} y lo tratara sin problemas
+				json = new JSONObject();
+			}
+			
 			mensaje = json.toString();
 
 		} catch (Exception e) {
@@ -105,48 +164,69 @@ public class WebSocketController {
 	@SendTo("/salas/sala/{idSala}")
 	public String empezarPartida(@DestinationVariable("idSala") int idSala, Authentication authentication) {
 
-		UsuarioVO usuario = usuarioService.findByNombre(authentication.getName());
-		SalaVO sala = salaService.findById(idSala).get();
-
-		JSONObject json;
-
-		// en el caso de que alguien ejecute el js de lanzar la partida comprobamos que
-		// haya sido
-		// el dueño de la sala
-		if (usuario.getIdUsuario() == sala.getIdPropietario()) {
-
-			// creamos la partida
-			PartidaVO partida = new PartidaVO();
-			partidaUtils.transformarPartida(partida);
-			partidaService.save(partida);
-
-			// mandamos mensaje al js
-			json = new JSONObject();
-			json.put("idPartida", partida.getIdPartida());
-			json.put("mensaje", "Ha empezado la partida");
-			json.put("tipo", 2);
-
-			// se crea y se lanza el hilo de la partida
-			new Thread() {
-				public void run() {
-					cantarNumeros(partida.getIdPartida());
+		String mensaje;
+		
+		try
+		{
+			UsuarioVO usuario = usuarioService.findByNombre(authentication.getName());
+			SalaVO sala = salaService.findById(idSala).get();
+	
+			JSONObject json = new JSONObject();
+	
+			//en el caso de que alguien ejecute el js de lanzar la partida comprobamos que haya sido el dueño de la sala
+			if (usuario.getIdUsuario() == sala.getIdPropietario()) {
+				
+				//si al menos hay 2 jugadores
+				if (sala.getlUsuarios().size() > 1) {
+					
+					// creamos la partida
+					PartidaVO partida = new PartidaVO();
+					partidaUtils.transformarPartida(partida);
+					partidaService.save(partida);
+					
+					//indicamos que se esta jugando en la sala
+					sala.setJugando(true);
+					salaService.save(sala);
+		
+					//atributos del mensaje que se mandaran al js
+					json.put("tipo", 3);
+					json.put("idPartida", partida.getIdPartida());
+					json.put("mensaje", "Ha empezado la partida");
+					json.put("nombreUsuario", usuario.getNombre());
+		
+					// se crea y se lanza el hilo de la partida
+					new Thread() {
+						public void run() {
+							cantarNumeros(partida.getIdPartida(), sala);
+						}
+					}.start();
+					
+				} else {
+					json.put("tipo", 3);
+					json.put("error", "Jugadores insuficientes para empezar la partida");
 				}
-			}.start();
-
-		} else {
-
-			// mandamos un json vacio sin mas
-			// en el js se recibira un {} y lo tratara sin problemas
-			json = new JSONObject();
+	
+			} else {
+	
+				// mandamos un json vacio sin mas
+				// en el js se recibira un {} y lo tratara sin problemas
+				json = new JSONObject();
+			}
+			
+			mensaje = json.toString();
+			
+		} catch (Exception e) {
+			System.out.println("Error: " + e.getMessage());
+			mensaje = null;
 		}
 
-		return json.toString();
+		return mensaje;
 
 	}
 
 	//canta los 90 numeros de la tombola
 	//lo llama en forma de hilo quien crea la partida
-	public void cantarNumeros(@Payload int idPartida) {
+	public void cantarNumeros(int idPartida, SalaVO sala) {
 
 		try {
 			Thread.sleep(10000);
@@ -172,14 +252,18 @@ public class WebSocketController {
 			}
 		}
 
+		//indicamos que acabo la partida en la sala
+		sala.setJugando(false);
+		salaService.save(sala);
+		
 		this.template.convertAndSend("/partida/" + idPartida + "/tombola", "Partida terminada");
 	}
 
 	//controller para el chat de una partida en concreto
 	@MessageMapping("/partida/{idPartida}/chat/enviarMensaje")
 	@SendTo("/partida/{idPartida}/chat")
-	public String enviarMensajePartida(@Payload String mensaje, Authentication authentication) {
-		return authentication.getName() + ": " + mensaje;
+	public String enviarMensajePartida(@Payload(required = false) String mensaje, Authentication authentication) {
+		return jsonMensaje(mensaje, authentication.getName());
 	}
 	
 	//controller para cuando alguien tacha un numero, canta linea o canta bingo
@@ -193,9 +277,10 @@ public class WebSocketController {
   		//json que contiene lo que paso en el cliente
   		JSONObject json = new JSONObject(mensaje);
   		
-  		//json que va contener la respuesta
+  		//json que va contener la respuesta y atributos comunes para todos los tipos
   		JSONObject respuesta = new JSONObject();
   		respuesta.put("tipo", json.get("tipo"));
+  		respuesta.put("nombreUsuario", usuario.getNombre());
   		
   		List<Integer> lNumerosTombola;
   		CartonVO carton;
@@ -203,7 +288,7 @@ public class WebSocketController {
   		
   		switch (json.get("tipo").toString()) {
   			case "0": //se marco un numero
-  				respuesta.put("nombreUsuario", usuario.getNombre());
+  				
   	  			respuesta.put("numerosRestantes", json.get("numerosRestantes"));
   	  			break;
   			case "1": //se hizo linea
@@ -241,7 +326,7 @@ public class WebSocketController {
   					usuarioService.save(usuario);
   					
   					//texto que se pasa al cliente
-  					respuesta.put("mensaje", usuario.getNombre() + " ha cantado linea y se ha llevado " + premioFichas + " fichas!");
+  					respuesta.put("mensaje", "ha cantado linea y se ha llevado " + premioFichas + " fichas!");
   				}
   		  		
   		  		break;
@@ -278,14 +363,13 @@ public class WebSocketController {
   					usuarioService.save(usuario);
   					
   					//texto que se pasa al cliente
-  					respuesta.put("nombreUsuario", usuario.getNombre()); //se usa para comprobar que cliente hizo bingo y mostrarle el enlace de volver a la sala
-  					respuesta.put("mensaje", usuario.getNombre() + " ha cantado bingo y se ha llevado " + premioFichas + " fichas!");
+  					respuesta.put("mensaje", "ha cantado bingo y se ha llevado " + premioFichas + " fichas!");
   				}
   				
   				break;
   		}
 
   		return respuesta.toString();
-}
+	}
 
 }

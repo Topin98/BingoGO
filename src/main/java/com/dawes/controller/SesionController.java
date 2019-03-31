@@ -26,6 +26,7 @@ import com.dawes.service.RolService;
 import com.dawes.service.UsuarioService;
 import com.dawes.utils.RR;
 import com.dawes.utils.UsuarioUtils;
+import com.dawes.utils.Utils;
 
 @Controller
 @RequestMapping("/")
@@ -38,18 +39,35 @@ public class SesionController {
 	UsuarioUtils usuarioUtils;
 	
 	@RequestMapping("/login")
-	public String mostrarFormLogin() {
-		return RR.CARPETA_SESIONES + "login";
+	public String mostrarFormLogin(Authentication authentication) {
+		
+		//si no esta logeado
+		if (!Utils.isLogged(authentication)) {
+			return RR.CARPETA_SESIONES + "login";
+			
+			//si esta logueado lo redirigimos al index
+		} else {
+			return "redirect:/";
+		}
+		
 	}
 	
 	@RequestMapping(value = "/registro", method = RequestMethod.GET)
-	public String mostrarFormRegistro(Model model, @RequestParam(required=false) String error) {
-	    UsuarioVO usuario = new UsuarioVO();
-	    
-	    model.addAttribute("usuario", usuario);
-	    model.addAttribute("error", error);
-	    
-	    return RR.CARPETA_SESIONES + "registro";
+	public String mostrarFormRegistro(Model model, @RequestParam(required=false) String error, Authentication authentication) {
+		
+		//si no esta logeado
+		if (!Utils.isLogged(authentication)) {
+		    UsuarioVO usuario = new UsuarioVO();
+		    
+		    model.addAttribute("usuario", usuario);
+		    model.addAttribute("error", error);
+		    
+		    return RR.CARPETA_SESIONES + "registro";
+		    
+		    
+		} else {
+			return "redirect:/";
+		}
 	}
 	
 	@RequestMapping(value = "/registro", method = RequestMethod.POST)

@@ -1,11 +1,13 @@
 var stompClient = null;
 var stompClientChat = null;
 var idSala;
+var nombreUsuario;
 var jugadores = [];
 
 $(function() {
 	
 	idSala = $("#idSala").val();
+	nombreUsuario = $("#nombreUsuario").val();
 	
 	//Connect to WebSocket Server.
 	connect();
@@ -13,11 +15,20 @@ $(function() {
 	//como los divs van ir apareciendo, se declara asi el evento on click para los div hijos de listaJugadores
 	//(asi nos ahorramos poner los eventos en la funcion onNewUser cada vez que se une un usuario)
 	$("#listaJugadores").on("click", "div", function() {
+		
+		//obtenemos el jugador clicado
 		let jugador = jugadores.find(x => x.nombre == $(this).text());
 
+		//se actualiza el layout
+		$("#infoJugador").show();
 		$("#nombreJugador").text(jugador.nombre);
 		$("#puntuacionJugador").text(jugador.puntuacionTotal);
 		$("#imagenJugador").attr("src", `/perfil/${jugador.nombre}/imagen`);
+		
+		//si el usuario clicado no somos nosotros igual lo podemos mostrar
+		//si el usuario no es propietario de la sala no pasa nada porque no va estar ni en el dom
+		jugador.nombre == nombreUsuario ? $("#btnExpulsarJugador").hide() : $("#btnExpulsarJugador").show();
+		
 	});
 	
 	//formulario con el input del chat
@@ -34,9 +45,19 @@ $(function() {
 		return false;
 	});
 	
-	//boton de empezar partida
-	$("#btnEmpezarPartida").click(function(){
+	//boton de empezar partida (se pone asi el evento por si abandona el usuario propietario no tener que volver a declararlo)
+	$("#opciones").on("click", "#btnEmpezarPartida", function(){
 		stompClient.send(`/app/salas/sala/${idSala}/empezarPartida`);
+	});
+	
+	//boton de expulsar jugador (se pone asi el evento por si abandona el usuario propietario no tener que volver a declararlo)
+	$("#infoJugador").on("click", "#btnExpulsarJugador", function(){
+		stompClient.send(`/app/salas/sala/${idSala}/expulsarJugador`, {}, $(this).siblings("#nombreJugador").text());
+	});
+	
+	$("#btnAbandonarSala").click(function(){
+		//nos desconectamos de la sala (nos iremos cuando llegue un mensaje al chat indicando que se han reflejado los cambios en el servidor)
+		stompClient.disconnect();
 	});
 	
 });
@@ -74,9 +95,15 @@ function onNewUser(payload){
 	let respuesta = JSON.parse(payload.body);
 	
 	//comprobamos que haya mensaje para que no salga en el chat "undefined"
+	//por si acaso alguien ejecuta algo de js desde la consola, como por ejemplo intenta empezar la partida una persona que no es el propietario de la sala
 	if (respuesta.mensaje){
+		
 		//ponemos el mensaje en el chat
-		$("#containerMensajes").append(`<div>${respuesta.mensaje}</div>`);
+		//el perfil del usuario se abriria en una pestaña nueva al clicar sobre el nombre
+		$("#containerMensajes").append(`<div><a href="/perfil/${respuesta.nombreUsuario}/" target="_blank">${respuesta.nombreUsuario}</a> <span>${respuesta.mensaje}</span></div>`);
+		
+		//desplazamos el scroll del chat abajo del todo
+	    $("#containerMensajes").scrollTop($("#containerMensajes")[0].scrollHeight);
 	}
 	
 	switch(respuesta.tipo){
@@ -84,8 +111,11 @@ function onNewUser(payload){
 			break;
 		case 1: seFueJugador(respuesta);
 			break;
-		case 2: empezarPartida(respuesta);
+		case 2: expulsarJugador(respuesta);
+			break;
+		case 3: empezarPartida(respuesta);
 			break
+		
 	}
 	
 }
@@ -93,10 +123,7 @@ function onNewUser(payload){
 //si alguien se unio a la sala
 function nuevoJugador(respuesta){
 	
-	//hay que hacer un segundo parse a la propiedad usuario del json para convertirlo en json tambien
-	let usuario = JSON.parse(respuesta.usuario);
-	
-	$("#listaJugadores").append(`<div id="${usuario.nombre}">${usuario.nombre}</div>`);
+	$("#listaJugadores").append(`<div id="${respuesta.nombreUsuario}">${respuesta.nombreUsuario}</div>`);
 	
 	//obtenemos la sala
 	let sala = JSON.parse(respuesta.sala);
@@ -106,23 +133,68 @@ function nuevoJugador(respuesta){
 //si alguien abandono la sala
 function seFueJugador(respuesta){
 	
-	//hay que hacer un segundo parse a la propiedad usuario del json para convertirlo en json tambien
-	let usuario = JSON.parse(respuesta.usuario);
-	
 	//eliminamos el usuario del array
 	//cogemos la posicion y lo borramos (con 1 se borra solo a el mismo que es lo que queremos)
 	//se puede quitar el .find y poner usuario directamente pero tengo la sensacion que daria problemas lmao
-	jugadores.splice(jugadores.indexOf(jugadores.find(x => x.nombre == usuario.nombre)), 1);
+	jugadores.splice(jugadores.indexOf(jugadores.find(x => x.nombre == respuesta.nombreUsuario)), 1);
 	
 	//eliminamos el div que contiene su nombre
-	$("#" + usuario.nombre).remove();
+	$("#" + respuesta.nombreUsuario).remove();
+	
+	//si el que lo abandono fue el dueño de la sala
+	if (respuesta.nuevoPropietarioNombre){
+		
+		//mostramos mensaje de que x es el nuevo dueño de la sala
+		$("#containerMensajes").append(`<div><a href="/perfil/${respuesta.nuevoPropietarioNombre}/" target="_blank">${respuesta.nuevoPropietarioNombre}</a><span> ${respuesta.nuevoPropietarioMensaje}</span></div>`);
+		
+		//si este cliente es el dueño de la sala
+		if (respuesta.nuevoPropietarioNombre == nombreUsuario){
+			
+			//le ponemos el boton de empezar partida y el boton de abandonar sala que ocupe la mitad
+			$("#opciones").append(`<button id="btnEmpezarPartida" class="btn btn-primary">Empezar partida</button>`);
+			$("#btnAbandonarSala").toggleClass("full");
+			
+			//le ponemos el boton de expulsar usuario
+			$("#infoJugador").append(`<button id="btnExpulsarJugador" class="btn btn-primary">Expulsar jugador</button>`);
+		}
+	}
 }
 
 function empezarPartida(respuesta){
 	
-	//replace lo que hace es que al ir para atras en el navegador en vez de ir a la sala otra vez
-	//se vaya a la lista de salas
-	document.location.replace(`/partida/${respuesta.idPartida}/guardarPartidaSession`);
+	//si no se produjeron errores
+	if (!respuesta.error){
+		//replace lo que hace es que al ir para atras en el navegador en vez de ir a la sala otra vez
+		//se vaya a la lista de salas
+		document.location.replace(`/partida/${respuesta.idPartida}/guardarPartidaSession`);
+		
+	} else {
+		$("#containerMensajes").append(`<div>${respuesta.error}</div>`);
+	}
+	
+}
+
+function expulsarJugador(respuesta){
+	
+	//mostramos mensaje de que x expulso a x
+	$("#containerMensajes").append(`<div><a href="/perfil/${respuesta.nombre}/" target="_blank">${respuesta.nombreUsuario}</a><span> ${respuesta.mensajeExpulsar}</span><a href="/perfil/${respuesta.nombreUsuarioExpulsado}/" target="_blank"> ${respuesta.nombreUsuarioExpulsado}</a></div>`);
+	
+	//si este cliente es el expulsado
+	if (respuesta.nombreUsuarioExpulsado == nombreUsuario){
+		
+		//alert("Has sido expulsado de la sala");
+		
+		//lo echamos de la sala
+		//(desonectar del socket en vez de href para que ejecute todo el proceso)
+		stompClient.disconnect();
+		
+	}
+	
+	//si el cliente es el usuario propietario
+	if (respuesta.nombreUsuario == nombreUsuario){
+		//le ocultamos el div de info de jugador para que no pueda spamear el boton de echar
+		$("#infoJugador").hide();
+	}
 }
 
 function onConnectedChat() {
@@ -134,5 +206,27 @@ function onConnectedChat() {
 
 function onNewMessage(payload){
 	
-	$("#containerMensajes").append(`<div>${payload.body}</div>`);
+	let respuesta = JSON.parse(payload.body);
+	
+	//si tienen un mensaje
+	if (respuesta.mensaje){
+		
+		if (respuesta.aux){
+			
+			//el perfil del usuario se abriria en una pestaña nueva al clicar sobre el nombre
+			$("#containerMensajes").append(`<div><a href="/perfil/${respuesta.nombreUsuario}/" target="_blank">${respuesta.nombreUsuario}</a><span>: ${respuesta.mensaje}</span></div>`);
+			
+			//desplazamos el scroll del chat abajo del todo
+		    $("#containerMensajes").scrollTop($("#containerMensajes")[0].scrollHeight);
+		    
+		    //si no es que o es que se fue un jugador
+		} else {
+			
+			//si este cliente es el que abandono
+			if (respuesta.nombreUsuario == nombreUsuario){
+				//lo mandamos a la lista de salas
+				document.location.replace(`/salas`);
+			}
+		}
+	}
 }

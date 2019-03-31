@@ -22,13 +22,32 @@ body {
     padding: 7px !important;
 }
 
-.navbar a{
+.navbar a {
     padding: 16px;
     font-size: 17px;
 }
 
 .btnsSesion{
     margin-right: 100px;
+}
+
+.infoUsuario{
+    margin-right: 80px;
+}
+
+.infoUsuario a {
+    text-decoration: none;
+    color: white;
+    font-size: 20px;
+}
+
+.infoUsuario span {
+    margin-right: 10px;
+    text-align: center;
+}
+
+.infoUsuario a:hover {
+    background-color: #448AFF;
 }
 
 .mostrarLogin{
