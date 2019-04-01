@@ -3,6 +3,7 @@ package com.dawes.serviceImpl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
 import com.dawes.modelo.UsuarioRolVO;
 import com.dawes.modelo.UsuarioVO;
 import com.dawes.repository.UsuarioRepository;
@@ -154,6 +156,21 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 	@Override
 	public UsuarioVO findByCorreo(String correo) {
 		return usuarioRepository.findByCorreo(correo);
+	}
+	
+	@Override
+	public List<UsuarioVO> findTop100ByOrderByPuntuacionTotalDesc() {
+		return usuarioRepository.findTop100ByOrderByPuntuacionTotalDesc();
+	}
+	
+	@Override
+	public List<UsuarioVO> findTop100ByOrderByFichasDesc() {
+		return usuarioRepository.findTop100ByOrderByFichasDesc();
+	}
+	
+	@Override
+	public List<Object[]> getTop100UsuVictorias() {
+		return usuarioRepository.getTop100UsuVictorias();
 	}
 
 	@Override

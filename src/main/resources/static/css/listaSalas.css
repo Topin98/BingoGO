@@ -20,29 +20,6 @@ body > div{
     height: calc(100% - 57px - 71px); /* el 100% del height de la ventana menos los 57px del navbar y los 71px del buscador */
 }
 
-/* Estilos para la scrollbar personalizada */
-.scrollbar{
-	height: 100%;
-	width: 100%;
-	background-color: #F5F5F5;
-	overflow-y: auto;
-}
-
-#scrollbar::-webkit-scrollbar-track {
-	background-color: #F5F5F5;
-}
-
-#scrollbar::-webkit-scrollbar {
-	width: 8px;
-	background-color: #F5F5F5;
-}
-
-#scrollbar::-webkit-scrollbar-thumb {
-	background-color: #448AFF;
-    border: 2px solid #0288D1;
-    border-radius: 10px;
-}
-
 /* Estilos para el div que contiene los filtros y las opciones de crear sala y demas */
 .cabeceraSalas{
     display: grid;
@@ -53,7 +30,7 @@ body > div{
 .filtros{
     height: 71px;
     display: grid;
-    grid-template-columns: 30% 20% 20%;
+    grid-template-columns: 30% 20% 20% 30%;
     align-items: center;
     justify-items: center;
     background-color: #B3E5FC;
@@ -132,6 +109,29 @@ body > div{
     justify-items: center;
 }
 
+/* Estilos para la scrollbar personalizada */
+.scrollbar{
+	height: calc(100% - 108px); /*los px restados son el height del div de paginacion*/
+	width: 100%;
+	background-color: #F5F5F5;
+	overflow-y: auto;
+}
+
+#scrollbar::-webkit-scrollbar-track {
+	background-color: #F5F5F5;
+}
+
+#scrollbar::-webkit-scrollbar {
+	width: 8px;
+	background-color: #F5F5F5;
+}
+
+#scrollbar::-webkit-scrollbar-thumb {
+	background-color: #448AFF;
+    border: 2px solid #0288D1;
+    border-radius: 10px;
+}
+
 /* Estilos para cada sala en la "lista" */
 .grid-container {
     display: grid;
@@ -156,6 +156,39 @@ El diseño se lo aplicamos directamente a las imagenes de los jugadores de la sal
 Simplemente dejamos un pequeño espacio entre cada imagen */
 .grid-container > div:nth-child(3) > img{
 	margin-left: 15px;
+}
+
+#paginacion{
+    height: 108px;
+    width: 30%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20% 20%;
+    align-items: center;
+    font-size: 25px;
+}
+
+#paginacion div{
+    width: 80%;
+    text-align: center;
+    border-radius: 20px;
+    background-color: white;
+}
+
+#paginacion a{
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: black;
+}
+
+#paginacion div:hover{
+    background-color: grey;
+}
+
+#paginacion .current{
+    background-color: red;
 }
 
 #chat {

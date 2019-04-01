@@ -64,6 +64,12 @@ public interface UsuarioService {
 	UsuarioVO findByNombre(String nombre);
 
 	UsuarioVO findByCorreo(String correo);
+	
+	List<UsuarioVO> findTop100ByOrderByPuntuacionTotalDesc();
+	
+	List<UsuarioVO> findTop100ByOrderByFichasDesc();
+	
+	List<Object[]> getTop100UsuVictorias();
 
 	UserDetails loadUserByUsername(String nombre);
 

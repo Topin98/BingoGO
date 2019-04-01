@@ -236,19 +236,20 @@ public class WebSocketController {
 
 		// se generan 90 numeros sin repetir
 		Set<Integer> numeros = new LinkedHashSet<Integer>();
-		
 		while (numeros.size() < 90) {
 			Integer next = ThreadLocalRandom.current().nextInt(1, 90 + 1);
 
 			if (numeros.add(next)) {
 
+				//enviamos el array al javascript
 				this.template.convertAndSend("/partida/" + idPartida + "/tombola", numeros);
 
-				/*try {
+				//esperamos por el siguiente
+				try {
 					Thread.sleep(3000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-				}*/
+				}
 			}
 		}
 
@@ -317,16 +318,17 @@ public class WebSocketController {
   					
   					//obtenemos las fichas para esa posicion
   					//-1 debido a que la posicion 1 (primero) refleja el indice 0 en la lista
-  					int premioFichas = PartidaVO.PREMIO_FICHAS_LINEA[posicion - 1];
+  					int premio = PartidaVO.PREMIO_FICHAS_LINEA[posicion - 1];
   					
-  					//sumamos las fichas al usuario
-  					usuario.setFichas(usuario.getFichas() + premioFichas);
+  					//sumamos las fichas al usuario y a su puntuacion total
+  					usuario.setFichas(usuario.getFichas() + premio);
+  					usuario.setPuntuacionTotal(usuario.getPuntuacionTotal() + premio);
   					
   					//guardamos el usuario
   					usuarioService.save(usuario);
   					
   					//texto que se pasa al cliente
-  					respuesta.put("mensaje", "ha cantado linea y se ha llevado " + premioFichas + " fichas!");
+  					respuesta.put("mensaje", "ha cantado linea y se ha llevado " + premio + " fichas!");
   				}
   		  		
   		  		break;
@@ -354,16 +356,17 @@ public class WebSocketController {
   					
   					//obtenemos las fichas para esa posicion
   					//-1 debido a que la posicion 1 (primero) refleja el indice 0 en la lista
-  					int premioFichas = PartidaVO.PREMIO_FICHAS_BINGO[posicion - 1];
+  					int premio = PartidaVO.PREMIO_FICHAS_BINGO[posicion - 1];
   					
-  					//sumamos las fichas al usuario dependiendo de su posicion
-  					usuario.setFichas(usuario.getFichas() + premioFichas);
+  					//sumamos las fichas y la puntuacion al usuario dependiendo de su posicion
+  					usuario.setFichas(usuario.getFichas() + premio);
+  					usuario.setPuntuacionTotal(usuario.getPuntuacionTotal() + premio);
   					
   					//guardamos el usuario
   					usuarioService.save(usuario);
   					
   					//texto que se pasa al cliente
-  					respuesta.put("mensaje", "ha cantado bingo y se ha llevado " + premioFichas + " fichas!");
+  					respuesta.put("mensaje", "ha cantado bingo y se ha llevado " + premio + " fichas!");
   				}
   				
   				break;

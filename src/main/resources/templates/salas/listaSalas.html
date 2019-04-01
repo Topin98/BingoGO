@@ -41,7 +41,7 @@
         <a class="navbar-brand" href="/">BingoGO</a>
         <ul class="nav navbar-nav">
             <li class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
-            <li class="active nav-item"><a href="#" class="nav-link">Page 2</a></li>
+            <li class="active nav-item"><a href="/ranking" class="nav-link">Ranking</a></li>
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
             <li class="active nav-item infoUsuario">
@@ -55,20 +55,23 @@
 
     <div id="container">
         <div class="cabeceraSalas">
-            <div class="filtros">
-                <input type="text" name="nombreSala" placeholder="Nombre de la sala" />
-                <label class="cbFiltro">Salas llenas
-                    <input type="checkbox" checked="checked">
-                    <span class="checkmark"></span>
-                </label>
-                <label class="cbFiltro">Salas privadas
-                    <input type="checkbox" checked="checked">
-                    <span class="checkmark"></span>
-                </label>
-            </div>
+        	<form th:action="@{/salas}" method="GET">
+	            <div class="filtros">
+	                <input type="text" name="nombreSala" placeholder="Nombre de la sala" autocomplete="off"/>
+	                <label class="cbFiltro">Salas en partida
+	                    <input type="checkbox" name="jugando" th:checked="${jugando}">
+	                    <span class="checkmark"></span>
+	                </label>
+	                <label class="cbFiltro">Salas privadas
+	                    <input type="checkbox" name="privadas" th:checked=${privadas}>
+	                    <span class="checkmark"></span>
+	                </label>
+	                <button type="submit" class="btn btn-primary">Buscar</button>
+	            </div>
+            </form>
             <div class="opciones">
                 <button class="btn btn-primary" id="btnCrearSala">Crear sala</button>
-                <button class="btn btn-primary">Sala aleatoria</button>
+                <a th:href="@{/salas/salaAleatoria}" class="btn btn-primary">Sala aleatoria</a>
             </div>
         </div>
         <div class="scrollbar" id="scrollbar">
@@ -76,7 +79,7 @@
                 <a th:each="sala: ${listaSalas}" th:href="@{'/salas/sala/' + ${sala.idSala}}" th:id="${sala.idSala}" 
                 	th:class="${sala.jugando ? 'list-group-item list-group-item-action list-group-item-secondary grid-container' : 'list-group-item list-group-item-action grid-container'}">
                     <div th:text="${sala.nombre}"></div>
-                    <div th:text="${#lists.size(sala.lUsuarios)} + ' / 5'"></div>
+                    <div th:text="${#lists.size(sala.lUsuarios) + ' / ' + sala.CAP_MAX}"></div>
                     <div>
                     	<img th:each="usu: ${sala.lUsuarios}" th:src="@{'/perfil/' + ${usu.nombre} + '/imagen'}" width="45px" height="45px" th:title="${usu.nombre}" data-toggle="tooltip" />
                     </div>
@@ -86,6 +89,13 @@
                     </th:block>
                 </a>
             </div>
+        </div>
+        <div id="paginacion">
+            <div><a th:href="@{/salas(pagina=1, nombreSala=${nombreSala}, jugando=${jugando}, privadas=${privadas})}">&lt;&lt;</a></div>
+            <div th:if="${listaSalas.number + 1 > 1}"><a th:href="@{/salas(pagina=${listaSalas.number}, nombreSala=${nombreSala}, jugando=${jugando}, privadas=${privadas})}" th:text="${listaSalas.number}"></a></div>
+            <div class="current"><a th:href="@{/salas(pagina=${listaSalas.number + 1}, nombreSala=${nombreSala}, jugando=${jugando}, privadas=${privadas})}" th:text="${listaSalas.number + 1}"></a></div>
+            <div th:if="${#lists.size(numPaginas) > listaSalas.number + 1}"><a th:href="@{/salas(pagina=${listaSalas.number + 2}, nombreSala=${nombreSala}, jugando=${jugando}, privadas=${privadas})}" th:text="${listaSalas.number + 2}"></a></div>
+            <div><a th:href="@{/salas(pagina=${#lists.size(numPaginas)}, nombreSala=${nombreSala}, jugando=${jugando}, privadas=${privadas})}">&gt;&gt;</a></div>
         </div>
     </div>
     <div id="chat">

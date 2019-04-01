@@ -59,5 +59,9 @@ public interface SalaService {
 	void deleteAll();
 
 	<S extends SalaVO> List<S> findAll(Example<S> example, Sort sort);
+	
+	Page<SalaVO> getSalasFiltradas(Pageable pageable, String nombre, boolean jugando, boolean publica);
+	
+	SalaVO getSalaAleatoria(int capMax);
 
 }

@@ -154,8 +154,9 @@ function seFueJugador(respuesta){
 			$("#opciones").append(`<button id="btnEmpezarPartida" class="btn btn-primary">Empezar partida</button>`);
 			$("#btnAbandonarSala").toggleClass("full");
 			
-			//le ponemos el boton de expulsar usuario
-			$("#infoJugador").append(`<button id="btnExpulsarJugador" class="btn btn-primary">Expulsar jugador</button>`);
+			//le ponemos el boton de expulsar usuario y ocultamos el panel por si se tenia marcado a el
+			$("#infoJugador").append(`<button id="btnExpulsarJugador" class="btn btn-primary">Expulsar jugador</button>`)
+				.hide();
 		}
 	}
 }
@@ -187,7 +188,6 @@ function expulsarJugador(respuesta){
 		//lo echamos de la sala
 		//(desonectar del socket en vez de href para que ejecute todo el proceso)
 		stompClient.disconnect();
-		
 	}
 	
 	//si el cliente es el usuario propietario
@@ -208,25 +208,22 @@ function onNewMessage(payload){
 	
 	let respuesta = JSON.parse(payload.body);
 	
-	//si tienen un mensaje
-	if (respuesta.mensaje){
+	//si tiene un mensaje y no viene de un evento de abandonar la sala
+	if (respuesta.mensaje && !respuesta.irse){
+			
+		//el perfil del usuario se abriria en una pestaña nueva al clicar sobre el nombre
+		$("#containerMensajes").append(`<div><a href="/perfil/${respuesta.nombreUsuario}/" target="_blank">${respuesta.nombreUsuario}</a><span>: ${respuesta.mensaje}</span></div>`);
 		
-		if (respuesta.aux){
-			
-			//el perfil del usuario se abriria en una pestaña nueva al clicar sobre el nombre
-			$("#containerMensajes").append(`<div><a href="/perfil/${respuesta.nombreUsuario}/" target="_blank">${respuesta.nombreUsuario}</a><span>: ${respuesta.mensaje}</span></div>`);
-			
-			//desplazamos el scroll del chat abajo del todo
-		    $("#containerMensajes").scrollTop($("#containerMensajes")[0].scrollHeight);
-		    
-		    //si no es que o es que se fue un jugador
-		} else {
-			
-			//si este cliente es el que abandono
-			if (respuesta.nombreUsuario == nombreUsuario){
-				//lo mandamos a la lista de salas
-				document.location.replace(`/salas`);
-			}
+		//desplazamos el scroll del chat abajo del todo
+	    $("#containerMensajes").scrollTop($("#containerMensajes")[0].scrollHeight);
+	}
+	
+	//si tiene la propiedad irse es que o se fue un jugador o le expulsaron
+	if (respuesta.irse){
+		//si este cliente es el que abandono
+		if (respuesta.nombreUsuario == nombreUsuario){
+			//lo mandamos a la lista de salas
+			document.location.replace(`/salas`);
 		}
 	}
 }

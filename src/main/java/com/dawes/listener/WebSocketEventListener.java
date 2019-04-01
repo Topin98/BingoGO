@@ -90,7 +90,7 @@ public class WebSocketEventListener {
             	}
             	
             	//enviamos el mensaje al chat pero no para que aparezca, si no para que el jugador se redirija a la lista de salas
-            	json.put("aux", "");
+            	json.put("irse", "aux"); //el valor que tenga da igual, con que no sea "" vale
                 messagingTemplate.convertAndSend("/salas/sala/" + idSala + "/chat", json.toString());
             }
         }

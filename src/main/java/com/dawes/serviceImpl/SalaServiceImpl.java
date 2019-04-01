@@ -139,5 +139,16 @@ public class SalaServiceImpl implements SalaService {
 	public <S extends SalaVO> List<S> findAll(Example<S> example, Sort sort) {
 		return salaRespository.findAll(example, sort);
 	}
+
+	@Override
+	public Page<SalaVO> getSalasFiltradas(Pageable pageable, String nombre, boolean jugando, boolean publica) {
+		return salaRespository.getSalasFiltradas(pageable, nombre, jugando, publica);
+	}
+
+	@Override
+	public SalaVO getSalaAleatoria(int capMax) {
+		return salaRespository.getSalaAleatoria(capMax);
+	}
+	
 	
 }

@@ -1,0 +1,90 @@
+body{
+    background-color: lightblue;
+    color: black;
+}
+
+#titulos{
+    display: grid;
+    grid-template-columns: repeat(3, [col] 33%);
+    height: 100px;
+    width: 50%;
+    align-items: center;
+    text-align: center;
+    margin: auto;
+    margin-top: 57px;
+}
+
+#titulos > button{
+    margin: 40px;
+    font-size: 40px;
+}
+
+/* Estilos para los rankings */
+.ranking{
+    margin-top: 50px;
+}
+
+#rankingVictorias, #rankingRicos{
+    display: none;
+}
+
+/* Estilos para cada usuario en la lista */
+.grid-container {
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
+    align-items: center;
+    width: 70%;
+    margin: auto;
+}
+
+.grid-container > div:nth-child(1){
+    font-size: 30px;
+    margin-left: 30px;
+}
+
+.grid-container > div:nth-child(2){
+    font-size: 20px;
+}
+
+.grid-container > div:nth-child(2) > span{
+    margin-left: 10px;
+}
+
+.grid-container > div:nth-child(3){
+    font-size: 20px;
+    text-align: right;
+    margin-right: 100px;
+}
+
+.paginacion{
+    height: 108px;
+    width: 30%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20% 20%;
+    align-items: center;
+    font-size: 25px;
+}
+
+.paginacion div{
+    width: 80%;
+    text-align: center;
+    border-radius: 20px;
+    background-color: white;
+}
+
+.paginacion a{
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: black;
+}
+
+.paginacion div:hover{
+    background-color: grey;
+}
+
+.paginacion .current{
+    background-color: red;
+}

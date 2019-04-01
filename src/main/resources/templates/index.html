@@ -29,7 +29,7 @@
         <a class="navbar-brand" href="/">BingoGO</a>
         <ul class="nav navbar-nav">
             <li sec:authorize="isAuthenticated()" class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
-            <li class="active nav-item"><a href="#" class="nav-link">Page 2</a></li>
+            <li sec:authorize="isAuthenticated()" class="active nav-item"><a href="/ranking" class="nav-link">Ranking</a></li>
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
             <li sec:authorize="isAnonymous()" class="active nav-item"><a href="/registro" class="nav-link"><i class="fas fa-user-plus"></i> Registrarse</a></li>
