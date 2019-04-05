@@ -1,0 +1,119 @@
+body{
+    background-color: #E1E7F5;
+}
+
+/* contenedor de chat completo */
+#container{
+    width: 70%;
+    height: 700px;
+    background-color: lightblue;
+    margin: auto;
+    margin-top: 150px;
+    display: grid;
+    grid-template-columns: 25% 75%;
+    border-radius: 20px;
+    color: black;
+}
+
+/* parte de la izquierda que incluye el buscador y los contactos */
+.izq{
+    border-right: 1px solid blue;
+    overflow-y: auto;
+}
+
+/* container del buscador de contactos */
+.inputContainer {
+    border-bottom: 1px solid blue;
+    display: flex;
+    justify-content: center;
+}
+
+.inputContainer input {
+    width: 80%;
+    height: 35px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-left: 5px;
+}
+
+/* div que contiene cada contacto con su imagen y nombre */
+#contactos > div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    padding-bottom: 25px;
+    padding-top: 25px;
+    border-bottom: 1px solid blue;
+}
+
+#contactos > div:hover{
+    background-color: rgb(121, 211, 241);
+    cursor: pointer;
+}
+
+#contactos > div img {
+    margin-right: 30px;
+}
+
+#contactos > div div {
+    max-width: 60%;
+    overflow-wrap: break-word;
+}
+
+/* contenedor de mensajes */
+.der{
+    overflow-y: auto;
+    position: relative;
+}
+
+.der > div{
+	display: none;
+}
+
+.der > div > div:last-of-type {
+   	margin-bottom: 40px;
+}
+
+.recibido, .enviado {
+    background-color: white;
+    max-width: 45%;
+    word-wrap: break-word;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 7px;
+    padding-left: 15px;
+    font-size: 23px;
+}
+
+.recibido{
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.enviado {
+    margin-right: 0;
+    margin-left: auto;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+/* los enlaces para aceptar la solicitud de amistad si los enviamos nosotros ocultamos los botones */
+.enviado .peticion a {
+	display: none;
+}
+
+/* input donde se van escribir los mensajes */
+.mandarMensaje{
+    width: 800px;
+    height: 50px;
+    display: block;
+    border-radius: 20px;
+    border: none;
+    outline: 0;
+    padding-left: 10px;
+    margin: auto;
+    margin-bottom: 20px;
+    position: relative;
+    bottom: 0;
+}

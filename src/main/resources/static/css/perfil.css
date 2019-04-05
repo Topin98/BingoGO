@@ -1,0 +1,194 @@
+body, html{
+    height: calc(100% - 33px);
+    background-color: #E1E7F5;
+}
+
+body > div{
+    color: black;
+}
+
+/* cabecera que contiene el nombre del usuario y los botones de añadir amigo, mensaje y reportar */
+#cabecera{
+    margin-top: 57px;
+    height: 66px;
+    display: grid;
+    grid-template-columns: 50% 20% 30%;
+    align-items: center;
+    justify-items: center;
+    background-color: #E1E7F5;
+    border-bottom: 1px solid rgb(167, 192, 255);
+}
+
+#cabecera h1{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    border-right: 1px solid rgb(167, 192, 255);
+}
+
+#cabecera form{
+    width: 100%;
+    height: 100%;
+    border-right: 1px solid rgb(167, 192, 255);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#cabecera input{
+    width: 70%;
+    height: 70%;
+    padding-left: 5px;
+}
+
+#cabecera button:not(#btnReportar){
+    border: none;
+    background-color: transparent;
+    outline: 0;
+}
+
+#cabecera form i{
+    font-size: 25px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/*div que contiene los enlaces para añadir amigo mensaje y reportar */
+#cabecera > div{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, [column] 50%);
+    justify-items: center;
+}
+
+#cabecera a, #btnReportar {
+    color: white;
+    width: 80%;
+}
+
+/* clase para el div para desactivar los controles si estamos viendo nuestro propio usuario */
+.rip > a, .rip > button {
+    pointer-events: none;
+    background-color: lightblue;
+    border: none;
+}
+
+/* clase para el boton de añadir amigo si ya es amigo nuestro */
+.quitado{
+	pointer-events: none;
+	background-color: lightblue;
+	border: none;
+}
+
+#cabecera i{
+    color: white;
+}
+
+/* contenedor del resto de la pagina */
+#container{
+    display: grid;
+    grid-template-columns: 30% 70%;
+    width: 85%;
+    height: calc(100% - 57px);
+    margin: auto;
+    background-color: lightblue;
+}
+
+/* contenedor de la foto de perfil, los botones de editar perfil y cerrar sesion y la lista de amigos */
+#datosPerfil{
+    background-color: lightblue;
+    display: grid;
+    grid-template-rows: 40% 5% 5% 1%; /* para subir el div container de amigos (xD) */
+    height: 100%;
+    align-items: center;
+    justify-items: center;
+}
+
+#datosPerfil > a{
+    width: 30%;
+}
+
+/* contenedor para el div con el texto "amigos" y el div con las fotos de los amigos */
+#amigosContainer{
+    width: 80%;
+    height: 80%;
+    background-color: lightblue;
+}
+
+/* div con texto "amigos" */
+#amigosContainer > div:first-child{
+    text-align: center;
+}
+
+#amigos{
+    width: 400px;
+    height: wrap;
+    max-height: 320px;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(55px, 1fr));
+    gap: 10px;
+    justify-items: center;
+    border: 1px solid black;
+}
+
+#amigos a:hover{
+    opacity: 0.6;
+}
+
+/* si no hay amigos ocultamos los divs para que no se vea el borde */
+.ocultar {
+	display: none;
+}
+
+/*contenedor de los rankings del perfil */
+#datosRanking{
+    display: grid;
+    grid-template-rows: repeat(4, [column] 25%);
+    align-items: center;
+    font-size: 35px;
+    text-align: center;
+}
+
+/* filas que contienen dos divs */
+.filaDe2 {
+    display: grid;
+    grid-template-columns: repeat(2, [column] 50%);
+    justify-items: center;
+}
+
+.filaDe2 > div {
+    background-color: white;
+    border-radius: 80px;
+    width: 60%;
+}
+
+/* filas que contienen 3 divs */
+.filaDe3 {
+    display: grid;
+    grid-template-columns: repeat(3, [column] 33%);
+    justify-items: center;
+}
+
+.filaDe3 > div {
+    background-color: white;
+    border-radius: 80px;
+    width: 80%;
+}
+
+#dialogoReport textarea{
+    display: block;
+    width: 100%;
+    height: 100px;
+    margin-top: 10px;
+}
+
+#dialogoReport button {
+    float: right;
+    margin-top: 10px;
+    margin-right: 7px;
+}

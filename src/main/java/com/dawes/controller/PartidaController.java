@@ -135,6 +135,9 @@ public class PartidaController {
 			 model.addAttribute("partida", partidaService.findById((int)session.getAttribute("idPartida")).get());
 			 model.addAttribute("idSala", session.getAttribute("idSala")); //se usa para volver a la sala al terminar la partida
 			 
+			 //se elimina el atributo para que el usuario se pueda unir a otra sala
+			 session.removeAttribute("idPartida");
+			 
 			 resultado = RR.CARPETA_PARTIDAS + "partida";
 			 
 			 //si no es que hizo refresco o lo abrio en una pestaña nueva

@@ -6,6 +6,7 @@ html, body{
 body{
     display: flex;
     background-color: lightblue;
+    color: black;
 }
 
 /* div que contiene los jugadores ordenados por posicion */
@@ -165,7 +166,7 @@ body{
     margin-right: auto;
 }
 
-#aVolver{
+#aVolverSalas, #aVolverSala{
 	display: none;
 }
 

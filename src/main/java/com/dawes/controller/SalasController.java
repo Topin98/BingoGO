@@ -42,12 +42,12 @@ public class SalasController {
 	BCryptPasswordEncoder pwEncoder;
 	
 	@RequestMapping
-	public String listar(@RequestParam(required = false, defaultValue = "1") Integer pagina, //numero de pagina
-			@RequestParam(required = false, defaultValue = "") String nombreSala, @RequestParam(required = false) Boolean jugando, @RequestParam(required = false) Boolean privadas, //filtros que se pueden aplicar
-			Model model, Authentication authentication) {
+	public String listar(@RequestParam(required = false, defaultValue = "1") Integer pagina, Model model, Authentication authentication, HttpSession session) {
 		
-		if (jugando == null) jugando = false;
-		if (privadas == null) privadas = false;
+		//obtenemos de session los posibles filtros, si no hay filtros ponemos los valores por defecto
+		String nombreSala = session.getAttribute("nombreSala") != null ? session.getAttribute("nombreSala").toString() : "";
+		boolean jugando = session.getAttribute("jugando") != null ? (boolean) session.getAttribute("jugando") : false;
+		boolean privadas = session.getAttribute("privadas") != null ? (boolean) session.getAttribute("privadas") : false;
 		
 		//(desde que pagina, tamaño por pagina, criterio de busqueda)
 		//(el primer parametro hay que poner menos 1 para que coja el numero de pagina bien)
@@ -58,18 +58,36 @@ public class SalasController {
 		model.addAttribute("numPaginas", Utils.getNumPaginas(pSalas)); //obtenemos los numeros de paginas de las salas
 		model.addAttribute("nuevaSala", new SalaVO()); //sala que igual crea el usuario
 		
-		//para actualizar el estado de los checkbox al refrescar la pagina y la paginacion
-		model.addAttribute("nombrePagina", nombreSala);
+		//para actualizar el estado de los checkbox, el input con el nombre al refrescar la pagina
+		model.addAttribute("nombreSala", nombreSala);
 		model.addAttribute("jugando", jugando);
 		model.addAttribute("privadas", privadas);
 		
 		return RR.CARPETA_SALAS + "listaSalas";
 	}
 	
+	//obtenemos los nuevos valores del formulario y los metemos en session
+	@RequestMapping("/filtrar")
+	public String filtrar(@RequestParam(required = false, defaultValue = "") String nombreSala, @RequestParam(required = false) Boolean jugando, @RequestParam(required = false) Boolean privadas, //filtros que se pueden aplicar
+			Model model, Authentication authentication, HttpSession session) {
+		
+		//si son null los ponemos por defecto como false
+		if (jugando == null) jugando = false;
+		if (privadas == null) privadas = false;
+		
+		//los añadimos a la session
+		session.setAttribute("nombreSala", nombreSala);
+		session.setAttribute("jugando", jugando);
+		session.setAttribute("privadas", privadas);
+		
+		//redirect al metodo que lee las salas y las muestras
+		return "redirect:/salas";
+	}
+	
 	@RequestMapping("/sala/{idSala}")
 	public String mostrarSala(@PathVariable("idSala") int idSala, Model model,
 			Authentication authentication, HttpSession session) {
-		String resultado;
+		String resultado = "redirect:/salas?";
 		
 		UsuarioVO usuario = usuarioService.findByNombre(authentication.getName());
 		Optional<SalaVO> optional = salaService.findById(idSala);
@@ -82,47 +100,56 @@ public class SalasController {
 			//si no esta en ninguna sala
 			if (usuario.getSala() == null) {
 				
-				//si no hay partida en curso
-				if (!sala.isJugando()) {
+				//si no esta en el proceso de elegir carton para una partida
+				//si no se trata mientras se elige un carton puede meterse en otra sala y empezar partida y tener dos cartones en la misma partida
+				if (session.getAttribute("idPartida") == null) {
 				
-					//si la sala no tiene contraseña o en sesion esta la contraseña correcta
-					if (sala.getPassword() == null || (session.getAttribute("pw") != null && pwEncoder.matches(session.getAttribute("pw").toString(), salaService.findById(idSala).get().getPassword()))) {
-						
-						//si la sala no esta completa
-						if (sala.getlUsuarios().size() < SalaVO.CAP_MAX) {
+					//si no hay partida en curso en la sala
+					if (!sala.isJugando()) {
+					
+						//si la sala no tiene contraseña o en sesion esta la contraseña correcta
+						if (sala.getPassword() == null || (session.getAttribute("pw") != null && pwEncoder.matches(session.getAttribute("pw").toString(), salaService.findById(idSala).get().getPassword()))) {
 							
-							model.addAttribute("usuario", usuario);
-							model.addAttribute("sala", sala);
+							//si la sala no esta completa
+							if (sala.getlUsuarios().size() < SalaVO.CAP_MAX) {
+								
+								model.addAttribute("usuario", usuario);
+								model.addAttribute("sala", sala);
+								model.addAttribute("listaAmigos", Utils.getAmigos(usuario, true));
+								
+								//este atributo NO es el que se usa para comprobar si se abandona o no una sala
+								//es el que se usa para volver a la sala al terminar la partida
+								session.setAttribute("idSala", idSala);
+								
+								resultado = RR.CARPETA_SALAS + "sala";
+								
+								//la sala esta llena
+							} else {
+								resultado += "salaLlena=La sala est%C3%A1 llena";
+							}
 							
-							//este atributo NO es el que se usa para comprobar si se abandona o no una sala
-							//es el que se usa para volver a la sala al terminar la partida
-							session.setAttribute("idSala", idSala);
-							
-							resultado = RR.CARPETA_SALAS + "sala";
-							
-							//la sala esta llena
 						} else {
-							resultado = "redirect:/salas?salaLlena=La sala est%C3%A1 llena";
+							
+							resultado += "pw=La contrase%C3%B1a no es correcta";
 						}
-						
+					
 					} else {
 						
-						resultado = "redirect:/salas?pw=La contrase%C3%B1a no es correcta";
+						resultado += "partidaEnCurso=No se puede unir a la sala mientras hay una partida en curso.";
 					}
-				
-				} else {
 					
-					resultado = "redirect:/salas?partidaEnCurso=No se puede unir a la sala mientras hay una partida en curso.";
+				} else {
+					resultado += "yaEnPartida=Es necesario acabar la partida actual";
 				}
 				
 			} else {
 				
-				resultado = "redirect:/salas?yaEnSala=Es necesario salir de la sala actual";
+				resultado += "yaEnSala=Es necesario salir de la sala actual";
 			}
 			
 			//si se borro entre que se cargo y se intento unirse a ella 
 		} else {
-			resultado = "redirect:/salas?yaEnSala=La sala no existe";
+			resultado += "notFound=La sala no existe";
 		}
 			
 		return resultado;

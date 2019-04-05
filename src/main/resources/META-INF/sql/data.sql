@@ -7,6 +7,8 @@ insert into linUsuRol (rol_idRol, usuario_idUsuario) values (1,1);
 insert into linUsuRol (rol_idRol, usuario_idUsuario) values (2,1);
 insert into linUsuRol (rol_idRol, usuario_idUsuario) values (1,2)
 insert into linUsuUsu (usuario1_idUsuario, usuario2_idUsuario, activo) values (1,2,true);
+insert into mensajes (usuUsu_usuario1_idUsuario, usuUsu_usuario2_idUsuario, sender, contenido, tipo) values (1, 2, "Dani", "hola", 0);
+insert into mensajes (usuUsu_usuario1_idUsuario, usuUsu_usuario2_idUsuario, sender, contenido, tipo) values (1, 2, "Alex", "hey", 0);
 insert into salas (nombre, idPropietario, jugando, publica) values ("Sala1", 1, false, true);
 insert into salas (nombre, idPropietario, jugando, publica, password) values ("Sala2", 1, false, false, "$2a$10$qwe.rdhx61TNOIEEIbPUoOBSWbwunggHgjHV4xBVcKEWXpA1yddP6");
 insert into salas (nombre, idPropietario, jugando, publica) values ("Sala3", 1, true, true);

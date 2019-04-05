@@ -71,6 +71,8 @@ public interface UsuarioService {
 	
 	List<Object[]> getTop100UsuVictorias();
 
+	Page<UsuarioVO> findAllByNombreContaining(Pageable pageable, String nombre);
+	
 	UserDetails loadUserByUsername(String nombre);
 
 }

@@ -140,6 +140,7 @@ function onNewNumber(payload){
 	} catch (error){
 		$("#odometer").html(0);
 		$("#numeros").text("Partida terminada");
+		$("#aVolverSala").show();
 	}
 	
 }
@@ -196,9 +197,9 @@ function actualizarPosiciones(payload){
 		case 2:
 			if (respuesta.mensaje) $("#containerMensajes").append(`<div><a href="/perfil/${respuesta.nombreUsuario}/" target="_blank">${respuesta.nombreUsuario}</a><span> ${respuesta.mensaje}</span></div>`);
 				
-			//al que hizo bingo se le muestra el enlace de volver a la sala
+			//al que hizo bingo se le muestra el enlace de volver a la lista de salas
 			if ($("#nombreUsuario").val() == respuesta.nombreUsuario){
-				$("#aVolver").show();
+				$("#aVolverSalas").show();
 			}
 			
 			break;

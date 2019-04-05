@@ -9,6 +9,8 @@
     
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
         integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/index.css}" />
@@ -31,6 +33,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.3.0/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     
+    <script th:src="@{/js/utils.js}"></script>
     <script th:src="@{/js/ranking.js}"></script>
 </head>
 
@@ -43,14 +46,18 @@
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
             <li class="active nav-item infoUsuario">
-           		<a th:href="@{'/perfil/' + ${usuario.nombre}}">
-	           		<span th:text="${usuario.nombre}"></span>
-	           		<img th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="imagen" width="40x" height="40px" />
-           		</a>
+           		<span th:text="${usuario.nombre}"></span>
+           		<img th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="imagen" width="40" height="40" />
            	</li>
         </ul>
     </nav>
 
+	<div id="divInfoUsuario">
+        <a th:href="@{'/perfil/' + ${usuario.nombre}}"><i class="fas fa-user"></i>&nbsp;Ver perfil</a>
+        <a th:href="@{/perfil/mensajes}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
+        <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i>&nbsp;Cerrar sesi&oacute;n</a>
+    </div>
+    
    <div id="titulos">
         <button id="btnPuntuaciones" class="btn btn-primary">Puntuaci&oacute;n</button>
         <button id="btnVictorias" class="btn btn-primary">Victorias</button>
@@ -61,7 +68,7 @@
         <a th:each="usu, i: ${lPuntuaciones}" th:href="@{'/perfil/' + ${usu.nombre}}" class="list-group-item list-group-item-action grid-container">
             <div th:text="${i.index + 1}"></div>
             <div>
-            	<img th:src="@{'/perfil/' + ${usu.nombre} + '/imagen'}" width="45px" height="45px" />
+            	<img th:src="@{'/perfil/' + ${usu.nombre} + '/imagen'}" alt="imagen" width="45" height="45" />
             	<span th:text="${usu.nombre}"></span>
             </div>
             <div th:text="${usu.puntuacionTotal}"></div>
@@ -72,7 +79,7 @@
         <a th:each="usu, i: ${lVictorias}" th:href="@{'/perfil/' + ${usu[0]}}" class="list-group-item list-group-item-action grid-container">
             <div th:text="${i.index + 1}"></div>
             <div>
-            	<img th:src="@{'/perfil/' + ${usu[0]} + '/imagen'}" width="45px" height="45px" />
+            	<img th:src="@{'/perfil/' + ${usu[0]} + '/imagen'}" width="45" height="45" />
             	<span th:text="${usu[0]}"></span>
             </div>
             <div th:text="${usu[1]}"></div>
@@ -83,12 +90,14 @@
         <a th:each="usu, i: ${lRicos}" th:href="@{'/perfil/' + ${usu.nombre}}" class="list-group-item list-group-item-action grid-container">
             <div th:text="${i.index + 1}"></div>
             <div>
-            	<img th:src="@{'/perfil/' + ${usu.nombre} + '/imagen'}" width="45px" height="45px" />
+            	<img th:src="@{'/perfil/' + ${usu.nombre} + '/imagen'}" width="45" height="45" />
             	<span th:text="${usu.nombre}"></span>
             </div>
             <div th:text="${usu.fichas}"></div>
         </a>
     </div>
+    
+    <input id="nombreUsuario" type="hidden" th:value="${usuario.nombre}" />    
 </body>
 
 </html>

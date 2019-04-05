@@ -18,9 +18,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
 import com.dawes.modelo.CartonVO;
+import com.dawes.modelo.MensajeVO;
+import com.dawes.modelo.MensajeVO.Tipo;
 import com.dawes.modelo.PartidaVO;
 import com.dawes.modelo.SalaVO;
 import com.dawes.modelo.UsuarioPartidaVO;
+import com.dawes.modelo.UsuarioUsuarioVO;
 import com.dawes.modelo.UsuarioVO;
 import com.dawes.service.PartidaService;
 import com.dawes.service.SalaService;
@@ -51,7 +54,6 @@ public class WebSocketController {
 	@MessageMapping("/salas/chat/enviarMensaje")
 	@SendTo("/salas/chat")
 	public String enviarMensaje(@Payload(required = false) String mensaje, Authentication authentication) {
-		
 		return jsonMensaje(mensaje, authentication.getName());
 	}
 	
@@ -246,7 +248,7 @@ public class WebSocketController {
 
 				//esperamos por el siguiente
 				try {
-					Thread.sleep(3000);
+					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -258,6 +260,20 @@ public class WebSocketController {
 		salaService.save(sala);
 		
 		this.template.convertAndSend("/partida/" + idPartida + "/tombola", "Partida terminada");
+		
+		//damos un margen para que la gente vuelva a la sala (30 segundos)
+		try {
+			Thread.sleep(30000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		//si no se empezo otra partida y no hay nadie en la sala
+		//(se busca otra vez para refrescar la lista de usuarios)
+		sala = salaService.findById(sala.getIdSala()).get();
+		if (!sala.isJugando() && sala.getlUsuarios().size() == 0) {
+			salaService.delete(sala);
+		}
 	}
 
 	//controller para el chat de una partida en concreto
@@ -374,5 +390,96 @@ public class WebSocketController {
 
   		return respuesta.toString();
 	}
-
+	
+	//comunicaciones entre usuarios para mensajes individuales
+	//{nombreUsuario} es el usuario que va recibir el mensaje
+	@MessageMapping("/mensajes/{nombreUsuario}/enviarMensaje")
+	@SendTo("/mensajes/{nombreUsuario}")
+	public String enviarMensajeUsuario(@DestinationVariable("nombreUsuario") String nombreUsuario, @Payload(required = false) String mensaje, Authentication authentication) {
+		
+		JSONObject jsonRespuesta = new JSONObject(jsonMensaje(mensaje, authentication.getName()));
+		
+		//si la respuesta no es un json vacio es que se convirtio bien a json y si el mensaje no esta vacio (que puede darse si el filtro XSS borro todo)
+		if (!jsonRespuesta.isEmpty() && !jsonRespuesta.get("mensaje").equals("")) {
+			
+			mensaje = jsonRespuesta.getString("mensaje");
+			
+			//obtenemos el usuario logueado
+			UsuarioVO usuarioEnviador = usuarioService.findByNombre(authentication.getName());
+			UsuarioVO usuarioRecibidor = usuarioService.findByNombre(nombreUsuario); //esto ayuda pila, cambia por ejemplo de "ALEX" a como estaba originalmente el nombre, indispensable para las suscripciones en el cliente
+			
+			UsuarioUsuarioVO usuUsu;
+			
+			//obtenemos la relacion entre el usuario logueado y el usuario al que envia el mensaje
+			//(recordar que la relacion puede estar en cualquiera de las dos listas)
+			usuUsu = Utils.getRelacion(usuarioEnviador, usuarioRecibidor);
+			
+			//si existe la relacion
+			if (usuUsu != null) {
+				
+				//si ya son amigos
+				if (usuUsu.isActivo()) {
+					
+					//añadimos el mensaje
+					usuUsu.getlMensajes().add(new MensajeVO(usuUsu, authentication.getName(), mensaje, Tipo.MENSAJE));
+					
+					//si hay muchos mensajes borramos el primero
+					if (usuUsu.getlMensajes().size() > UsuarioUsuarioVO.CAP_HISTORIAL_MAX) {
+						usuUsu.getlMensajes().remove(0);
+					}
+					
+					//guardamos el mensaje en la base de datos
+					usuarioService.save(usuarioEnviador);
+					
+					//json que se va a mandar al cliente este en la pestaña que este
+					JSONObject json = new JSONObject();
+					json.put("nombreUsuario", usuarioEnviador.getNombre());
+					json.put("mensaje", mensaje);
+					json.put("url", "/perfil/mensajes");
+					
+					template.convertAndSend("/usuario/" + usuarioRecibidor.getNombre(), json.toString());
+					
+				} else {
+					jsonRespuesta = new JSONObject();
+				}
+				
+			} else {
+				//devolvemos un json vacio como para los otros errores en los que no hay que hacer nada en el js cliente 
+				jsonRespuesta = new JSONObject();
+			}
+			
+		}
+		
+		return jsonRespuesta.toString();
+	}
+	
+	//permite invitar un jugador a una sala
+	//este metodo no devuelve ningun mensaje, si no que llama a utils para mandarselo al usuario este donde este
+	@MessageMapping("/usuario/{nombreUsuario}/invitarSala")
+	public void invitarUsuarioSala(@DestinationVariable("nombreUsuario") String nombreUsuario, Authentication authentication) {
+		System.out.println(nombreUsuario);
+		UsuarioVO usuario = usuarioService.findByNombre(authentication.getName());
+		UsuarioVO usu = usuarioService.findByNombre(nombreUsuario);
+		
+		//si existe el usuario al que invitamos
+		if (usu != null) {
+			
+			//obtenemos la relacion entre los usuarios
+			UsuarioUsuarioVO usuUsu = Utils.getRelacionActiva(usuario, usu);
+			
+			//si existe la relacion
+			if (usuUsu != null) {
+				
+				//la url va ser la de la sala en la que este el usuario que invita
+				//la url la propiedad url del json y el contenido del mensaje en base de datos
+				String url = "/salas/sala/" + usuario.getSala().getIdSala();
+				
+				Utils.enviarNotificacionUsuario(template, authentication.getName(), "Invitación a partida", url, usu.getNombre());
+				
+				usuUsu.getlMensajes().add(new MensajeVO(usuUsu, usuario.getNombre(), url, Tipo.INVITACION));
+				
+				usuarioService.save(usuario);
+			}
+		}
+	}
 }

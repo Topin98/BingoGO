@@ -55,6 +55,28 @@ $(function() {
 		stompClient.send(`/app/salas/sala/${idSala}/expulsarJugador`, {}, $(this).siblings("#nombreJugador").text());
 	});
 	
+	//dialogo que muestre tus amigos
+    $("#dialogoAmigos").dialog({
+        autoOpen: false,
+        resizable: false,
+        height: "auto",
+        width: 500,
+        height: 330,
+        modal: true
+    });
+    
+    //mostramos el dialogo de invitar amigos
+	$("#btnInvitarAmigos").click(function(){
+		$("#dialogoAmigos").dialog("open");
+	});
+	
+	$("#dialogoAmigos button").click(function(){
+		stompClient.send(`/app/usuario/${$(this).attr("data-nombre")}/invitarSala`);
+		
+		//eliminamos el div que contiene su nombre en el dialogo de invitar
+		$(`#dialogoAmigos > div[data-nombre='${$(this).attr("data-nombre")}']`).remove();
+	})
+	
 	$("#btnAbandonarSala").click(function(){
 		//nos desconectamos de la sala (nos iremos cuando llegue un mensaje al chat indicando que se han reflejado los cambios en el servidor)
 		stompClient.disconnect();
@@ -123,7 +145,10 @@ function onNewUser(payload){
 //si alguien se unio a la sala
 function nuevoJugador(respuesta){
 	
-	$("#listaJugadores").append(`<div id="${respuesta.nombreUsuario}">${respuesta.nombreUsuario}</div>`);
+	$("#listaJugadores").append(`<div data-nombre="${respuesta.nombreUsuario}">${respuesta.nombreUsuario}</div>`);
+	
+	//eliminamos el div que contiene su nombre en el dialogo de invitar
+	$(`#dialogoAmigos > div[data-nombre='${respuesta.nombreUsuario}']`).remove();
 	
 	//obtenemos la sala
 	let sala = JSON.parse(respuesta.sala);
@@ -139,7 +164,7 @@ function seFueJugador(respuesta){
 	jugadores.splice(jugadores.indexOf(jugadores.find(x => x.nombre == respuesta.nombreUsuario)), 1);
 	
 	//eliminamos el div que contiene su nombre
-	$("#" + respuesta.nombreUsuario).remove();
+	$(`div[data-nombre='${respuesta.nombreUsuario}']`).remove();
 	
 	//si el que lo abandono fue el dueño de la sala
 	if (respuesta.nuevoPropietarioNombre){
@@ -152,7 +177,7 @@ function seFueJugador(respuesta){
 			
 			//le ponemos el boton de empezar partida y el boton de abandonar sala que ocupe la mitad
 			$("#opciones").append(`<button id="btnEmpezarPartida" class="btn btn-primary">Empezar partida</button>`);
-			$("#btnAbandonarSala").toggleClass("full");
+			$("#opciones").attr("class", "de3");
 			
 			//le ponemos el boton de expulsar usuario y ocultamos el panel por si se tenia marcado a el
 			$("#infoJugador").append(`<button id="btnExpulsarJugador" class="btn btn-primary">Expulsar jugador</button>`)
@@ -178,7 +203,7 @@ function empezarPartida(respuesta){
 function expulsarJugador(respuesta){
 	
 	//mostramos mensaje de que x expulso a x
-	$("#containerMensajes").append(`<div><a href="/perfil/${respuesta.nombre}/" target="_blank">${respuesta.nombreUsuario}</a><span> ${respuesta.mensajeExpulsar}</span><a href="/perfil/${respuesta.nombreUsuarioExpulsado}/" target="_blank"> ${respuesta.nombreUsuarioExpulsado}</a></div>`);
+	$("#containerMensajes").append(`<div><a href="/perfil/${respuesta.nombreUsuario}/" target="_blank">${respuesta.nombreUsuario}</a><span> ${respuesta.mensajeExpulsar}</span><a href="/perfil/${respuesta.nombreUsuarioExpulsado}/" target="_blank"> ${respuesta.nombreUsuarioExpulsado}</a></div>`);
 	
 	//si este cliente es el expulsado
 	if (respuesta.nombreUsuarioExpulsado == nombreUsuario){

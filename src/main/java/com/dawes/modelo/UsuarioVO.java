@@ -39,7 +39,7 @@ public class UsuarioVO {
 	@JsonIgnore
 	private List<UsuarioRolVO> lUsuarioRol;
 	
-	@OneToMany(mappedBy = "usuario1", cascade=CascadeType.ALL)
+	@OneToMany(mappedBy = "usuario1", cascade=CascadeType.ALL, orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonIgnore
 	private List<UsuarioUsuarioVO> lUsuUsuRequest;
@@ -51,7 +51,6 @@ public class UsuarioVO {
 	
 	@OneToMany(mappedBy = "usuario", cascade=CascadeType.ALL)
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@NotFound(action = NotFoundAction.IGNORE)
 	@JsonIgnore
 	private List<UsuarioPartidaVO> lUsuPar;
 	
@@ -59,6 +58,16 @@ public class UsuarioVO {
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonIgnore
 	private List<UsuarioPremioVO> lUsuPre;
+	
+	@OneToMany(mappedBy = "usuario1", cascade=CascadeType.ALL)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@JsonIgnore
+	private List<ReportVO> lReportsEmitidos;
+	
+	@OneToMany(mappedBy = "usuario2", cascade=CascadeType.ALL)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@JsonIgnore
+	private List<ReportVO> lReportsRecibidos;
 	
 	@ManyToOne
 	@JoinColumn(name="idSala")
@@ -103,19 +112,24 @@ public class UsuarioVO {
 		this.lUsuUsuReceived = new ArrayList<UsuarioUsuarioVO>();
 		this.lUsuPar = new ArrayList<UsuarioPartidaVO>();
 		this.lUsuPre = new ArrayList<UsuarioPremioVO>();
+		this.lReportsEmitidos = new ArrayList<ReportVO>();
+		this.lReportsRecibidos = new ArrayList<ReportVO>();
 	}
-
+	
 	public UsuarioVO(List<UsuarioRolVO> lUsuarioRol, List<UsuarioUsuarioVO> lUsuUsuRequest,
-			List<UsuarioUsuarioVO> lUsuUsuReceived, List<UsuarioPartidaVO> lUsuPar, SalaVO sala,
-			List<UsuarioPremioVO> lUsuPre, String nombre, String correo, String password, LocalDate fechaRegistro,
-			int puntuacionTotal, int fichas, boolean enabled, String imagenPerfil, CartonVO carton) {
+			List<UsuarioUsuarioVO> lUsuUsuReceived, List<UsuarioPartidaVO> lUsuPar, List<UsuarioPremioVO> lUsuPre,
+			List<ReportVO> lReportsEmitidos, List<ReportVO> lReportsRecibidos, SalaVO sala, String nombre,
+			String correo, String password, LocalDate fechaRegistro, int puntuacionTotal, int fichas, boolean enabled,
+			String imagenPerfil, CartonVO carton) {
 		super();
 		this.lUsuarioRol = lUsuarioRol;
 		this.lUsuUsuRequest = lUsuUsuRequest;
 		this.lUsuUsuReceived = lUsuUsuReceived;
 		this.lUsuPar = lUsuPar;
-		this.sala = sala;
 		this.lUsuPre = lUsuPre;
+		this.lReportsEmitidos = lReportsEmitidos;
+		this.lReportsRecibidos = lReportsRecibidos;
+		this.sala = sala;
 		this.nombre = nombre;
 		this.correo = correo;
 		this.password = password;
@@ -126,19 +140,22 @@ public class UsuarioVO {
 		this.imagenPerfil = imagenPerfil;
 		this.carton = carton;
 	}
-
+	
 	public UsuarioVO(int idUsuario, List<UsuarioRolVO> lUsuarioRol, List<UsuarioUsuarioVO> lUsuUsuRequest,
-			List<UsuarioUsuarioVO> lUsuUsuReceived, List<UsuarioPartidaVO> lUsuPar, SalaVO sala,
-			List<UsuarioPremioVO> lUsuPre, String nombre, String correo, String password, LocalDate fechaRegistro,
-			int puntuacionTotal, int fichas, boolean enabled, String imagenPerfil, CartonVO carton) {
+			List<UsuarioUsuarioVO> lUsuUsuReceived, List<UsuarioPartidaVO> lUsuPar, List<UsuarioPremioVO> lUsuPre,
+			List<ReportVO> lReportsEmitidos, List<ReportVO> lReportsRecibidos, SalaVO sala, String nombre,
+			String correo, String password, LocalDate fechaRegistro, int puntuacionTotal, int fichas, boolean enabled,
+			String imagenPerfil, CartonVO carton) {
 		super();
 		this.idUsuario = idUsuario;
 		this.lUsuarioRol = lUsuarioRol;
 		this.lUsuUsuRequest = lUsuUsuRequest;
 		this.lUsuUsuReceived = lUsuUsuReceived;
 		this.lUsuPar = lUsuPar;
-		this.sala = sala;
 		this.lUsuPre = lUsuPre;
+		this.lReportsEmitidos = lReportsEmitidos;
+		this.lReportsRecibidos = lReportsRecibidos;
+		this.sala = sala;
 		this.nombre = nombre;
 		this.correo = correo;
 		this.password = password;
@@ -204,6 +221,22 @@ public class UsuarioVO {
 
 	public void setlUsuPre(List<UsuarioPremioVO> lUsuPre) {
 		this.lUsuPre = lUsuPre;
+	}
+	
+	public List<ReportVO> getlReportsEmitidos() {
+		return lReportsEmitidos;
+	}
+
+	public void setlReportsEmitidos(List<ReportVO> lReportsEmitidos) {
+		this.lReportsEmitidos = lReportsEmitidos;
+	}
+
+	public List<ReportVO> getlReportsRecibidos() {
+		return lReportsRecibidos;
+	}
+
+	public void setlReportsRecibidos(List<ReportVO> lReportsRecibidos) {
+		this.lReportsRecibidos = lReportsRecibidos;
 	}
 
 	public String getNombre() {
@@ -299,6 +332,8 @@ public class UsuarioVO {
 		result = prime * result + fichas;
 		result = prime * result + idUsuario;
 		result = prime * result + ((imagenPerfil == null) ? 0 : imagenPerfil.hashCode());
+		result = prime * result + ((lReportsEmitidos == null) ? 0 : lReportsEmitidos.hashCode());
+		result = prime * result + ((lReportsRecibidos == null) ? 0 : lReportsRecibidos.hashCode());
 		result = prime * result + ((lUsuPar == null) ? 0 : lUsuPar.hashCode());
 		result = prime * result + ((lUsuPre == null) ? 0 : lUsuPre.hashCode());
 		result = prime * result + ((lUsuUsuReceived == null) ? 0 : lUsuUsuReceived.hashCode());
@@ -345,6 +380,16 @@ public class UsuarioVO {
 			if (other.imagenPerfil != null)
 				return false;
 		} else if (!imagenPerfil.equals(other.imagenPerfil))
+			return false;
+		if (lReportsEmitidos == null) {
+			if (other.lReportsEmitidos != null)
+				return false;
+		} else if (!lReportsEmitidos.equals(other.lReportsEmitidos))
+			return false;
+		if (lReportsRecibidos == null) {
+			if (other.lReportsRecibidos != null)
+				return false;
+		} else if (!lReportsRecibidos.equals(other.lReportsRecibidos))
 			return false;
 		if (lUsuPar == null) {
 			if (other.lUsuPar != null)
@@ -394,8 +439,9 @@ public class UsuarioVO {
 	@Override
 	public String toString() {
 		return "UsuarioVO [idUsuario=" + idUsuario + ", lUsuarioRol=" + lUsuarioRol + ", lUsuUsuRequest="
-				+ lUsuUsuRequest + ", lUsuUsuReceived=" + lUsuUsuReceived + ", lUsuPar=" + lUsuPar + ", sala=" + sala
-				+ ", lUsuPre=" + lUsuPre + ", nombre=" + nombre + ", correo=" + correo + ", password=" + password
+				+ lUsuUsuRequest + ", lUsuUsuReceived=" + lUsuUsuReceived + ", lUsuPar=" + lUsuPar + ", lUsuPre="
+				+ lUsuPre + ", lReportsEmitidos=" + lReportsEmitidos + ", lReportsRecibidos=" + lReportsRecibidos
+				+ ", sala=" + sala + ", nombre=" + nombre + ", correo=" + correo + ", password=" + password
 				+ ", fechaRegistro=" + fechaRegistro + ", puntuacionTotal=" + puntuacionTotal + ", fichas=" + fichas
 				+ ", enabled=" + enabled + ", imagenPerfil=" + imagenPerfil + ", carton=" + carton + "]";
 	}

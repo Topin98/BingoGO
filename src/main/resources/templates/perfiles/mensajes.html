@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Sala</title>
+    <title>Mensajes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
@@ -14,31 +14,31 @@
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/index.css}" />
-    <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/sala.css}" />
+    <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/mensajes.css}" />
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
-
+        
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
         integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
         integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
         crossorigin="anonymous"></script>
-
+        
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.3.0/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-
-	<script th:src="@{/js/utils.js}"></script>
-	<script th:src="@{/js/sala.js}"></script>
+    
+    <script th:src="@{/js/mensajes.js}"></script>
 </head>
 
 <body>
-    <nav class="navbar navbar-dark bg-custom navbar-expand-md fixed-top">
+
+	<nav class="navbar navbar-dark bg-custom navbar-expand-md fixed-top">
         <a class="navbar-brand" href="/">BingoGO</a>
         <ul class="nav navbar-nav">
             <li class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
@@ -51,48 +51,46 @@
            	</li>
         </ul>
     </nav>
-
-	<div id="divInfoUsuario">
+    
+    <div id="divInfoUsuario">
         <a th:href="@{'/perfil/' + ${usuario.nombre}}"><i class="fas fa-user"></i>&nbsp;Ver perfil</a>
         <a th:href="@{/perfil/mensajes}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
         <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i>&nbsp;Cerrar sesi&oacute;n</a>
     </div>
     
     <div id="container">
-        <div id="principal">
-            <div id="nombreSala" th:text="${sala.nombre}"></div>
-            <div id="listaJugadores">
-                <div th:each="usu: ${sala.lUsuarios}" th:text="${usu.nombre}" th:data-nombre="${usu.nombre}" ></div>
-            </div>
-            <div id="opciones" th:class="${usuario.idUsuario == sala.idPropietario ? 'de3' : 'de2'}">
-                <button id="btnAbandonarSala" class="btn btn-primary">Abandonar sala</button>
-                <button id="btnInvitarAmigos" class="btn btn-primary">Invitar amigos</button>
-                <button th:if="${usuario.idUsuario == sala.idPropietario}" id="btnEmpezarPartida" class="btn btn-primary">Empezar partida</button>
+        <div class="izq">
+            <div class="inputContainer"><input id="buscador" type="text" placeholder="Usuario..." autocomplete="off"/></div>
+            <div id="contactos">
+                <div th:each="usuUsu: ${listaRelaciones}" th:class="${usuUsu.usuario1.nombre != usuario.nombre ? #strings.toUpperCase(usuUsu.usuario1.nombre) : #strings.toUpperCase(usuUsu.usuario2.nombre)}">
+                	<img th:src="${usuUsu.usuario1.nombre != usuario.nombre ? '/perfil/' + usuUsu.usuario1.nombre + '/imagen': '/perfil/' + usuUsu.usuario2.nombre + '/imagen'}" alt="foto" width="60px" height="60px"/>
+                    <div th:text="${usuUsu.usuario1.nombre != usuario.nombre ? usuUsu.usuario1.nombre : usuUsu.usuario2.nombre}"></div>
+                </div>
             </div>
         </div>
-        <div id="infoJugador">
-            <img id="imagenJugador" th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="foto" width="150" height="150" />
-            <div id="nombreJugador" th:text="${usuario.nombre}"></div>
-            <div id="puntuacionJugador">Posiciones</div>
-            <button th:if="${usuario.idUsuario == sala.idPropietario}" id="btnExpulsarJugador" class="btn btn-primary">Expulsar jugador</button>
+        <div class="der">
+            <div th:each="usuUsu: ${listaRelaciones}" th:class="${usuUsu.usuario1.nombre != usuario.nombre ? #strings.toUpperCase(usuUsu.usuario1.nombre) : #strings.toUpperCase(usuUsu.usuario2.nombre)}">
+            	<div th:each="mensaje: ${usuUsu.lMensajes}" th:class="${mensaje.sender != usuario.nombre ? 'recibido' : 'enviado'}">
+            		<th:block th:switch="${mensaje.tipo}">
+            			<div th:case="${T(com.dawes.modelo.MensajeVO.Tipo).MENSAJE}" th:text="${mensaje.contenido}"></div>
+            			<div th:case="${T(com.dawes.modelo.MensajeVO.Tipo).PETICION}" class="peticion">
+            				<div th:text="${mensaje.contenido}"></div>
+            				<a th:href="@{/perfil/amigos/contestarAmistad(nombreUsuario=${mensaje.sender}, aceptar=true)}" class="btn btn-primary">Aceptar</a>
+            				<a th:href="@{/perfil/amigos/contestarAmistad(nombreUsuario=${mensaje.sender}, aceptar=false)}" class="btn btn-primary">Rechazar</a>
+            			</div>
+            			<div th:case="${T(com.dawes.modelo.MensajeVO.Tipo).INVITACION}">
+            				<span>Invitaci&oacute;n a partida</span>
+            				<a th:href="${mensaje.contenido}" class="btn btn-primary">Unirse</a>
+            			</div>
+            		</th:block>
+            	</div>
+            	<form>
+            		<input type="text" placeholder="Escribe un mensaje" class="mandarMensaje">
+            	</form>
+            </div>
         </div>
     </div>
-    <div id="chat">
-        <div id="containerMensajes"></div>
-        <form id="frmEnviarMensaje">
-            <input type="text" name="mensaje" placeholder="Envía tu mensaje!" autocomplete="off" />
-        </form>
-    </div>
-
-	<div id="dialogoAmigos" title="Invitar amigos">
-        <div th:each="amigo: ${listaAmigos}" th:if="${!#lists.contains(sala.lUsuarios, amigo)}" th:data-nombre="${amigo.nombre}">
-            <span th:text="${amigo.nombre}"></span>
-            <button class="btn btn-primary" th:data-nombre="${amigo.nombre}">Invitar</button>
-          </th:block>
-        </div>
-    </div>
-
-    <input id="idSala" type="hidden" th:value="${sala.idSala}" />
+    
     <input id="nombreUsuario" type="hidden" th:value="${usuario.nombre}" />
 </body>
 

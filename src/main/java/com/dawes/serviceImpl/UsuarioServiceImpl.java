@@ -172,6 +172,11 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 	public List<Object[]> getTop100UsuVictorias() {
 		return usuarioRepository.getTop100UsuVictorias();
 	}
+	
+	@Override
+	public Page<UsuarioVO> findAllByNombreContaining(Pageable pageable, String nombre) {
+		return usuarioRepository.findAllByNombreContaining(pageable, nombre);
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String nombre) {

@@ -9,6 +9,7 @@
 
 body {
     color: white;
+    overflow: hidden;
 }
 
 .navbar{
@@ -31,23 +32,22 @@ body {
     margin-right: 100px;
 }
 
+/* li que contiene el nombre y fotos de perfil */
 .infoUsuario{
+    width: wrap;
+    min-width: 130px;
     margin-right: 80px;
-}
-
-.infoUsuario a {
-    text-decoration: none;
-    color: white;
     font-size: 20px;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .infoUsuario span {
-    margin-right: 10px;
+    margin-right: 15px;
     text-align: center;
-}
-
-.infoUsuario a:hover {
-    background-color: #448AFF;
 }
 
 .mostrarLogin{
@@ -107,6 +107,54 @@ body {
     background-color: #77a3ec;
 }
 
-#relleno{
-    height: 5000px;
+/* div que contiene enlaces para ver el perfil, los mensajes y cerrar sesion */
+#divInfoUsuario{
+    display: none;
+    width: 130px;
+    height: 120px;
+    position: fixed;
+    top: 57px;
+    right: 180px;
+    background-color: #448AFF;
+    z-index: 1; /* necesario al menos para que se vea por encima de los mensajes en la pantalla mensajes */ 
+}
+
+#divInfoUsuario a{
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid lightblue;
+    text-decoration: none;
+}
+
+#divInfoUsuario a:hover{
+    background-color: #77a3ec;
+}
+
+/* notificaciones que pueden ir apareciendo */
+.notificacion{
+    width: 500px;
+    height: 100px;
+    background-color: #03A9F4;
+    position: absolute;
+    bottom: 0;
+    right: -500px;
+    margin-bottom: 100px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    font-size: 25px;
+    z-index: 2;
+}
+
+.notificacion > div{
+    margin-left: 30px;
+    margin-top: 5px;
+}
+
+.notificacion a {
+    background-color: blue;
 }

@@ -33,6 +33,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.3.0/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     
+    <script th:src="@{/js/utils.js}"></script>
     <script th:src="@{/js/listaSalas.js}"></script>
 </head>
 
@@ -45,19 +46,23 @@
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
             <li class="active nav-item infoUsuario">
-           		<a th:href="@{'/perfil/' + ${usuario.nombre}}">
-	           		<span th:text="${usuario.nombre}"></span>
-	           		<img th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="imagen" width="40x" height="40px" />
-           		</a>
+           		<span th:text="${usuario.nombre}"></span>
+           		<img th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="imagen" width="40" height="40" />
            	</li>
         </ul>
     </nav>
 
+	<div id="divInfoUsuario">
+        <a th:href="@{'/perfil/' + ${usuario.nombre}}"><i class="fas fa-user"></i>&nbsp;Ver perfil</a>
+        <a th:href="@{/perfil/mensajes}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
+        <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i>&nbsp;Cerrar sesi&oacute;n</a>
+    </div>
+    
     <div id="container">
         <div class="cabeceraSalas">
-        	<form th:action="@{/salas}" method="GET">
+        	<form th:action="@{/salas/filtrar}" method="GET">
 	            <div class="filtros">
-	                <input type="text" name="nombreSala" placeholder="Nombre de la sala" autocomplete="off"/>
+	                <input type="text" name="nombreSala" placeholder="Nombre de la sala" autocomplete="off" th:value="${nombreSala}" />
 	                <label class="cbFiltro">Salas en partida
 	                    <input type="checkbox" name="jugando" th:checked="${jugando}">
 	                    <span class="checkmark"></span>
@@ -81,7 +86,7 @@
                     <div th:text="${sala.nombre}"></div>
                     <div th:text="${#lists.size(sala.lUsuarios) + ' / ' + sala.CAP_MAX}"></div>
                     <div>
-                    	<img th:each="usu: ${sala.lUsuarios}" th:src="@{'/perfil/' + ${usu.nombre} + '/imagen'}" width="45px" height="45px" th:title="${usu.nombre}" data-toggle="tooltip" />
+                    	<img th:each="usu: ${sala.lUsuarios}" th:src="@{'/perfil/' + ${usu.nombre} + '/imagen'}" width="45" height="45" th:title="${usu.nombre}" data-toggle="tooltip" />
                     </div>
                     <th:block th:switch="${sala.publica}">
                     	<div th:case="true">P&uacute;blica <i class="fas fa-lock-open"></i></div>
@@ -90,12 +95,12 @@
                 </a>
             </div>
         </div>
-        <div id="paginacion">
-            <div><a th:href="@{/salas(pagina=1, nombreSala=${nombreSala}, jugando=${jugando}, privadas=${privadas})}">&lt;&lt;</a></div>
-            <div th:if="${listaSalas.number + 1 > 1}"><a th:href="@{/salas(pagina=${listaSalas.number}, nombreSala=${nombreSala}, jugando=${jugando}, privadas=${privadas})}" th:text="${listaSalas.number}"></a></div>
-            <div class="current"><a th:href="@{/salas(pagina=${listaSalas.number + 1}, nombreSala=${nombreSala}, jugando=${jugando}, privadas=${privadas})}" th:text="${listaSalas.number + 1}"></a></div>
-            <div th:if="${#lists.size(numPaginas) > listaSalas.number + 1}"><a th:href="@{/salas(pagina=${listaSalas.number + 2}, nombreSala=${nombreSala}, jugando=${jugando}, privadas=${privadas})}" th:text="${listaSalas.number + 2}"></a></div>
-            <div><a th:href="@{/salas(pagina=${#lists.size(numPaginas)}, nombreSala=${nombreSala}, jugando=${jugando}, privadas=${privadas})}">&gt;&gt;</a></div>
+        <div id="paginacion" th:if="${#lists.size(numPaginas) > 0}">
+            <div><a th:href="@{/salas(pagina=1)}">&lt;&lt;</a></div>
+            <div th:if="${listaSalas.number > 0}"><a th:href="@{/salas(pagina=${listaSalas.number})}" th:text="${listaSalas.number}"></a></div>
+            <div class="current"><a th:href="@{/salas(pagina=${listaSalas.number + 1})}" th:text="${listaSalas.number + 1}"></a></div>
+            <div th:if="${#lists.size(numPaginas) > listaSalas.number + 1}"><a th:href="@{/salas(pagina=${listaSalas.number + 2})}" th:text="${listaSalas.number + 2}"></a></div>
+            <div><a th:href="@{/salas(pagina=${#lists.size(numPaginas)})}">&gt;&gt;</a></div>
         </div>
     </div>
     <div id="chat">
@@ -134,6 +139,9 @@
             <button type="submit">Unirse</button>
         </form>
     </div>
+    
+  	<input id="nombreUsuario" type="hidden" th:value="${usuario.nombre}" />    
+    
 </body>
 
 </html>

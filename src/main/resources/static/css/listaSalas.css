@@ -7,7 +7,7 @@ body{
     background-color: lightblue;
 }
 
-body > div{
+body > div:not(#divInfoUsuario){
     margin-top: 57px;
 }
 
