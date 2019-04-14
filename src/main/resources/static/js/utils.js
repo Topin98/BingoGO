@@ -10,11 +10,6 @@ $(function() {
 	if (nombreUsuarioUtils != null) {
 		
 		conectar();
-		
-		$("#relleno").click(function(){
-			stompClientUtils.send("/app/usuario/Dani", {},
-					JSON.stringify({tipo: 0, mensaje: "hola"}));
-		});
 	}
 	
 	//click en el li del nombre y foto de perfil

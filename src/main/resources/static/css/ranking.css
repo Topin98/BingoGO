@@ -43,6 +43,8 @@ body{
 
 .grid-container > div:nth-child(2){
     font-size: 20px;
+    display: flex;
+    align-items: center;
 }
 
 .grid-container > div:nth-child(2) > span{

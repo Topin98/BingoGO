@@ -140,13 +140,14 @@ body > div:not(#divInfoUsuario){
     justify-items: center;
 }
 
-/* el tercer div va contener el nombre de la sala */
+/* el primer div va contener el nombre de la sala */
 .grid-container > div:nth-child(1){
     font-size: 30px;
-    margin-right: 120px;
+    justify-self: left;
+    margin-left: 30px;
 }
 
-/* el tercer div va contener la cantidad de gente en la sala */
+/* el segundo div va contener la cantidad de gente en la sala */
 .grid-container > div:nth-child(2){
     font-size: 20px;
 }

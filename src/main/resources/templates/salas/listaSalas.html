@@ -43,6 +43,7 @@
         <ul class="nav navbar-nav">
             <li class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
             <li class="active nav-item"><a href="/ranking" class="nav-link">Ranking</a></li>
+            <li class="active nav-item"><a href="/premios" class="nav-link">Premios</a></li>
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
             <li class="active nav-item infoUsuario">
@@ -54,7 +55,7 @@
 
 	<div id="divInfoUsuario">
         <a th:href="@{'/perfil/' + ${usuario.nombre}}"><i class="fas fa-user"></i>&nbsp;Ver perfil</a>
-        <a th:href="@{/perfil/mensajes}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
+        <a th:href="@{/perfil/mensajes/ver}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
         <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i>&nbsp;Cerrar sesi&oacute;n</a>
     </div>
     
@@ -112,7 +113,7 @@
     
     <div id="dialogo" title="Nueva sala">
         <form action="/salas/crearSala" method="POST" th:object="${nuevaSala}">
-            <input th:field="*{nombre}" type="text" placeholder="Nombre de la sala" maxlength="30" required />
+            <input th:field="*{nombre}" type="text" placeholder="Nombre de la sala" maxlength="15" autocomplete="off" required />
             <div id="publica">
 	            <span>P&uacute;blica</span>
 	            <label class="rbPublica">S&iacute;

@@ -75,57 +75,53 @@ public class SesionController {
 		
 		String resultado = "redirect:";
 		
-		usuarioUtils.transformarUsuario(usuario);
+		if (usuario.getPassword().length() > 5) {
 		
-		//comprobamos que el nombre y la contraseña no se hayan rellenado solo con espacios en blanco
-		if (usuarioUtils.validarUsuario(usuario)) {
+			usuarioUtils.transformarUsuario(usuario);
 			
-			try{
-				usuarioService.save(usuario);
-				autologin(usuario, request);
-				resultado += "/";
+			//comprobamos que el nombre y la contraseña no se hayan rellenado solo con espacios en blanco
+			if (usuarioUtils.validarUsuario(usuario)) {
 				
-			} catch (DataIntegrityViolationException e) {
-				
-				//si el error es que es una clave duplicada
-				if(e.getMostSpecificCause() instanceof SQLIntegrityConstraintViolationException){
+				try{
+					usuarioService.save(usuario);
+					usuarioUtils.autologin(usuario, request);
+					resultado += "/";
 					
-					resultado += "/registro?error=";
+				} catch (DataIntegrityViolationException e) {
 					
-					//ya existe un usuario con ese nombre
-					if (usuarioService.findByNombre(usuario.getNombre()) != null) {
-						resultado += "Ya hay un usuario registrado con ese nombre. ";
+					//si el error es que es una clave duplicada
+					if(e.getMostSpecificCause() instanceof SQLIntegrityConstraintViolationException){
+						
+						resultado += "/registro?error=";
+						
+						//ya existe un usuario con ese nombre
+						if (usuarioService.findByNombre(usuario.getNombre()) != null) {
+							resultado += "Ya hay un usuario registrado con ese nombre. ";
+						}
+	
+						//ya existe un usuario con ese correo
+						if (usuarioService.findByCorreo(usuario.getCorreo()) != null) {
+							resultado += "Ya hay un usuario registrado con ese correo.";
+						}
+						
+						//si no es que el nombre o el correo son demasiados largo
+					} else {
+						resultado += "/registro?error=El usuario y/o el correo son demasiado largos";
 					}
-
-					//ya existe un usuario con ese correo
-					if (usuarioService.findByCorreo(usuario.getCorreo()) != null) {
-						resultado += "Ya hay un usuario registrado con ese correo.";
-					}
 					
-					//si no es que el nombre o el correo son demasiados largo
-				} else {
-					resultado += "/registro?error=El usuario y/o el correo son demasiado largos";
 				}
+				
+				//se han metido solo espacios en el usuario o la contraseña
+			} else {
+				resultado += "/registro?error=El nombre de usuario y la contrase%C3%B1a no pueden estar vac%C3%ADos";
 				
 			}
 			
-			//se han metido solo espacios en el usuario o la contraseña
+			//contraseña muy pequeña
 		} else {
-			resultado += "/registro?error=El nombre de usuario y la contrase%C3%B1a no pueden estar vac%C3%ADos";
-			
+			resultado += "/registro?error=La contrase%C3%B1a es demasiado corta";
 		}
 		
 		return resultado;
-	}
-	
-	//loguea a un usuario a partir de su usuario y su contraseña
-	//este metodo solo es llamado justo despues de que un usuario se registre, si se hace un login normal lo tratara el propio spring
-	public void autologin(UsuarioVO usuario, HttpServletRequest request) {
-		
-		UserDetails userDetails = usuarioService.loadUserByUsername(usuario.getNombre());
-		
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
 	}
 }

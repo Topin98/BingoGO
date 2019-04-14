@@ -139,6 +139,10 @@ public class PremioServiceImpl implements PremioService {
 	public <S extends PremioVO> List<S> findAll(Example<S> example, Sort sort) {
 		return premioRepository.findAll(example, sort);
 	}
-	
+
+	@Override
+	public PremioVO findByNombre(String nombre) {
+		return premioRepository.findByNombre(nombre);
+	}
 	
 }

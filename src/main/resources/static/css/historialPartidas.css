@@ -1,0 +1,91 @@
+body {
+    background-color: lightblue;
+    overflow-y: auto;
+}
+
+/* div que actua como contenedor de los divs que indican que es cada columna */
+#cabecera{
+    width: 70%;
+    height: 50px;
+    background-color: rgb(167, 192, 255);
+    margin: auto;
+    margin-top: 100px;
+    display: grid;
+    grid-template-columns: repeat(3, [col] 33%);
+    align-items: center;
+    justify-items: center;
+    font-size: 25px;
+    color: black;
+}
+
+#container{
+    width: 70%;
+    margin: auto;
+    color: black;
+}
+
+.card-header, .card-body {
+    padding: 0;
+}
+
+.card-header:hover{
+    background-color: rgb(218, 218, 218);
+}
+
+/* informacion resumida de cada partida */
+.titulo{
+    display: grid;
+    grid-template-columns: repeat(3, [col] 33%);
+    align-items: center;
+    justify-items: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.titulo div{
+    text-decoration: none;
+    color: black;
+    pointer-events: none; /* quita el hover del div fecha */
+    font-size: 20px;
+}
+
+.card-body{
+    width: 95%;
+    margin: auto;
+    padding: 20px;
+}
+
+.tituloCard{
+    display: grid;
+    grid-template-columns: repeat(3, [col] 33%);
+    align-items: center;
+    justify-items: center;
+    font-size: 22px;
+    background-color: rgb(207, 220, 252);
+    padding: 5px;
+}
+
+.jugador{
+    display: grid;
+    grid-template-columns: repeat(3, [col] 33%);
+    align-items: center;
+    justify-items: center;
+    padding: 10px;
+    font-size: 20px;
+}
+
+.jugador a{
+    text-decoration: none;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    border-radius: 20px;
+}
+
+.jugador a:hover{
+    background-color: rgb(205, 243, 255);
+}
+
+.jugador img{
+    margin-right: 10px;
+}

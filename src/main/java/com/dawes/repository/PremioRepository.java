@@ -7,5 +7,6 @@ import com.dawes.modelo.PremioVO;
 
 @Repository
 public interface PremioRepository extends JpaRepository<PremioVO, Integer>{
-
+	
+	PremioVO findByNombre(String nombre);
 }

@@ -1,0 +1,19 @@
+.titulo {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    justify-items: center;
+    margin-bottom: 50px;
+    height: 120px;
+}
+
+.formImagen{
+    font-size: 20px;
+}
+
+.formImagen input[type=file]{
+    display: none;
+}
+
+.formImagen button{
+    width: 80%;
+}

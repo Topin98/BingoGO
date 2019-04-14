@@ -2,16 +2,24 @@ package com.dawes.utils;
 
 import java.time.LocalDate;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 import com.dawes.modelo.LinUsuRolVO;
 import com.dawes.modelo.RolVO;
 import com.dawes.modelo.UsuarioRolVO;
 import com.dawes.modelo.UsuarioVO;
 import com.dawes.service.RolService;
+import com.dawes.service.UsuarioService;
 
 public class UsuarioUtils {
 	
@@ -20,6 +28,9 @@ public class UsuarioUtils {
 	
 	@Autowired
 	RolService rolService;
+	
+	@Autowired
+	UsuarioService usuarioService;
 	
 	public void transformarUsuario(UsuarioVO usuario) {
 		
@@ -40,8 +51,12 @@ public class UsuarioUtils {
 		
 		if (Utils.validarCadena(usuario.getPassword())) {
 			//encriptamos la contraseña
-			usuario.setPassword(pwEncoder.encode(usuario.getPassword()));
+			usuario.setPassword(encriptarPw(usuario.getPassword()));
 		}
+	}
+	
+	public String encriptarPw(String plainPw) {
+		return pwEncoder.encode(plainPw);
 	}
 	
 	public boolean validarUsuario(UsuarioVO usuario) {
@@ -51,8 +66,19 @@ public class UsuarioUtils {
 		
 	}
 	
+	//loguea a un usuario a partir de su usuario y su contraseña
+	//este metodo solo es llamado justo despues de que un usuario se registre o edite algo de su perfil, si se hace un login normal lo tratara el propio spring
+	public void autologin(UsuarioVO usuario, HttpServletRequest request) {
+		
+		UserDetails userDetails = usuarioService.loadUserByUsername(usuario.getNombre());
+		
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+	}
+	
 	//filtro de caracteres raros para el registro de usuario
-	public static String XSSProtectionNombre(String cadena) {
+	public String XSSProtectionNombre(String cadena) {
 			
 		//elimina caracteres raros
 		String aux = cadena.replaceAll("[^a-zA-Z0-9\\s]", "");

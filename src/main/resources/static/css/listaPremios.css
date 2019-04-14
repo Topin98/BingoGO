@@ -1,0 +1,35 @@
+body{
+    background-color: lightblue;
+}
+
+.respuestas{
+    width: 70%;
+    margin: auto;
+    margin-top: 80px;
+    text-align: center;
+    font-size: 25px;
+    color: black;
+}
+
+#containerPremios{
+    color: black;
+    display: grid;
+    width: 85%;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    margin: auto;
+    margin-top: 80px;
+    grid-row-gap: 50px;
+    grid-column-gap: 2%;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#containerPremios > div{
+    max-width: 300px;
+    padding-top: 20px;
+    padding-bottom: 12px;
+    padding-left: 3px;
+    padding-right: 3px;
+    background-color: rgb(167, 192, 255);
+    word-wrap: break-word;
+}

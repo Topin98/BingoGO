@@ -177,7 +177,15 @@ function seFueJugador(respuesta){
 			
 			//le ponemos el boton de empezar partida y el boton de abandonar sala que ocupe la mitad
 			$("#opciones").append(`<button id="btnEmpezarPartida" class="btn btn-primary">Empezar partida</button>`);
-			$("#opciones").attr("class", "de3");
+			
+			//si tenia dos columnas le podemos 3
+			if ($("#opciones").attr("class") == "de2"){
+				$("#opciones").attr("class", "de3");
+				
+				//si no es que tenia 1 columna, le ponemos 2
+			} else {
+				$("#opciones").attr("class", "de2");
+			}
 			
 			//le ponemos el boton de expulsar usuario y ocultamos el panel por si se tenia marcado a el
 			$("#infoJugador").append(`<button id="btnExpulsarJugador" class="btn btn-primary">Expulsar jugador</button>`)

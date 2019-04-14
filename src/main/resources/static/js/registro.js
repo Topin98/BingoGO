@@ -13,10 +13,23 @@ $(function() {
             //muestra el mensaje de que las contraseñas no coinciden
         	$("#errorPws").show();
             
-            //oculta el div que contiene los mensajes de errores procedentes del controlador
-            $(".erroresRegistro").hide();
+            //oculta el div que contiene los mensajes procedentes del controlador
+            $(".mensajeController").hide();
             
             return false;
+        }
+    });
+    
+    $("input[type=file]").change(function(){
+        
+        if (this.files && this.files[0]) {
+            var reader = new FileReader();
+    
+            reader.readAsDataURL(this.files[0]);
+
+            reader.onload = function (e) {
+                $("#imagenPerfil").attr("src", e.target.result);
+            }
         }
     });
 });

@@ -27,28 +27,14 @@
 
     <nav class="navbar navbar-dark bg-custom navbar-expand-md fixed-top">
         <a class="navbar-brand" href="/">BingoGO</a>
-        <ul class="nav navbar-nav">
-            <li sec:authorize="isAuthenticated()" class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
-            <li sec:authorize="isAuthenticated()" class="active nav-item"><a href="/ranking" class="nav-link">Ranking</a></li>
-        </ul>
     </nav>
-
-    <div id="divLogin">
-        <i class="fas fa-times cerrar"></i>
-        <h4>Est&aacute;s registrado?</h4>
-        <form id="formLogin" action="/login" method="POST">
-            <input type="text" name="username" placeholder="Usuario" required />
-            <input type="password" name="password" placeholder="Contraseña" required />
-            <button id="btnLogin" type="submit">Iniciar sesi&oacute;n</button>
-        </form>
-    </div>
 
     <div class="form">
         <div class="titulo">BingoGO</div>
         <form action="/registro" method="POST" th:object="${usuario}" id="formRegistro">
-        	<div th:if="${param.error}" class="alert alert-danger erroresRegistro" th:text="${error}"></div>
-            <input th:field="*{nombre}" type="text" placeholder="Nombre de usuario" maxlength="30" required />
-            <input th:field="*{correo}" type="email" placeholder="Email" required />
+        	<div th:if="${param.error}" class="alert alert-danger mensajeController" th:text="${error}"></div>
+            <input th:field="*{nombre}" type="text" placeholder="Nombre de usuario" maxlength="30" autocomplete="off" required />
+            <input th:field="*{correo}" type="email" placeholder="Email" autocomplete="off" required />
             <input th:field="*{password}" type="password" placeholder="Contraseña" required id="pw" />
             <input type="password" placeholder="Repetir Contraseña" required id="pw2" />
             <div id="errorPws">Las contraseñas no coinciden</div>

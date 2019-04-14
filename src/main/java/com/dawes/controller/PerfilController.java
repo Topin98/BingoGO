@@ -2,9 +2,13 @@ package com.dawes.controller;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -29,10 +34,12 @@ import com.dawes.modelo.LinUsuUsuVO;
 import com.dawes.modelo.MensajeVO;
 import com.dawes.modelo.MensajeVO.Tipo;
 import com.dawes.modelo.ReportVO;
+import com.dawes.modelo.UsuarioPartidaVO;
 import com.dawes.modelo.UsuarioUsuarioVO;
 import com.dawes.modelo.UsuarioVO;
 import com.dawes.service.UsuarioService;
 import com.dawes.utils.RR;
+import com.dawes.utils.UsuarioUtils;
 import com.dawes.utils.Utils;
 
 @Controller
@@ -45,36 +52,54 @@ public class PerfilController {
 	@Autowired
 	UsuarioService usuarioService;
 	
+	@Autowired
+	UsuarioUtils usuarioUtils;
+	
 	@RequestMapping("/{nombre}")
 	public String mostrar(@PathVariable("nombre") String nombre, Model model, Authentication authentication) {
 		
 		//usuario que se va a ver el perfil
 		UsuarioVO usu = usuarioService.findByNombre(nombre);
 		
-		//si existe el usuario redireccionamos al perfil del que inicio sesion
+		//si no existe el usuario redireccionamos al perfil del que inicio sesion
 		if (usu == null) return "redirect:/perfil/" + authentication.getName() + "?error=El usuario no existe";
 		
 		//numero de partidas jugadas
 		int size = usu.getlUsuPar().size();
 		
-		//numero de veces que quedo primero segundo y tercero cantando bingo y linea
-		long numPrimeroB = usu.getlUsuPar().stream().filter(x -> x.getPosicionBingo() == 1).count();
-		long numSegundoB = usu.getlUsuPar().stream().filter(x -> x.getPosicionBingo() == 2).count();
-		long numTerceroB = usu.getlUsuPar().stream().filter(x -> x.getPosicionBingo() == 3).count();
-		long numPrimeroL = usu.getlUsuPar().stream().filter(x -> x.getPosicionLinea() == 1).count();
-		long numSegundoL = usu.getlUsuPar().stream().filter(x -> x.getPosicionLinea() == 2).count();
-		long numTerceroL = usu.getlUsuPar().stream().filter(x -> x.getPosicionLinea() == 3).count();
+		long numPrimeroB = 0;
 		
-		//formatea con dos decimales como maximo
-		DecimalFormat df = new DecimalFormat("#.##");
-				
-		//numero de veces en porcentaje que quedo primero segundo y tercero cantando bingo y linea
-		model.addAttribute("numPrimeroB", df.format((double)numPrimeroB / size * 100) + "%");
-		model.addAttribute("numSegundoB", df.format((double)numSegundoB / size * 100) + "%");
-		model.addAttribute("numTerceroB", df.format((double)numTerceroB / size * 100) + "%");
-		model.addAttribute("numPrimeroL", df.format((double)numPrimeroL / size * 100) + "%");
-		model.addAttribute("numSegundoL", df.format((double)numSegundoL / size * 100) + "%");
-		model.addAttribute("numTerceroL", df.format((double)numTerceroL / size * 100) + "%");
+		//si ha jugado partidas
+		if (size != 0) {
+			
+			//numero de veces que quedo primero segundo y tercero cantando bingo y linea
+			numPrimeroB = usu.getlUsuPar().stream().filter(x -> x.getPosicionBingo() == 1).count();
+			long numSegundoB = usu.getlUsuPar().stream().filter(x -> x.getPosicionBingo() == 2).count();
+			long numTerceroB = usu.getlUsuPar().stream().filter(x -> x.getPosicionBingo() == 3).count();
+			long numPrimeroL = usu.getlUsuPar().stream().filter(x -> x.getPosicionLinea() == 1).count();
+			long numSegundoL = usu.getlUsuPar().stream().filter(x -> x.getPosicionLinea() == 2).count();
+			long numTerceroL = usu.getlUsuPar().stream().filter(x -> x.getPosicionLinea() == 3).count();
+			
+			//formatea con dos decimales como maximo
+			DecimalFormat df = new DecimalFormat("#.##");
+					
+			//numero de veces en porcentaje que quedo primero segundo y tercero cantando bingo y linea
+			model.addAttribute("numPrimeroB", df.format((double)numPrimeroB / size * 100) + "%");
+			model.addAttribute("numSegundoB", df.format((double)numSegundoB / size * 100) + "%");
+			model.addAttribute("numTerceroB", df.format((double)numTerceroB / size * 100) + "%");
+			model.addAttribute("numPrimeroL", df.format((double)numPrimeroL / size * 100) + "%");
+			model.addAttribute("numSegundoL", df.format((double)numSegundoL / size * 100) + "%");
+			model.addAttribute("numTerceroL", df.format((double)numTerceroL / size * 100) + "%");
+			
+			//si no ha jugador partidas
+		} else {
+			model.addAttribute("numPrimeroB", "0%");
+			model.addAttribute("numSegundoB", "0%");
+			model.addAttribute("numTerceroB", "0%");
+			model.addAttribute("numPrimeroL", "0%");
+			model.addAttribute("numSegundoL", "0%");
+			model.addAttribute("numTerceroL", "0%");
+		}
 		
 		model.addAttribute("partidasJugadas", size);
 		model.addAttribute("victorias", numPrimeroB);
@@ -91,31 +116,6 @@ public class PerfilController {
 		return RR.CARPETA_PERFILES + "perfil";
 	}
 	
-	@RequestMapping("/actualizarPerfil")
-	public String actualizarPerfil(@RequestParam("imagen") MultipartFile image, Authentication authentication) {
-		
-		UsuarioVO usuario = usuarioService.findByNombre("Dani");
-		
-		if (!image.isEmpty()) {
-			
-			try {
-				//lo maximo que deja mysql por defecto son 4MB, el maximo que dejamos en el servidor
-				//tanto como de subida de archivos como de request son 3MB por si acaso
-				//TODO: acordarse de tratar ambos errores en el error handler porque si no se interrumpe la conexion
-				usuario.setImagenPerfil(Base64.getEncoder().encodeToString(image.getBytes()));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-		} else {
-			usuario.setImagenPerfil(null);
-		}
-		
-		usuarioService.save(usuario);
-		
-		return "redirect:/perfil/" + usuario.getNombre();
-	}
-	
 	@RequestMapping("/{nombre}/imagen")
 	public void getImagenAsBase64(@PathVariable("nombre") String nombre, HttpServletResponse response,HttpServletRequest request) 
 	          throws ServletException, IOException{
@@ -129,13 +129,119 @@ public class PerfilController {
 		    response.getOutputStream().write(Base64.getDecoder().decode(usuario.getImagenPerfil()));
 		    
 		} else {
-			//esto probablemente no va funcionar cuando lo pasemos a war
 			Resource resource = new ClassPathResource("/static/imgs/fotodefecto.jpg");
 			response.getOutputStream().write(Files.readAllBytes(resource.getFile().toPath()));
 		}
 	    
 		response.getOutputStream().close();
 		
+	}
+	
+	@RequestMapping("/editarPerfil/editar")
+	public String mostrarEditarPerfil(@RequestParam(required=false) String error, @RequestParam(required=false) String mensaje, 
+			Model model, Authentication authentication) {
+		
+		model.addAttribute("error", error);
+		model.addAttribute("mensaje", mensaje);
+		model.addAttribute("usuario", usuarioService.findByNombre(authentication.getName()));
+		
+		return RR.CARPETA_PERFILES + "editarPerfil";
+	}
+	
+	@RequestMapping("/accion/actualizarImagen")
+	public String actualizarImagen(@RequestParam("imagen") MultipartFile image, Authentication authentication, Model model) {
+		String resultado = "redirect:/perfil/editarPerfil/editar?";
+		
+		UsuarioVO usuario = usuarioService.findByNombre(authentication.getName());
+		
+		if (!image.isEmpty()) {
+			
+			try {
+				//lo maximo que deja mysql por defecto son 4MB, el maximo que dejamos en el servidor
+				//tanto como de subida de archivos como de request son 3MB por si acaso
+				//TODO: acordarse de tratar ambos errores en el error handler porque si no se interrumpe la conexion
+				usuario.setImagenPerfil(Base64.getEncoder().encodeToString(image.getBytes()));
+				
+				resultado += "mensaje=Se han guardado los cambios";
+			} catch (IOException e) {
+				e.printStackTrace();
+				
+				resultado += "error=No se han podido guardar los cambios";
+			}
+			
+		} else {
+			usuario.setImagenPerfil(null);
+			resultado += "mensaje=Se han guardado los cambios";
+		}
+		
+		usuarioService.save(usuario);
+		
+		return resultado;
+	}
+	
+	@RequestMapping("/accion/actualizarPerfil")
+	public String actualizarPerfil(UsuarioVO usu, Authentication authentication, Model model, HttpServletRequest request) {
+		String resultado = "redirect:/perfil/editarPerfil/editar?";
+		
+		UsuarioVO usuario= usuarioService.findByNombre(authentication.getName());
+		
+		if (usu.getPassword().length() > 5) {
+			
+			String antiguoNombre = usuario.getNombre();
+			
+			usuario.setNombre(usuarioUtils.XSSProtectionNombre(usu.getNombre()));
+			usuario.setCorreo(usu.getCorreo());
+			usuario.setPassword(usuarioUtils.encriptarPw(usu.getPassword()));
+			
+			if (usuarioUtils.validarUsuario(usuario)) {
+				
+				try{
+					usuarioService.save(usuario);
+					usuarioUtils.autologin(usuario, request);
+
+					//si el usuario cambio el nombre
+					if (!antiguoNombre.equals(usuario.getNombre())) {
+					
+						//xD
+						//obtenemos todas las relaciones del usuario
+						Utils.getRelaciones(usuario).stream()
+							.map(x -> x.getlMensajes()) //mapeamos para obtener los mensajes de cada relacion (esto devuelve List<List<MensajeVO>>)
+							.flatMap(List::stream) //mapeamos la lista de listas de MensajeVO a una sola lista
+							.filter(x -> x.getSender().equals(antiguoNombre)) //filtramos por el antiguo nombre de usuario
+							.forEach(x -> x.setSender(usuario.getNombre())); //le ponemos el nuevo nombre
+							
+						//guardamos el usuario
+						usuarioService.save(usuario);
+					}
+					
+					resultado += "mensaje=Se han guardado los cambios";
+					
+				} catch (DataIntegrityViolationException e) {
+					
+					//si el error es que es una clave duplicada
+					if(e.getMostSpecificCause() instanceof SQLIntegrityConstraintViolationException){
+						
+						resultado += "error=El nombre de usuario o correo ya han sido registrados";
+						
+						//si no es que el nombre o el correo son demasiados largo
+					} else {
+						resultado += "error=El usuario y/o el correo son demasiado largos";
+					}
+					
+				}
+				
+				//nombre o contraseña rellenados solo con espacios en blanco
+			} else {
+				resultado += "mensaje=El nombre de usuario y la contrase%C3%B1a no pueden estar vac%C3%ADos";
+			}
+			
+			//contraseña demasiado corta
+		} else {
+			resultado += "mensaje=La contrase%C3%B1a es demasiado corta";
+			
+		}
+		
+		return resultado;
 	}
 	
 	@RequestMapping("/amigos/proponerAmistad")
@@ -151,22 +257,30 @@ public class PerfilController {
 		
 			if (usu == null) return resultado + usuario.getNombre();
 			
-			UsuarioUsuarioVO usuUsu = new UsuarioUsuarioVO(new LinUsuUsuVO(), usuario, usu, false, new ArrayList<MensajeVO>());
-			
-			usuario.getlUsuUsuRequest().add(usuUsu);
-			
-			usuUsu.getlMensajes().add(new MensajeVO(usuUsu, usuario.getNombre(), "Solicitud de amistad!", Tipo.PETICION));
-			
-			try{
-				usuarioService.save(usuario);
+			//si no se mando ya la peticion
+			if (Utils.getRelacion(usuario, usu) == null) {
 				
-				//enviamos la notifiacion al usuario
-				Utils.enviarNotificacionUsuario(template, usuario.getNombre(), "Solicitud de amistad!", "/perfil/mensajes", usu.getNombre());
+				UsuarioUsuarioVO usuUsu = new UsuarioUsuarioVO(new LinUsuUsuVO(), usuario, usu, false, new ArrayList<MensajeVO>());
 				
-				resultado += usu.getNombre();
+				usuario.getlUsuUsuRequest().add(usuUsu);
 				
-			} catch (Exception e) {
-				resultado += usu.getNombre() + "?error=Ya sois amigos o ya ha mandado una solicitud de amistad";
+				usuUsu.getlMensajes().add(new MensajeVO(usuUsu, usuario.getNombre(), "Solicitud de amistad!", Tipo.PETICION));
+				
+				try{
+					usuarioService.save(usuario);
+					
+					//enviamos la notifiacion al usuario
+					Utils.enviarNotificacionUsuario(template, usuario.getNombre(), "Solicitud de amistad!", "/perfil/mensajes/ver", usu.getNombre());
+					
+					resultado += usu.getNombre();
+					
+				} catch (Exception e) {
+					resultado += usu.getNombre() + "?error=Ya sois amigos o ya ha mandado una solicitud de amistad";
+				}
+				
+				//si se mando la peticion
+			} else {
+				resultado += authentication.getName() + "?error=Ya le has mandado una petici%C3%B3n a este usuario";
 			}
 			
 		} else {
@@ -217,7 +331,7 @@ public class PerfilController {
 			//guardamos los cambios
 			usuarioService.save(usuario);
 			
-			resultado += "mensajes";
+			resultado += "mensajes/ver";
 			
 			//si no existe la relacion
 		} else {
@@ -262,7 +376,7 @@ public class PerfilController {
 		
 	}
 	
-	@RequestMapping("/mensajes")
+	@RequestMapping("/mensajes/ver")
 	public String mostrarMensajes(Model model, Authentication authentication) {
 		
 		UsuarioVO usuario = usuarioService.findByNombre(authentication.getName());
@@ -326,5 +440,22 @@ public class PerfilController {
 		
 	}
 	
+	@RequestMapping("/{nombre}/historial")
+	public String mostrarHistorialPartidas(@PathVariable("nombre") String nombre, Model model, Authentication authentication) {
+		
+		UsuarioVO usu = usuarioService.findByNombre(nombre);
+		
+		//si no existe el usuario redireccionamos al perfil del que inicio sesion
+		if (usu == null) return "redirect:/perfil/" + authentication.getName() + "?error=El usuario no existe";
+		
+		//ordenamos las partidas del usuario por fecha mas reciente
+		Collections.sort(usu.getlUsuPar(), (usuPar1, usuPar2) -> usuPar2.getPartida().getFecha().compareTo(usuPar1.getPartida().getFecha()));
+
+		model.addAttribute("usu", usu);
+		model.addAttribute("listaPartidas", usu.getlUsuPar().stream().limit(10).collect(Collectors.toList())); //obtenemos una lista de maximo 10 ultimas partidas del usuario
+		model.addAttribute("usuario", usuarioService.findByNombre(authentication.getName()));
+		
+		return RR.CARPETA_PERFILES + "historialPartidas";
+	}
 	
 }

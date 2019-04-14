@@ -65,12 +65,17 @@ body > div:not(#divInfoUsuario){
     margin-top: 100px;
 }
 
-/* clase para el contenedor de botones cuando no se es propietario de la sala */
+/* clase para el contenedor de botones cuando se necesita una columna */
+.de1{
+	grid-template-columns: 100%;
+}
+
+/* clase para el contenedor de botones cuando se necesitan dos columnas */
 .de2{
 	grid-template-columns: repeat(2, [column] 50%);
 }
 
-/* clase para el contenedor de botones cuando se es propietario de la sala */
+/* clase para el contenedor de botones cuando se necesitan tres columnas */
 .de3{
 	grid-template-columns: repeat(3, [column] 33%);
 }

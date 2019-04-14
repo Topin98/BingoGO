@@ -44,18 +44,19 @@
         <ul class="nav navbar-nav">
             <li class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
             <li class="active nav-item"><a href="/ranking" class="nav-link">Ranking</a></li>
+            <li class="active nav-item"><a href="/premios" class="nav-link">Premios</a></li>
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
             <li class="active nav-item infoUsuario">
            		<span th:text="${usuario.nombre}"></span>
-           		<img th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="imagen" width="40px" height="40px" />
+           		<img th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="imagen" width="40" height="40" />
            	</li>
         </ul>
     </nav>
     
     <div id="divInfoUsuario">
         <a th:href="@{'/perfil/' + ${usuario.nombre}}"><i class="fas fa-user"></i>&nbsp;Ver perfil</a>
-        <a th:href="@{/perfil/mensajes}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
+        <a th:href="@{/perfil/mensajes/ver}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
         <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i>&nbsp;Cerrar sesi&oacute;n</a>
     </div>
     
@@ -65,6 +66,7 @@
             <input type="text" name="nombre" placeholder="Buscar usuarios..." autocomplete="off" />
             <button type="submit"><i class="fas fa-search btn btn-primary"></i></button>
         </form>
+        <span><a th:href="@{'/perfil/' + ${usu.nombre} + '/historial'}" id="verPartidas" class="btn btn-primary"><i class="fas fa-gamepad"></i> Ver partidas</a></span>
         <div th:class="${usu.nombre == usuario.nombre ? 'rip' : ''}">
 	        <a th:href="@{/perfil/amigos/proponerAmistad(nombreUsuario=${usu.nombre})}" th:if="${!#lists.contains(listaAmigos, usuario)}"  th:class="${!#lists.contains(listaAmigosPendientes, usuario) and usu.nombre != usuario.nombre ? 'btn btn-primary' : 'btn btn-primary quitado'}" id="btnProponerAmistad"><i class="fas fa-user-friends"></i> Añadir amigo</a>
   	        <a th:href="@{/perfil/amigos/eliminarAmistad(nombreUsuario=${usu.nombre})}" th:if="${#lists.contains(listaAmigos, usuario)}" id="btnEliminarAmistad" class="btn btn-primary"><i class="fas fa-user-slash"></i> Eliminar amigo</a>
@@ -76,8 +78,8 @@
         <div id="datosPerfil">
             <img th:src="@{'/perfil/' + ${usu.nombre} + '/imagen'}" alt="foto" width="300" height="300" />
             <div th:if="${usu.nombre == usuario.nombre}">
-            	<a href="#" class="btn btn-primary">Editar perfil</a>
-            	<a th:href="@{/perfil/mensajes}" class="btn btn-primary">Ver mensajes</a>
+            	<a th:href="@{/perfil/editarPerfil/editar}" class="btn btn-primary">Editar perfil</a>
+            	<a th:href="@{/perfil/mensajes/ver}" class="btn btn-primary">Ver mensajes</a>
             </div>
             <div th:text="${'Se unio el ' + #temporals.format(usu.fechaRegistro,'dd-MM-yyyy')}"></div>
             <div id="amigosContainer" th:class="${#lists.size(listaAmigos) == 0 ? 'ocultar' : ''}">
@@ -125,11 +127,11 @@
             </div>
             <div class="filaDe3">
                 <div>
-                    <div>% 1º L&iacute;nea <img src="/imgs/linea1.png" alt="fotoTercero" width="40" height="40"/></div>
+                    <div>% 1º L&iacute;nea <img src="/imgs/linea1.png" alt="fotoPrimero" width="40" height="40"/></div>
                     <div th:text="${numPrimeroL}"></div>
                 </div>
                 <div>
-                    <div>% 2º L&iacute;nea <img src="/imgs/linea2.png" alt="fotoTercero" width="40" height="40"/></div>
+                    <div>% 2º L&iacute;nea <img src="/imgs/linea2.png" alt="fotoSegundo" width="40" height="40"/></div>
                     <div th:text="${numSegundoL}"></div>
                 </div>
                 <div>

@@ -8,4 +8,5 @@ public class RR {
 	public static final String CARPETA_PERFILES = "perfiles/";
 	public static final String CARPETA_PARTIDAS = "partidas/";
 	public static final String CARPETA_RANKINGS = "rankings/";
+	public static final String CARPETA_PREMIOS = "premios/";
 }

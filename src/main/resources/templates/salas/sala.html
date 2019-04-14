@@ -43,6 +43,7 @@
         <ul class="nav navbar-nav">
             <li class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
             <li class="active nav-item"><a href="/ranking" class="nav-link">Ranking</a></li>
+            <li class="active nav-item"><a href="/premios" class="nav-link">Premios</a></li>
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
             <li class="active nav-item infoUsuario">
@@ -54,7 +55,7 @@
 
 	<div id="divInfoUsuario">
         <a th:href="@{'/perfil/' + ${usuario.nombre}}"><i class="fas fa-user"></i>&nbsp;Ver perfil</a>
-        <a th:href="@{/perfil/mensajes}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
+        <a th:href="@{/perfil/mensajes/ver}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
         <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i>&nbsp;Cerrar sesi&oacute;n</a>
     </div>
     
@@ -64,9 +65,9 @@
             <div id="listaJugadores">
                 <div th:each="usu: ${sala.lUsuarios}" th:text="${usu.nombre}" th:data-nombre="${usu.nombre}" ></div>
             </div>
-            <div id="opciones" th:class="${usuario.idUsuario == sala.idPropietario ? 'de3' : 'de2'}">
+            <div id="opciones" th:class="${usuario.idUsuario == sala.idPropietario and sala.publica ? 'de3' : usuario.idUsuario == sala.idPropietario or sala.publica  ? 'de2' : 'de1'}">
                 <button id="btnAbandonarSala" class="btn btn-primary">Abandonar sala</button>
-                <button id="btnInvitarAmigos" class="btn btn-primary">Invitar amigos</button>
+                <button th:if="${sala.publica}" id="btnInvitarAmigos" class="btn btn-primary">Invitar amigos</button>
                 <button th:if="${usuario.idUsuario == sala.idPropietario}" id="btnEmpezarPartida" class="btn btn-primary">Empezar partida</button>
             </div>
         </div>
@@ -84,7 +85,7 @@
         </form>
     </div>
 
-	<div id="dialogoAmigos" title="Invitar amigos">
+	<div th:if="${sala.publica}" id="dialogoAmigos" title="Invitar amigos">
         <div th:each="amigo: ${listaAmigos}" th:if="${!#lists.contains(sala.lUsuarios, amigo)}" th:data-nombre="${amigo.nombre}">
             <span th:text="${amigo.nombre}"></span>
             <button class="btn btn-primary" th:data-nombre="${amigo.nombre}">Invitar</button>

@@ -108,7 +108,7 @@ public class Utils {
 		} catch (Exception e) {
 			
 			//mostramos el error y devolvemos null 
-			System.out.println("Error:" + e.getMessage());
+			System.out.println("No hay relacion entre los usuarios:" + e.getMessage());
 			
 			return null;
 		}

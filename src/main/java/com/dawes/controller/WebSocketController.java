@@ -431,13 +431,8 @@ public class WebSocketController {
 					//guardamos el mensaje en la base de datos
 					usuarioService.save(usuarioEnviador);
 					
-					//json que se va a mandar al cliente este en la pestaña que este
-					JSONObject json = new JSONObject();
-					json.put("nombreUsuario", usuarioEnviador.getNombre());
-					json.put("mensaje", mensaje);
-					json.put("url", "/perfil/mensajes");
-					
-					template.convertAndSend("/usuario/" + usuarioRecibidor.getNombre(), json.toString());
+					//notificacion que le llega al usuario este donde este
+					Utils.enviarNotificacionUsuario(template, usuarioEnviador.getNombre(), mensaje, "/perfil/mensajes/ver", usuarioRecibidor.getNombre());
 					
 				} else {
 					jsonRespuesta = new JSONObject();
@@ -457,7 +452,7 @@ public class WebSocketController {
 	//este metodo no devuelve ningun mensaje, si no que llama a utils para mandarselo al usuario este donde este
 	@MessageMapping("/usuario/{nombreUsuario}/invitarSala")
 	public void invitarUsuarioSala(@DestinationVariable("nombreUsuario") String nombreUsuario, Authentication authentication) {
-		System.out.println(nombreUsuario);
+		
 		UsuarioVO usuario = usuarioService.findByNombre(authentication.getName());
 		UsuarioVO usu = usuarioService.findByNombre(nombreUsuario);
 		

@@ -33,7 +33,7 @@ public class SalaVO {
 	@Column(nullable=false)
 	private int idPropietario;
 	
-	@Column(nullable=false, length=30)
+	@Column(nullable=false, length=15)
 	private String nombre;
 	
 	@ColumnDefault("false")

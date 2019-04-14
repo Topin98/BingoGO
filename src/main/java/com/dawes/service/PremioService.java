@@ -59,5 +59,7 @@ public interface PremioService {
 	void deleteAll();
 
 	<S extends PremioVO> List<S> findAll(Example<S> example, Sort sort);
+	
+	PremioVO findByNombre(String nombre);
 
 }

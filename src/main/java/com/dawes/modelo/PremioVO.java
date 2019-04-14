@@ -28,7 +28,7 @@ public class PremioVO {
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<UsuarioPremioVO> lUsuPre;
 	
-	@Column(nullable=false)
+	@Column(nullable=false, unique=true, length=30)
 	private String nombre;
 	
 	@Column(nullable=false)
@@ -37,7 +37,7 @@ public class PremioVO {
 	private int precio;
 	
 	@Lob
-	private byte[] imagen;
+	private String imagen;
 
 	public PremioVO() {
 		super();
@@ -45,7 +45,7 @@ public class PremioVO {
 		this.lUsuPre = new ArrayList<UsuarioPremioVO>();
 	}
 
-	public PremioVO(List<UsuarioPremioVO> lUsuPre, String nombre, String descripcion, int precio, byte[] imagen) {
+	public PremioVO(List<UsuarioPremioVO> lUsuPre, String nombre, String descripcion, int precio, String imagen) {
 		super();
 		this.lUsuPre = lUsuPre;
 		this.nombre = nombre;
@@ -55,7 +55,7 @@ public class PremioVO {
 	}
 
 	public PremioVO(int idPremio, List<UsuarioPremioVO> lUsuPre, String nombre, String descripcion, int precio,
-			byte[] imagen) {
+			String imagen) {
 		super();
 		this.idPremio = idPremio;
 		this.lUsuPre = lUsuPre;
@@ -105,11 +105,11 @@ public class PremioVO {
 		this.precio = precio;
 	}
 
-	public byte[] getImagen() {
+	public String getImagen() {
 		return imagen;
 	}
 
-	public void setImagen(byte[] imagen) {
+	public void setImagen(String imagen) {
 		this.imagen = imagen;
 	}
 
@@ -119,7 +119,7 @@ public class PremioVO {
 		int result = 1;
 		result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
 		result = prime * result + idPremio;
-		result = prime * result + Arrays.hashCode(imagen);
+		result = prime * result + ((imagen == null) ? 0 : imagen.hashCode());
 		result = prime * result + ((lUsuPre == null) ? 0 : lUsuPre.hashCode());
 		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 		result = prime * result + precio;
@@ -142,7 +142,10 @@ public class PremioVO {
 			return false;
 		if (idPremio != other.idPremio)
 			return false;
-		if (!Arrays.equals(imagen, other.imagen))
+		if (imagen == null) {
+			if (other.imagen != null)
+				return false;
+		} else if (!imagen.equals(other.imagen))
 			return false;
 		if (lUsuPre == null) {
 			if (other.lUsuPre != null)
@@ -162,10 +165,7 @@ public class PremioVO {
 	@Override
 	public String toString() {
 		return "PremioVO [idPremio=" + idPremio + ", lUsuPre=" + lUsuPre + ", nombre=" + nombre + ", descripcion="
-				+ descripcion + ", precio=" + precio + ", imagen=" + Arrays.toString(imagen) + "]";
+				+ descripcion + ", precio=" + precio + ", imagen=" + imagen + "]";
 	}
-
-	
-	
 	
 }

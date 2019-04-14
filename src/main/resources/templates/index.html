@@ -36,6 +36,7 @@
         <ul class="nav navbar-nav">
             <li sec:authorize="isAuthenticated()" class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
             <li sec:authorize="isAuthenticated()" class="active nav-item"><a href="/ranking" class="nav-link">Ranking</a></li>
+            <li sec:authorize="isAuthenticated()" class="active nav-item"><a href="/premios" class="nav-link">Premios</a></li>
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
             <li sec:authorize="isAnonymous()" class="active nav-item"><a href="/registro" class="nav-link"><i class="fas fa-user-plus"></i> Registrarse</a></li>
@@ -59,7 +60,7 @@
     
     <div sec:authorize="isAuthenticated()" id="divInfoUsuario">
         <a th:href="@{'/perfil/' + ${usuario.nombre}}"><i class="fas fa-user"></i>&nbsp;Ver perfil</a>
-        <a th:href="@{/perfil/mensajes}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
+        <a th:href="@{/perfil/mensajes/ver}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
         <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i>&nbsp;Cerrar sesi&oacute;n</a>
     </div>
 

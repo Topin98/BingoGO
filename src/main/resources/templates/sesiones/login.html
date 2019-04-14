@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
         crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" media="screen" href="css/index.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="css/registro.css" />
+    <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/index.css}" />
+    <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/registro.css}" />
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -25,21 +25,7 @@
 
     <nav class="navbar navbar-dark bg-custom navbar-expand-md fixed-top">
         <a class="navbar-brand" href="/">BingoGO</a>
-        <ul class="nav navbar-nav">
-            <li sec:authorize="isAuthenticated()" class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
-            <li sec:authorize="isAuthenticated()" class="active nav-item"><a href="/ranking" class="nav-link">Ranking</a></li>
-        </ul>
     </nav>
-
-    <div id="divLogin">
-        <i class="fas fa-times cerrar"></i>
-        <h4>Est&aacute;s registrado?</h4>
-        <form id="formLogin" action="/login" method="POST">
-            <input type="text" name="username" placeholder="Usuario" required />
-            <input type="password" name="password" placeholder="Contraseña" required />
-            <button id="btnLogin" type="submit">Iniciar sesi&oacute;n</button>
-        </form>
-    </div>
 
     <div class="form">
         <div class="titulo">BingoGO</div>

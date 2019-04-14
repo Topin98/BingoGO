@@ -43,6 +43,7 @@
         <ul class="nav navbar-nav">
             <li class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
             <li class="active nav-item"><a href="/ranking" class="nav-link">Ranking</a></li>
+            <li class="active nav-item"><a href="/premios" class="nav-link">Premios</a></li>
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
             <li class="active nav-item infoUsuario">
@@ -54,7 +55,7 @@
     
     <div id="divInfoUsuario">
         <a th:href="@{'/perfil/' + ${usuario.nombre}}"><i class="fas fa-user"></i>&nbsp;Ver perfil</a>
-        <a th:href="@{/perfil/mensajes}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
+        <a th:href="@{/perfil/mensajes/ver}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
         <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i>&nbsp;Cerrar sesi&oacute;n</a>
     </div>
     
@@ -72,13 +73,14 @@
             <div th:each="usuUsu: ${listaRelaciones}" th:class="${usuUsu.usuario1.nombre != usuario.nombre ? #strings.toUpperCase(usuUsu.usuario1.nombre) : #strings.toUpperCase(usuUsu.usuario2.nombre)}">
             	<div th:each="mensaje: ${usuUsu.lMensajes}" th:class="${mensaje.sender != usuario.nombre ? 'recibido' : 'enviado'}">
             		<th:block th:switch="${mensaje.tipo}">
-            			<div th:case="${T(com.dawes.modelo.MensajeVO.Tipo).MENSAJE}" th:text="${mensaje.contenido}"></div>
-            			<div th:case="${T(com.dawes.modelo.MensajeVO.Tipo).PETICION}" class="peticion">
+            			<div th:case="${mensaje.Tipo.MENSAJE}" th:text="${mensaje.contenido}"></div>
+            			<div th:case="${mensaje.Tipo.PETICION}" class="peticion">
             				<div th:text="${mensaje.contenido}"></div>
             				<a th:href="@{/perfil/amigos/contestarAmistad(nombreUsuario=${mensaje.sender}, aceptar=true)}" class="btn btn-primary">Aceptar</a>
             				<a th:href="@{/perfil/amigos/contestarAmistad(nombreUsuario=${mensaje.sender}, aceptar=false)}" class="btn btn-primary">Rechazar</a>
+            				<a th:href="@{'/perfil/' + ${mensaje.sender}}" class="btn btn-info">Ver perfil</a>
             			</div>
-            			<div th:case="${T(com.dawes.modelo.MensajeVO.Tipo).INVITACION}">
+            			<div th:case="${mensaje.Tipo.INVITACION}">
             				<span>Invitaci&oacute;n a partida</span>
             				<a th:href="${mensaje.contenido}" class="btn btn-primary">Unirse</a>
             			</div>

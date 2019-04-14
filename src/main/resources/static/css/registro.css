@@ -21,7 +21,9 @@ body {
 
 .titulo{
     height: 120px;
-    line-height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 50px;
     color: black;
 }
@@ -45,7 +47,7 @@ body {
     display: none;
 }
 
-.form button {
+.form button:not(.btnImagen) {
     margin: auto;
     margin-top: 20px;
     font-family: "Roboto", sans-serif;
@@ -60,7 +62,7 @@ body {
     border-radius: 25px;
 }
 
-.form button:hover {
+.form button:not(.btnImagen):hover {
     background: #0288D1;
 }
 

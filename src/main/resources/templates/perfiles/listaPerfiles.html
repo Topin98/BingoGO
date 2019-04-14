@@ -43,18 +43,19 @@
         <ul class="nav navbar-nav">
             <li class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
             <li class="active nav-item"><a href="/ranking" class="nav-link">Ranking</a></li>
+            <li class="active nav-item"><a href="/premios" class="nav-link">Premios</a></li>
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
             <li class="active nav-item infoUsuario">
            		<span th:text="${usuario.nombre}"></span>
-           		<img th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="imagen" width="40px" height="40px" />
+           		<img th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="imagen" width="40" height="40" />
            	</li>
         </ul>
     </nav>
     
     <div id="divInfoUsuario">
         <a th:href="@{'/perfil/' + ${usuario.nombre}}"><i class="fas fa-user"></i>&nbsp;Ver perfil</a>
-        <a th:href="@{/perfil/mensajes}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
+        <a th:href="@{/perfil/mensajes/ver}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
         <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i>&nbsp;Cerrar sesi&oacute;n</a>
     </div>
     
