@@ -63,7 +63,7 @@
     
         <div id="cabecera">
             <form th:action="@{/perfil/listar/filtrar}" method="GET">
-                <input type="text" name="nombre" placeholder="Buscar usuarios..." autocomplete="off" th:value="${nombreFiltroPerfil}" />
+                <input type="text" name="nombre" placeholder="Buscar usuarios..." maxlength="30" autocomplete="off" th:value="${nombreFiltroPerfil}" />
                 <button type="submit"><i class="fas fa-search btn btn-primary"></i></button>
             </form>
         </div>

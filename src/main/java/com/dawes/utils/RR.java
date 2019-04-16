@@ -1,6 +1,6 @@
 package com.dawes.utils;
 
-//RR viene de rutas y resources, si no gusta el nombre pues se refactorizara xD
+//RR viene de rutas y resources
 public class RR {
 	
 	public static final String CARPETA_SESIONES = "sesiones/";
@@ -9,4 +9,5 @@ public class RR {
 	public static final String CARPETA_PARTIDAS = "partidas/";
 	public static final String CARPETA_RANKINGS = "rankings/";
 	public static final String CARPETA_PREMIOS = "premios/";
+	public static final String CARPETA_ADMIN = "admin/";
 }

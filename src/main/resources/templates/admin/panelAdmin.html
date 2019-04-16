@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Panel de administraci&oacute;n</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    
+    <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/index.css}" />
+	<link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/panelAdmin.css}" />
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+        
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.3.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    
+	<script th:src="@{/js/utils.js}"></script>
+    <script th:src="@{/js/panelAdmin.js}"></script>
+
+</head>
+<body>
+
+	<nav class="navbar navbar-dark bg-custom navbar-expand-md fixed-top">
+        <a class="navbar-brand" href="/">BingoGO</a>
+        <ul class="nav navbar-nav">
+            <li class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
+            <li class="active nav-item"><a href="/ranking" class="nav-link">Ranking</a></li>
+            <li class="active nav-item"><a href="/premios" class="nav-link">Premios</a></li>
+        </ul>
+        <ul class="nav navbar-nav ml-auto btnsSesion">
+            <li class="active nav-item infoUsuario">
+           		<span th:text="${usuario.nombre}"></span>
+           		<img th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="imagen" width="40" height="40" />
+           	</li>
+        </ul>
+    </nav>
+    
+    <div id="divInfoUsuario">
+        <a th:href="@{'/perfil/' + ${usuario.nombre}}"><i class="fas fa-user"></i>&nbsp;Ver perfil</a>
+        <a th:href="@{/perfil/mensajes/ver}"><i class="fas fa-envelope"></i>&nbsp;Mensajes</a>
+        <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i>&nbsp;Cerrar sesi&oacute;n</a>
+    </div>
+
+	<div id="container">
+	
+		<div id="cabecera">
+	        <form th:action="@{/admin/usuarios/filtrar}" method="GET">
+                <input type="text" name="nombre" placeholder="Buscar usuarios..." maxlength="30" autocomplete="off" th:value="${nombreFiltroPerfilAdmin}" />
+	            <button type="submit"><i class="fas fa-search btn btn-primary"></i></button>
+	        </form>
+	    </div>
+	        
+		<div id="accordion">
+			<div th:each="usu: ${listaUsuarios}" class="card">
+	            <div class="card-header">
+	                <div th:class="${usu.idUsuario != usuario.idUsuario ? 'card-link titulo collapsed de4' : 'card-link titulo collapsed de2'}" data-toggle="collapse" th:href="@{'#usuario' + ${usu.idUsuario}}">
+	                    <img th:src="@{'/perfil/' + ${usu.nombre} + '/imagen'}" alt="imagen" width="40" height="40" />
+	                    <div th:text="${usu.nombre}"></div>
+	                    <a th:href="@{'/perfil/' + ${usu.nombre}}" class="btn btn-primary opcion"><i class="fas fa-user"></i> Ver perfil</a>
+                        <button class="btn btn-primary opcion btnMandarCorreo" th:data-correo="${usu.correo}"><i class="fas fa-paper-plane"></i> Mandar correo</button>
+                        <a th:if="${#lists.isEmpty(usu.lUsuarioRol.?[rol.idRol == 2]) and usu.idUsuario != usuario.idUsuario}" th:href="@{'/admin/' + ${usu.idUsuario} + '/tratarAdmin'}" class="btn btn-primary opcion"><i class="fas fa-user-shield"></i> Dar admin</a>
+                        <a th:if="${!#lists.isEmpty(usu.lUsuarioRol.?[rol.idRol == 2]) and usu.idUsuario != usuario.idUsuario}" th:href="@{'/admin/' + ${usu.idUsuario} + '/tratarAdmin'}" class="btn btn-primary opcion">Quitar admin</a>
+                        <a th:if="${usu.enabled and usu.idUsuario != usuario.idUsuario}" th:href="@{'/admin/' + ${usu.idUsuario} + '/tratarBan'}" class="btn btn-danger opcion"><i class="fas fa-ban"></i> Banear</a>
+                        <a th:if="${!usu.enabled and usu.idUsuario != usuario.idUsuario}" th:href="@{'/admin/' + ${usu.idUsuario} + '/tratarBan'}" class="btn btn-primary opcion">Desbanear</a>
+	                </div>
+	            </div>
+	            <div th:id="${'usuario' + usu.idUsuario}" class="collapse" data-parent="#accordion">
+	                <div class="card-body">
+	                    <div class="containerInfo">
+	                        <div class="tituloCard">
+	                            <div th:text="${'Premios pendientes (' + #lists.size(usu.lUsuPre) + ')'}"></div>
+	                        </div>
+	                        <div class="info">
+	                            <table class="table-bordered">
+	                                <tr>
+	                                    <th>Nombre</th>
+	                                    <th>Fecha</th>
+	                                    <th>Enviar</th>
+	                                </tr>
+	                                <tr th:each="usuPre: ${usu.lUsuPre}">
+	                                    <td th:text="${usuPre.premio.nombre}"></td>
+	                                    <td th:text="${usuPre.fecha}"></td>
+	                                    <td><a th:href="@{/admin/mandarCorreoPremio(idUsuario=${usuPre.usuario.idUsuario}, idPremio=${usuPre.premio.idPremio}, correoDestino=${usuPre.usuario.correo})}" class="btn btn-primary aMandarCorreo">Enviar</a></td>
+	                                </tr>
+	                            </table>
+	                        </div>
+	                    </div>
+	                    <div class="containerInfo">
+	                        <div class="tituloCard">
+	                            <div th:text="${'Report recibidos (' + #lists.size(usu.lReportsRecibidos) + ')'}"></div>
+	                        </div>
+	                        <div class="info">
+	                            <ul>
+	                                <li th:each="report: ${usu.lReportsRecibidos}">
+	                                	<a th:href="@{'/perfil/' + ${report.usuario1.nombre}}" th:text="${report.usuario1.nombre}"></a>
+	                                	<span th:text="${': ' + report.motivo}"></span>
+	                                </li>
+	                            </ul>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    
+	    <div id="paginacion" th:if="${#lists.size(numPaginas) > 0}">
+            <div><a th:href="@{/admin/usuarios}">&lt;&lt;</a></div>
+            <div th:if="${listaUsuarios.number > 0}"><a th:href="@{/admin/usuarios(pagina=${listaUsuarios.number})}" th:text="${listaUsuarios.number}"></a></div>
+            <div class="current"><a th:href="@{/admin/usuarios(pagina=${listaUsuarios.number + 1})}" th:text="${listaUsuarios.number + 1}"></a></div>
+        	<div th:if="${#lists.size(numPaginas) > listaUsuarios.number + 1}"><a th:href="@{/admin/usuarios(pagina=${listaUsuarios.number + 2})}" th:text="${listaUsuarios.number + 2}"></a></div>
+        	<div><a th:href="@{/admin/usuarios(pagina=${#lists.size(numPaginas)})}">&gt;&gt;</a></div>
+        </div>
+        
+    </div>
+       
+    <div id="dialogoMensaje" title="Correo enviado">
+    	<p></p>
+   	</div> 
+   
+    <div id="dialogoCorreo" title="Reportar jugador">
+	    <form th:action="@{/admin/mandarCorreo}" method="POST" class="formMandarCorreo">
+	        <input type="text" name="correoDestino" id="correoDestino" readonly required />
+	        <input type="text" name="asunto" placeholder="Asunto..." maxlength="30" required />
+	        <textarea name="mensaje" required></textarea>
+	        <button type="submit" class="btn btn-primary">Enviar</button>
+	    </form>
+    </div>
+    
+    <div class="loading"></div>
+    
+	<input id="nombreUsuario" type="hidden" th:value="${usuario.nombre}" />
+
+</body>
+</html>

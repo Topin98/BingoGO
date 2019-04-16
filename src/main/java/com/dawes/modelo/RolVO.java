@@ -26,7 +26,7 @@ public class RolVO {
 	@Column(nullable=false)
 	private String nombre;
 	
-	@OneToMany(mappedBy = "rol", cascade= CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "rol")
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<UsuarioRolVO> lUsuarioRol;
 

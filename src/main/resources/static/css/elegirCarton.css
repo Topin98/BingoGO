@@ -1,0 +1,50 @@
+body{
+    background-color: lightblue;
+}
+
+#countdownContainer{
+    width: 30%;
+    margin: auto;
+    margin-top: 80px;
+    font-size: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+#countdown {
+    width: 30px;
+    text-align: center;
+    margin-left: 30px;
+}
+
+#container{
+    display: flex;
+    align-items: center;
+    width: 80%;
+    margin: auto;
+    margin-top: 40px;
+}
+
+#container > a {
+    flex-grow: 1;
+    text-align: center;
+    margin: 40px;
+    background-color: rgb(167, 192, 255);
+    border: 1px solid blue;
+    text-decoration: none;
+}
+
+#container > a:hover{
+    background-color: rgb(136, 169, 255);
+}
+
+#container div{
+    font-size: 50px;
+}
+
+/* efecto de parpadeo */
+@keyframes flickerAnimation {
+    0%   { opacity: 1; }
+    50%  { opacity: 0; }
+    100% { opacity: 1; }
+}

@@ -37,6 +37,7 @@
             <li sec:authorize="isAuthenticated()" class="active nav-item"><a href="/salas" class="nav-link">Salas</a></li>
             <li sec:authorize="isAuthenticated()" class="active nav-item"><a href="/ranking" class="nav-link">Ranking</a></li>
             <li sec:authorize="isAuthenticated()" class="active nav-item"><a href="/premios" class="nav-link">Premios</a></li>
+            <li sec:authorize="hasRole('ADMIN')" class="active nav-item"><a href="/admin/usuarios" class="nav-link">Usuarios</a></li>
         </ul>
         <ul class="nav navbar-nav ml-auto btnsSesion">
             <li sec:authorize="isAnonymous()" class="active nav-item"><a href="/registro" class="nav-link"><i class="fas fa-user-plus"></i> Registrarse</a></li>

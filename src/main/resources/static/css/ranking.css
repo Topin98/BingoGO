@@ -1,5 +1,6 @@
 body{
     background-color: lightblue;
+    overflow: auto;
 }
 
 #titulos{
@@ -21,6 +22,7 @@ body{
 /* Estilos para los rankings */
 .ranking{
     margin-top: 50px;
+    margin-bottom: 50px;
 }
 
 #rankingVictorias, #rankingRicos{

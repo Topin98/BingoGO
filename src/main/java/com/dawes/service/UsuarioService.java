@@ -63,6 +63,8 @@ public interface UsuarioService {
 
 	UsuarioVO findByNombre(String nombre);
 
+	UsuarioVO findByNombreAndEnabledTrue(String nombre);
+	
 	UsuarioVO findByCorreo(String correo);
 	
 	List<UsuarioVO> findTop100ByOrderByPuntuacionTotalDesc();

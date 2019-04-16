@@ -154,6 +154,11 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 	}
 	
 	@Override
+	public UsuarioVO findByNombreAndEnabledTrue(String nombre) {
+		return usuarioRepository.findByNombreAndEnabledTrue(nombre);
+	}
+
+	@Override
 	public UsuarioVO findByCorreo(String correo) {
 		return usuarioRepository.findByCorreo(correo);
 	}
@@ -181,7 +186,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String nombre) {
 		
-		UsuarioVO usuario = usuarioRepository.findByNombre(nombre);
+		UsuarioVO usuario = usuarioRepository.findByNombreAndEnabledTrue(nombre);
 		
 		if (usuario != null && usuario.getlUsuarioRol() != null) {
 				

@@ -7,7 +7,6 @@ $(function() {
     $("#dialogoReport").dialog({
     	autoOpen: false,
         resizable: false,
-        height: "auto",
         width: 400,
         height: 230,
         modal: true

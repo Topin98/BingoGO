@@ -14,6 +14,9 @@ import com.dawes.modelo.UsuarioVO;
 public interface UsuarioRepository extends JpaRepository<UsuarioVO, Integer>{
 	
 	UsuarioVO findByNombre(String nombre);
+	
+	UsuarioVO findByNombreAndEnabledTrue(String nombre);
+	
 	UsuarioVO findByCorreo(String correo);
 	
 	//obtiene los 100 usuarios con mejor puntuacion

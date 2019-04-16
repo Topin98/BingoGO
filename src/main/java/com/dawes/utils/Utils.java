@@ -9,8 +9,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 
@@ -163,6 +164,15 @@ public class Utils {
 		json.put("url", url);
 		
 		template.convertAndSend("/usuario/" + nombreRecibidor, json.toString());
+	}
+	
+	public static void enviarCorreo(JavaMailSender emailSender, String to, String subject, String text) {
+		
+		SimpleMailMessage message = new SimpleMailMessage(); 
+        message.setTo(to); 
+        message.setSubject(subject); 
+        message.setText(text);
+        emailSender.send(message);
 	}
 	
 }

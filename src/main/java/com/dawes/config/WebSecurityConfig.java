@@ -22,7 +22,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 			.antMatchers("/", "/css/**", "/js/**", "/login", "/registro", "/logout").permitAll()
-			.antMatchers("/admin").hasAnyRole("ADMIN")
+			.antMatchers("/admin/**").hasAnyRole("ADMIN")
 			.anyRequest().authenticated()
 			.and()
 			.formLogin().loginPage("/login").defaultSuccessUrl("/");

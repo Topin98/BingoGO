@@ -73,8 +73,9 @@
         </div>
         <div id="infoJugador">
             <img id="imagenJugador" th:src="@{'/perfil/' + ${usuario.nombre} + '/imagen'}" alt="foto" width="150" height="150" />
-            <div id="nombreJugador" th:text="${usuario.nombre}"></div>
-            <div id="puntuacionJugador">Posiciones</div>
+            <a th:href="@{'/perfil/' + ${usuario.nombre}}" id="nombreJugador" th:text="${usuario.nombre}" class="badge badge-pill badge-primary" target="_blank"></a>
+            <div>Puntuaci&oacute;n: <span id="puntuacionJugador" th:text="${usuario.puntuacionTotal}"></span> <img src="/imgs/trofeo.png" alt="puntuacion" width="50" height="50" /></div>
+            <div>Fichas: <span id="fichasJugador" th:text="${usuario.fichas}"></span> <img src="/imgs/fichas.png" alt="fichas" width="30" height="30" /></div>
             <button th:if="${usuario.idUsuario == sala.idPropietario}" id="btnExpulsarJugador" class="btn btn-primary">Expulsar jugador</button>
         </div>
     </div>

@@ -56,6 +56,11 @@ body > div:not(#divInfoUsuario){
     font-size: 30px;
 }
 
+#listaJugadores div:hover {
+    background-color: rgb(167, 192, 255);
+    cursor: pointer;
+}
+
 /* estilos para los botones de empezar partida y y abandonar sala */
 #opciones{
     display: grid;
@@ -92,7 +97,13 @@ body > div:not(#divInfoUsuario){
     margin-left: 70px;
     width: 400px;
     height: 400px;
-    background-color: red;
+    background-color: rgb(167, 192, 255);
+    display: grid;
+    grid-template-rows: 40% 15% 15% 15% 15%;
+    align-items: center;
+    justify-items: center;
+    font-size: 25px;
+    border-radius: 20px;
     display: none;
 }
 

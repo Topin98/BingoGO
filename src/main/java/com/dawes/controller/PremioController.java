@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,7 @@ import com.dawes.modelo.UsuarioVO;
 import com.dawes.service.PremioService;
 import com.dawes.service.UsuarioService;
 import com.dawes.utils.RR;
+import com.dawes.utils.Utils;
 
 @Controller
 @RequestMapping("/premios")
@@ -35,6 +37,9 @@ public class PremioController {
 	
 	@Autowired
 	UsuarioService usuarioService;
+	
+	@Autowired
+    JavaMailSender emailSender;
 	
 	@RequestMapping
 	public String listar(@RequestParam(required=false) String error, @RequestParam(required=false) String mensaje, Model model, Authentication authentication) {
@@ -79,13 +84,17 @@ public class PremioController {
 		if (usuario.getFichas() >= premio.getPrecio()) {
 			
 			//indicamos que canjeo el premio
-			usuario.getlUsuPre().add(new UsuarioPremioVO(usuario, premio, LocalDate.now()));
+			usuario.getlUsuPre().add(new UsuarioPremioVO(usuario, premio, LocalDate.now(), false));
 			
 			//le descontamos las fichas
 			usuario.setFichas(usuario.getFichas() - premio.getPrecio());
 			
 			//guardamos el usuario
 			usuarioService.save(usuario);
+			
+			Utils.enviarCorreo(emailSender, usuario.getCorreo(), "Seguimiento premio " + premio.getNombre(),
+					"El premio \"" + premio.getNombre() + "\" acaba de ser canjeado en su cuenta por un valor de " + premio.getPrecio() + " fichas. " + 
+					"En breves le llegará otro correo con un enlace para realizar su seguimiento. Gracias por jugar a BingoGO!.");
 			
 			resultado += "mensaje";
 			

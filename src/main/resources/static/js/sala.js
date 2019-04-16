@@ -20,10 +20,12 @@ $(function() {
 		let jugador = jugadores.find(x => x.nombre == $(this).text());
 
 		//se actualiza el layout
-		$("#infoJugador").show();
-		$("#nombreJugador").text(jugador.nombre);
-		$("#puntuacionJugador").text(jugador.puntuacionTotal);
+		$("#infoJugador").css("display", "grid");
 		$("#imagenJugador").attr("src", `/perfil/${jugador.nombre}/imagen`);
+		$("#nombreJugador").text(jugador.nombre)
+			.attr("href", `/perfil/${jugador.nombre}`);
+		$("#puntuacionJugador").text(jugador.puntuacionTotal);
+		$("#fichasJugador").text(jugador.fichas);
 		
 		//si el usuario clicado no somos nosotros igual lo podemos mostrar
 		//si el usuario no es propietario de la sala no pasa nada porque no va estar ni en el dom

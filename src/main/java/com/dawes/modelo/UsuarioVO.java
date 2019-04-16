@@ -33,8 +33,7 @@ public class UsuarioVO {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idUsuario;
 	
-	//para borrar un rol de la lista hay que actualiarla desde la lista de RolVO
-	@OneToMany(mappedBy = "usuario", orphanRemoval = true)
+	@OneToMany(mappedBy = "usuario", cascade=CascadeType.ALL, orphanRemoval = true)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonIgnore
 	private List<UsuarioRolVO> lUsuarioRol;

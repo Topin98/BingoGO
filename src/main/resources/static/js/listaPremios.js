@@ -14,6 +14,8 @@ $(function () {
             },
             "Sí": function () {
             	document.location.replace(`/premios/${nombrePremio}/canjear`);
+            	$(this).dialog("close");
+            	$(".loading").show();
             }
         }
     });

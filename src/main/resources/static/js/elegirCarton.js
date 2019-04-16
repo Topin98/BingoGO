@@ -18,7 +18,13 @@ $(function() {
         }
 
         //actualizamos el texto del elemento que indica el tiempo restante
-        $("#countdown").text(`Tiempo restante: ${count-- / 100}`); 
+        $("#countdown").text(count-- / 100); 
+        
+        //en los 3 ultimos segundos ponenos el texto en rojo y parpadeando
+        if (count < 300) {
+			$("#countdownContainer").css("color", "red");
+			$("#countdownContainer").css("animation", "flickerAnimation 0.5s infinite");
+		}
 
     }, 10);
     
