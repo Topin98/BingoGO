@@ -43,7 +43,7 @@ insert into salas (nombre, idPropietario, jugando, publica) values ("Sala15", 1,
 insert into salas (nombre, idPropietario, jugando, publica) values ("Sala16", 1, false, true);
 insert into salas (nombre, idPropietario, jugando, publica) values ("Sala17", 1, false, true);
 insert into salas (nombre, idPropietario, jugando, publica) values ("Sala18", 1, false, true);
-insert into premios (nombre, descripcion, precio, imagen) values ("Camiseta", "Hecha de tela", 5, null);
+insert into premios (nombre, descripcion, precio, imagen, activo) values ("Camiseta", "Hecha de tela", 5, null, true);
 insert into linUsuPre (idUsuario, idPremio, fecha) values (1, 1, current_date());
 insert into partidas (fecha) values ("2019-4-12");
 insert into partidas (fecha) values ("2019-4-10");

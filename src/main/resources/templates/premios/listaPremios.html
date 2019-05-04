@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="utf-8" />
@@ -63,17 +63,25 @@
     <div class="respuestas">
 	    <div th:if="${param.error}" class="alert alert-danger">No se ha podido canjear el premio. Fichas insuficientes.</div>
 	  	<div th:if="${param.mensaje}" class="alert alert-success">Se ha canjeado el premio correctamente. Le hemos mandado un correo para el seguimiento del mismo.</div>
+	  	<div th:if="${param.noCambios}" class="alert alert-danger">Se ha producido un error. El premio ya existe.</div>
+	  	<div th:if="${param.cambios}" class="alert alert-success">Se han guardado los cambios.</div>
   	</div>
         	
+    <button sec:authorize="hasRole('ADMIN')" class="btn btn-primary btnNuevoPremio"><i class="fas fa-plus-circle"></i> Nuevo</button>
+    
     <div id="containerPremios">
         <div th:each="premio: ${listaPremios}">
             <img th:src="@{'/premios/' + ${premio.nombre} + '/imagen'}" alt="foto" width="200" height="200"/>
             <h2 th:text="${premio.nombre}"></h2>
             <p th:text="${premio.descripcion}"></p>
-            <button class="btn btn-primary">
+            <button th:if="${premio.activo}" class="btn btn-primary btnComprar" th:data-precio="${premio.precio}">
 	            <span th:text="${'Comprar con ' + premio.precio}"></span>
 	            <img src="/imgs/fichas.png" alt="fichas" width="20" height="20" />
 	       	</button>
+	       	<button th:if="${!premio.activo}" class="btn btn-secondary noActivo">No disponible</button>
+			<input sec:authorize="hasRole('ADMIN')" type="hidden" th:value="${premio.activo}" class="premioActivo"/>
+			<input sec:authorize="hasRole('ADMIN')" type="hidden" th:value="${premio.idPremio}" class="idPremio" />
+	       	<button sec:authorize="hasRole('ADMIN')" class="btn btn-primary btnEditar"><i class="fas fa-edit"></i> Editar</button>
         </div>
     </div>
 
@@ -81,6 +89,33 @@
          <p>Est&aacute;s seguro de que quieres canjear este premio?</p>
     </div>
     
+    <div sec:authorize="hasRole('ADMIN')" id="dialogoEditar" title="Editar premio">
+        <div class="titulo">
+            <img src="/imgs/premiodefecto.png" alt="foto" width="150" height="150" id="imagenPremioDialog" />
+            <form action="/premios/actualizarImagen" method="POST" enctype="multipart/form-data" class="formImagen">
+                <label class="btn btn-secondary">
+                    Elegir imagen <i class="fas fa-upload"></i><input type="file" name="imagen" accept="image/x-png,image/gif,image/jpeg">
+                </label>
+                <input id="idPremioDialogImagen" type="hidden" name="idPremio" />
+                <button type="submit" class="btn btn-primary btnImagen">Guardar imagen</button>
+            </form>
+        </div>
+        <div>
+            <form action="/premios/actualizarPremio" method="POST" th:object="${pre}" class="formPremio">
+                <input id="nombrePremioDialog" type="text" th:field="*{nombre}" placeholder="Nombre..." autocomplete="off" maxlength="30" required />
+                <input id="desPremioDialog" type="text" th:field="*{descripcion}" placeholder="Descripcion..." autocomplete="off" required />
+                <input id="precioPremioDialog" type="number" th:field="*{precio}" placeholder="Precio..." autocomplete="off" min="0" max="2147483647" />
+				<span>Activo: </span>
+				<select id="activoPremioDialog" th:field="*{activo}">
+				  <option value="true">S&iacute;</option>
+				  <option value="false">No</option>
+				</select><br> 			
+				<input id="idPremioDialog" type="hidden" th:field="*{idPremio}" />
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            </form>
+        </div>
+   </div>
+   
     <div class="loading"></div>
     
     <input id="nombreUsuario" type="hidden" th:value="${usuario.nombre}" />

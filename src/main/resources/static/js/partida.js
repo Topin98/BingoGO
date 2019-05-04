@@ -185,7 +185,9 @@ function actualizarPosiciones(payload){
 	
 	switch (respuesta.tipo){
 		//alguien acerto un numero
-		case 0: $("#" + respuesta.nombreUsuario).text(`${respuesta.nombreUsuario}: ${respuesta.numerosRestantes}`);
+		case 0: $("#" + respuesta.nombreUsuario)
+				.text(`${respuesta.nombreUsuario}`)
+				.siblings("span").text(`Numeros restantes: ${respuesta.numerosRestantes}`);
 			break;
 		//alguien hizo linea
 		case 1: 

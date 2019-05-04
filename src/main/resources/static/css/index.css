@@ -140,7 +140,7 @@ body {
     width: 500px;
     height: 100px;
     background-color: #03A9F4;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     right: -500px;
     margin-bottom: 100px;

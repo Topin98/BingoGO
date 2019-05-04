@@ -18,4 +18,5 @@ $(function() {
     	$("#dialogoReport").dialog("open");
     	
     });
+    
 });

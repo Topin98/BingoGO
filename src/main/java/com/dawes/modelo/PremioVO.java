@@ -13,6 +13,7 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -36,6 +37,9 @@ public class PremioVO {
 	
 	private int precio;
 	
+	@ColumnDefault("true")
+	private boolean activo;
+	
 	@Lob
 	private String imagen;
 
@@ -44,27 +48,30 @@ public class PremioVO {
 		
 		this.lUsuPre = new ArrayList<UsuarioPremioVO>();
 	}
-
-	public PremioVO(List<UsuarioPremioVO> lUsuPre, String nombre, String descripcion, int precio, String imagen) {
+	
+	public PremioVO(List<UsuarioPremioVO> lUsuPre, String nombre, String descripcion, int precio, boolean activo,
+			String imagen) {
 		super();
 		this.lUsuPre = lUsuPre;
 		this.nombre = nombre;
 		this.descripcion = descripcion;
 		this.precio = precio;
+		this.activo = activo;
 		this.imagen = imagen;
 	}
-
+	
 	public PremioVO(int idPremio, List<UsuarioPremioVO> lUsuPre, String nombre, String descripcion, int precio,
-			String imagen) {
+			boolean activo, String imagen) {
 		super();
 		this.idPremio = idPremio;
 		this.lUsuPre = lUsuPre;
 		this.nombre = nombre;
 		this.descripcion = descripcion;
 		this.precio = precio;
+		this.activo = activo;
 		this.imagen = imagen;
 	}
-
+	
 	public int getIdPremio() {
 		return idPremio;
 	}
@@ -105,6 +112,14 @@ public class PremioVO {
 		this.precio = precio;
 	}
 
+	public boolean isActivo() {
+		return activo;
+	}
+
+	public void setActivo(boolean activo) {
+		this.activo = activo;
+	}
+
 	public String getImagen() {
 		return imagen;
 	}
@@ -117,6 +132,7 @@ public class PremioVO {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (activo ? 1231 : 1237);
 		result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
 		result = prime * result + idPremio;
 		result = prime * result + ((imagen == null) ? 0 : imagen.hashCode());
@@ -135,6 +151,8 @@ public class PremioVO {
 		if (getClass() != obj.getClass())
 			return false;
 		PremioVO other = (PremioVO) obj;
+		if (activo != other.activo)
+			return false;
 		if (descripcion == null) {
 			if (other.descripcion != null)
 				return false;
@@ -165,7 +183,7 @@ public class PremioVO {
 	@Override
 	public String toString() {
 		return "PremioVO [idPremio=" + idPremio + ", lUsuPre=" + lUsuPre + ", nombre=" + nombre + ", descripcion="
-				+ descripcion + ", precio=" + precio + ", imagen=" + imagen + "]";
+				+ descripcion + ", precio=" + precio + ", activo=" + activo + ", imagen=" + imagen + "]";
 	}
 	
 }

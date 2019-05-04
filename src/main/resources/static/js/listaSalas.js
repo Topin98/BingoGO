@@ -101,12 +101,6 @@ $(function() {
 		$("#dialogo").dialog("open");
 	}
 	
-	/*var yaEnSala = getUrlParameter("yaEnSala");
-	if (yaEnSala != null) alert(yaEnSala);
-	
-	var pwIncorrecta = getUrlParameter("pw");
-	if (pwIncorrecta != null) alert(pwIncorrecta);*/
-	
 });
 
 function getUrlParameter(sParam) {

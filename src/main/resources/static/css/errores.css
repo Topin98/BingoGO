@@ -1,0 +1,32 @@
+#container{
+    margin-top: 56px;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    color: black;
+    background-color: rgba(60, 164, 233, 0.555);
+    font-family: 'Roboto', sans-serif;
+}
+
+#grid{
+    width: 30%;
+    height: 50%;
+    margin-top: 100px;
+    text-align: center;
+    background-color: lightblue;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    box-shadow: 0px 0px 5px 35px rgba(125,179,255,1);
+}
+
+h1{
+    font-size: 165px;
+    text-align: center;
+}
+
+#container a {
+    width: 30%;
+    margin-top: 15px;
+}

@@ -11,6 +11,14 @@ body{
     color: black;
 }
 
+.btnNuevoPremio{
+    display: block;
+    margin: auto;
+    margin-top: 25px;
+    text-align: center;
+    font-size: 25px;
+}
+
 #containerPremios{
     color: black;
     display: grid;
@@ -32,6 +40,11 @@ body{
     padding-right: 3px;
     background-color: rgb(167, 192, 255);
     word-wrap: break-word;
+}
+
+.noActivo {
+	pointer-events: none;
+	outline: 0;
 }
 
 /* spinner que va a aparecer mientras se cargan las preguntas*/
@@ -61,6 +74,47 @@ body{
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.3);
+}
+
+/* estilos para el dialogo de editar los premios */
+.titulo {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    justify-items: center;
+    margin-bottom: 50px;
+    height: 120px;
+}
+
+.formImagen{
+    font-size: 20px;
+    text-align: center;
+}
+
+.formImagen input[type=file]{
+    display: none;
+}
+
+.formImagen label {
+    margin-top: 23px;
+}
+
+.formImagen button{
+    width: 80%;
+}
+
+.formPremio{
+    text-align: center;
+}
+
+.formPremio input{
+    width: 100%;
+    margin: 5px;
+    padding-left: 7px;
+}
+
+.formPremio button{
+    margin-top: 15px;
+    width: 80%;
 }
 
 /* spinner que va a aparecer mientras se cargan las preguntas*/

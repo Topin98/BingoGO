@@ -125,31 +125,31 @@ public class SalasController {
 								
 								//la sala esta llena
 							} else {
-								resultado += "salaLlena=La sala est%C3%A1 llena";
+								resultado += "e=La sala est%C3%A1 llena";
 							}
 							
 						} else {
 							
-							resultado += "pw=La contrase%C3%B1a no es correcta";
+							resultado += "e=La contrase%C3%B1a no es correcta";
 						}
 					
 					} else {
 						
-						resultado += "partidaEnCurso=No se puede unir a la sala mientras hay una partida en curso.";
+						resultado += "e=No se puede unir a la sala mientras hay una partida en curso.";
 					}
 					
 				} else {
-					resultado += "yaEnPartida=Es necesario acabar la partida actual";
+					resultado += "e=Es necesario acabar la partida actual. Si ha abandonado la partida reinicie sesi%C3%B3n.";
 				}
 				
 			} else {
 				
-				resultado += "yaEnSala=Es necesario salir de la sala actual";
+				resultado += "e=Es necesario salir de la sala actual";
 			}
 			
 			//si se borro entre que se cargo y se intento unirse a ella 
 		} else {
-			resultado += "notFound=La sala no existe";
+			resultado += "e=La sala no existe";
 		}
 			
 		return resultado;
@@ -190,7 +190,7 @@ public class SalasController {
 			}
 			
 		} else {
-			resultado += "/salas?yaEnSala=Es necesario salir de la sala actual";
+			resultado += "/salas?e=Es necesario salir de la sala actual";
 		}
 		
 		return resultado;
@@ -211,7 +211,7 @@ public class SalasController {
 			
 			//si no es que no habia ninguna sala disponible
 		} else {
-			resultado += "/salas?salasNoDis=No hay ninguna sala disponible actualmente";
+			resultado += "/salas?e=No hay ninguna sala disponible actualmente";
 		}
 		
 		return resultado;

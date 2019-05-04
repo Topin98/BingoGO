@@ -10,4 +10,5 @@ public class RR {
 	public static final String CARPETA_RANKINGS = "rankings/";
 	public static final String CARPETA_PREMIOS = "premios/";
 	public static final String CARPETA_ADMIN = "admin/";
+	public static final String CARPETA_ERRORES = "errores/";
 }

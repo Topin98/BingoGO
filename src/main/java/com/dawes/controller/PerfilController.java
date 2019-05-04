@@ -62,7 +62,7 @@ public class PerfilController {
 		UsuarioVO usu = usuarioService.findByNombre(nombre);
 		
 		//si no existe el usuario redireccionamos al perfil del que inicio sesion
-		if (usu == null) return "redirect:/perfil/" + authentication.getName() + "?error=El usuario no existe";
+		if (usu == null) return "redirect:/perfil/" + authentication.getName() + "?e=El usuario no existe";
 		
 		//numero de partidas jugadas
 		int size = usu.getlUsuPar().size();
@@ -159,7 +159,6 @@ public class PerfilController {
 			try {
 				//lo maximo que deja mysql por defecto son 4MB, el maximo que dejamos en el servidor
 				//tanto como de subida de archivos como de request son 3MB por si acaso
-				//TODO: acordarse de tratar ambos errores en el error handler porque si no se interrumpe la conexion
 				usuario.setImagenPerfil(Base64.getEncoder().encodeToString(image.getBytes()));
 				
 				resultado += "mensaje=Se han guardado los cambios";
@@ -275,16 +274,16 @@ public class PerfilController {
 					resultado += usu.getNombre();
 					
 				} catch (Exception e) {
-					resultado += usu.getNombre() + "?error=Ya sois amigos o ya ha mandado una solicitud de amistad";
+					resultado += usu.getNombre() + "?e=Ya sois amigos o ya ha mandado una solicitud de amistad";
 				}
 				
 				//si se mando la peticion
 			} else {
-				resultado += authentication.getName() + "?error=Ya le has mandado una petici%C3%B3n a este usuario";
+				resultado += authentication.getName() + "?e=Ya le has mandado una petici%C3%B3n a este usuario";
 			}
 			
 		} else {
-			resultado += authentication.getName() + "?error=No puedes ser amigo de ti mismo";
+			resultado += authentication.getName() + "?e=No puedes ser amigo de ti mismo";
 		}
 		 
 		return resultado;
@@ -446,7 +445,7 @@ public class PerfilController {
 		UsuarioVO usu = usuarioService.findByNombre(nombre);
 		
 		//si no existe el usuario redireccionamos al perfil del que inicio sesion
-		if (usu == null) return "redirect:/perfil/" + authentication.getName() + "?error=El usuario no existe";
+		if (usu == null) return "redirect:/perfil/" + authentication.getName() + "?e=El usuario no existe";
 		
 		//ordenamos las partidas del usuario por fecha mas reciente
 		Collections.sort(usu.getlUsuPar(), (usuPar1, usuPar2) -> usuPar2.getPartida().getFecha().compareTo(usuPar1.getPartida().getFecha()));

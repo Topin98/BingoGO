@@ -69,16 +69,6 @@ public class PartidaController {
 	public String elegirCarton(@ModelAttribute("partida") PartidaVO partida, @RequestParam(required=false) String error, Model model, HttpSession session) {
 		String resultado;
 		
-		/* Esto seria si quisieramos mostrar 5 cartones directamente y que el usuario elija uno */
-		//creamos la lista de cartones disponibles (los 4 no premium)
-		//List<CartonVO> lCartones = IntStream.range(0, 4).mapToObj(x -> new CartonVO()).collect(Collectors.toList());
-		
-		//añadimos un carton premium
-		//lCartones.add(new CartonVO(true));
-				
-		//añadimos la lista y el id de la partida al modelo
-		//model.addAttribute("listaCartones", lCartones);
-		
 		//si la partida es valida es que viene de una sala, todo bien
 		if (partidaUtils.validarPartida(partida) || error != null) {
 			model.addAttribute("idPartida", session.getAttribute("idPartida"));
@@ -88,14 +78,13 @@ public class PartidaController {
 			
 			//si no es que entro directamente o le dio para atras en la partida
 		} else {
-			resultado = "redirect:/salas?partida=La partida ha expirado";
+			resultado = "redirect:/salas?e=La partida ha expirado";
 			
 		}
 		
 		return resultado;
 	}
 	
-	//aqui igual cogerlo en plan de un formulario seria mejor (el carton)
 	@RequestMapping("/{idPartida}")
 	public String tratarCartonElegido(@RequestParam boolean tipo, Authentication authentication, RedirectAttributes rAttributes) {
 		String resultado = "redirect:";
@@ -142,7 +131,7 @@ public class PartidaController {
 			 
 			 //si no es que hizo refresco o lo abrio en una pestaña nueva
 		 } else {
-			 resultado = "redirect:/salas?partida=La partida ha expirado";
+			 resultado = "redirect:/salas?e=La partida ha expirado";
 		 }
 		 
 		 return resultado;

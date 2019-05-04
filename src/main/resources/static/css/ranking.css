@@ -1,6 +1,6 @@
 body{
     background-color: lightblue;
-    overflow: auto;
+    overflow-y: auto;
 }
 
 #titulos{

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.Base64;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +17,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.dawes.modelo.PremioVO;
 import com.dawes.modelo.UsuarioPremioVO;
@@ -48,6 +51,7 @@ public class PremioController {
 		model.addAttribute("mensaje", mensaje);
 		model.addAttribute("listaPremios", premioService.findAll());
 		model.addAttribute("usuario", usuarioService.findByNombre(authentication.getName()));
+		model.addAttribute("pre", new PremioVO()); //premio que se va a añadir o editar
 		
 		return RR.CARPETA_PREMIOS + "listaPremios";
 	}
@@ -80,8 +84,10 @@ public class PremioController {
 		UsuarioVO usuario = usuarioService.findByNombre(authentication.getName());
 		PremioVO premio = premioService.findByNombre(nombre);
 		
-		//tiene fichas suficientes
-		if (usuario.getFichas() >= premio.getPrecio()) {
+		if (premio == null) return resultado + "error";
+		
+		//tiene fichas suficientes y el premio esta activo
+		if (usuario.getFichas() >= premio.getPrecio() && premio.isActivo()) {
 			
 			//indicamos que canjeo el premio
 			usuario.getlUsuPre().add(new UsuarioPremioVO(usuario, premio, LocalDate.now(), false));
@@ -105,5 +111,59 @@ public class PremioController {
 		
 		return resultado;
 		
+	}
+	
+	@RequestMapping("/actualizarPremio")
+	public String actualizarPremio(@ModelAttribute PremioVO pre, Authentication authentication) {
+		String resultado = "redirect:/premios?";
+		
+		Optional<PremioVO> optional = premioService.findById(pre.getIdPremio());
+		
+		//si el premio ya existe cogemos la imagen que tiene para que no ponga la de por defecto
+		if (optional.isPresent()) {
+			pre.setImagen(optional.get().getImagen());
+		}
+		
+		try{
+			premioService.save(pre);
+			
+			resultado += "cambios";
+			
+		} catch (Exception e) {
+			resultado += "noCambios";
+		}
+		
+		return resultado;
+		
+	}
+	
+	@RequestMapping("/actualizarImagen")
+	public String actualizarImagen(@RequestParam("imagen") MultipartFile image, @RequestParam int idPremio) {
+		String resultado = "redirect:/premios?";
+		
+		PremioVO premio = premioService.findById(idPremio).get();
+		
+		if (!image.isEmpty()) {
+			
+			try {
+				//lo maximo que deja mysql por defecto son 4MB, el maximo que dejamos en el servidor
+				//tanto como de subida de archivos como de request son 3MB por si acaso
+				premio.setImagen(Base64.getEncoder().encodeToString(image.getBytes()));
+				
+				resultado += "cambios";
+			} catch (IOException e) {
+				e.printStackTrace();
+				
+				resultado += "noCambios";
+			}
+			
+		} else {
+			premio.setImagen(null);
+			resultado += "cambios";
+		}
+		
+		premioService.save(premio);
+		
+		return resultado;
 	}
 }

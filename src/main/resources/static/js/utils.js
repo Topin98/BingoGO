@@ -27,6 +27,38 @@ $(function() {
 	        $(".infoUsuario").css("background-color", "#448AFF");
 	    }
 	});
+	
+	//obtenemos el valor del parametro error
+	var paramE = getUrlParameter("e");
+    if (paramE){
+		
+    	$("body").append(`<div id="dialogoE" title="Error">
+				    			<p>${decodeURIComponent(paramE).replace(/<|>|\"|'|`/g,"")}</p>
+				   		  </div> `);
+    	
+    	$("#dialogoE").dialog({
+	        resizable: false,
+	        height: "auto",
+	        width: 400,
+	        modal: true
+	    });
+    }
+    
+	var paramExito = getUrlParameter("exito");
+    if (paramExito){
+    	
+    	$("body").append(`<div id="dialogoE" title="Mensaje">
+				    			<p>${decodeURIComponent(paramExito)}</p>
+				   		  </div> `);
+    	
+    	$("#dialogoE").dialog({
+	        resizable: false,
+	        height: "auto",
+	        width: 400,
+	        modal: true
+	    });
+    }
+    
 });
 
 function conectar() {
@@ -69,4 +101,17 @@ function onNewNotification(payload){
         });
     }, 4000);
 	
+}
+
+function getUrlParameter(sParam) {
+	
+    var sURLVariables = window.location.search.substring(1).split('&');
+
+    for (let i = 0; i < sURLVariables.length; i++) {
+        let sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
 }

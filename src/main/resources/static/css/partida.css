@@ -12,17 +12,29 @@ body{
 /* div que contiene los jugadores ordenados por posicion */
 #posiciones{
     flex-grow: 1;
-    min-width: 171px;
-    max-width: 171px;
+    min-width: 290px;
+    max-width: 290px;
+    margin-top: 100px;
     display: grid;
+    row-gap: 50px;
     grid-template-rows: repeat(5, [row] 100px);
     align-items: center;
-    text-align: center;
+    justify-items: center;
 }
 
 /* cada div del jugador */
 #posiciones > div{
-    width: 171px;
+    width: 260px;
+    font-size: 20px;
+    background-color: rgb(101, 211, 255);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#posiciones > div > span:first-child{
+    max-width: 260px;
+    word-wrap: break-word;
+    font-size: 22px;
 }
 
 /* contiene la tombola, los botones de cantar linea o bingo y el carton */ 
@@ -123,6 +135,21 @@ body{
              rgba(0,0,0,0) 100%);
 }
 
+/* container de los enlaces para volver a la sala o la lista de salas */
+#enlaces{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    align-items: center;
+    justify-items: center;
+    width: 70%;
+    margin: auto;
+    margin-top: 20px;
+}
+
+#enlaces > a {
+    width: 30%;
+}
+
 #chat {
     flex-grow: 1;
     max-width: 330px;
@@ -170,12 +197,6 @@ body{
 	display: none;
 }
 
-@media (max-width: 916px){
-   
-    .containerCarton {
-        width: 300px;
-        grid-template-columns: repeat(3, [col] 100px) ;
-        grid-template-rows: repeat(9, [row] auto);
-    }
+.notificacion{
+	color: white;
 }
-

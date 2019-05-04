@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Partida</title>
@@ -42,7 +41,11 @@
 <body>
 
 	<div id="posiciones">
-		<div th:each="usuPar: ${partida.lUsuPar}" th:text="${usuPar.usuario.nombre + ' 15'}" th:id="${usuPar.usuario.nombre}"></div>
+		<div th:each="usuPar: ${partida.lUsuPar}">
+			<span th:text="${usuPar.usuario.nombre}" th:id="${usuPar.usuario.nombre}"></span>
+			<br>
+			<span>Numeros restantes: 15</span>
+		</div>
 	</div>
 	
 	<div id="container">
@@ -62,8 +65,10 @@
 	        	th:class="${numero != null ? 'num' : ''}" th:data-marcado="${numero != null ? 'false' : 'true'}"></button>
 	    </div>
     
-    	<a th:href="@{'/salas/sala/' + ${idSala}}" id="aVolverSala">Volver a la sala</a>
-    	<a th:href="@{/salas}" id="aVolverSalas">Lista de salas</a>
+	    <div id="enlaces">
+	    	<a th:href="@{'/salas/sala/' + ${idSala}}" id="aVolverSala" class="btn btn-primary">Volver a la sala</a>
+	    	<a th:href="@{/salas}" id="aVolverSalas" class="btn btn-primary">Lista de salas</a>
+    	</div>
     </div>
     
     <div id="chat">

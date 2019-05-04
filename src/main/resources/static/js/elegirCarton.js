@@ -34,11 +34,20 @@ $(function() {
     //si tiene 1 es ""
     if (paramError.length != 1){
     	
-    	//este mensaje se mostrara de forma bonita y tal
-    	alert(decodeURIComponent(paramError[1]));
-    	
-    	//forzamos a que entren en la partida con un carton normal
-    	document.location.replace(`/partida/${idPartida}?tipo=false`);
+    	$("body").append(`<div id="dialogoE" title="Error">
+				    			<p>${decodeURIComponent(paramError[1]).replace(/<|>|\"|'|`/g,"")}</p>
+				   		  </div> `);
+		
+		$("#dialogoE").dialog({
+			resizable: false,
+			height: "auto",
+			width: 400,
+			modal: true,
+			close: function(){
+				//forzamos a que entren en la partida con un carton normal
+		    	document.location.replace(`/partida/${idPartida}?tipo=false`);
+			}
+		});
     }
     
 });
