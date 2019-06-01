@@ -135,6 +135,34 @@ body {
     background-color: #77a3ec;
 }
 
+
+#containerIndex{
+    background-image: url("/imgs/fondoIndex.svg");
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 50% 50%; 
+    align-items: center;
+    justify-items: center;
+    font-family: "Breuer Text Bold";
+}
+
+.tituloIndex{
+    font-size: 130px;
+}
+
+.jugarIndex{
+	background-color: #78BDF6;
+    border-radius: 10px;
+    font-size: 25px;
+}
+
+
+.derIndex{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
 /* notificaciones que pueden ir apareciendo */
 .notificacion{
     width: 500px;

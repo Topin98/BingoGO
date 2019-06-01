@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>BingoGO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" th:href="@{/imgs/favicon.png}">
     
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
         crossorigin="anonymous">
@@ -65,6 +66,17 @@
         <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i>&nbsp;Cerrar sesi&oacute;n</a>
     </div>
 
+	<div id="containerIndex">
+        <div class="izqIndex">
+            <div class="tituloIndex">BingoGO</div>
+            <a sec:authorize="isAuthenticated()" href="/salas" class="btn btn-info jugarIndex">Empieza a jugar!</a>
+            <a sec:authorize="isAnonymous()" href="/registro" class="btn btn-info jugarIndex">Empieza a jugar!</a>
+        </div>
+        <div class="derIndex">
+            <img src="/imgs/imagenIndex.png" alt="imagenIndex"/>
+        </div>
+    </div>
+    
 	<input sec:authorize="isAuthenticated()" id="nombreUsuario" type="hidden" th:value="${usuario.nombre}" />
 </body>
 

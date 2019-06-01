@@ -184,12 +184,12 @@ Simplemente dejamos un pequeño espacio entre cada imagen */
     color: black;
 }
 
-#paginacion div:hover{
-    background-color: grey;
+#paginacion div:not(.current):hover{
+    background-color: #efefef;
 }
 
 #paginacion .current{
-    background-color: red;
+    background-color: rgba(0, 0, 255, 0.3);
 }
 
 #chat {

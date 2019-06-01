@@ -75,11 +75,3 @@ body {
 .form a {
     text-decoration: underline;
 }
-
-/* Esto esta aqui para no crear mil archivos css */
-.form .olvidarDatos{
-    display: block;
-    text-align: left;
-    margin-left: 10px;
-    margin-top: 5px;
-}
