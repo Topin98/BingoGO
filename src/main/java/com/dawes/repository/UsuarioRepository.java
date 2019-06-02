@@ -27,7 +27,7 @@ public interface UsuarioRepository extends JpaRepository<UsuarioVO, Integer>{
 	
 	//obtiene los 100 usuarios que mas victorias tienen
 	//devuelve una lista de objetos que contienen el nombre y el numero de victorias
-	@Query(value = "select nombre, count(*) from usuarios, linusupar where usuarios.idUsuario = linusupar.usuario_idUsuario and linusupar.posicionBingo = 1 group by usuarios.nombre order by count(*) desc limit 100", nativeQuery = true)
+	@Query(value = "select nombre, count(*) from usuarios, linUsuPar where usuarios.idUsuario = linUsuPar.usuario_idUsuario and linUsuPar.posicionBingo = 1 group by usuarios.nombre order by count(*) desc limit 100", nativeQuery = true)
 	List<Object[]> getTop100UsuVictorias();
 	
 	//filtra a los usuarios por sus nombres

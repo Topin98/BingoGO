@@ -18,8 +18,6 @@ import com.dawes.modelo.CartonVO;
 @Component
 public class HttpHandshakeInterceptor implements HandshakeInterceptor {
 
-	private static final Logger logger = LoggerFactory.getLogger(HttpHandshakeInterceptor.class);
-
 	@Override
 	public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
 			Map<String, Object> attributes) throws Exception {

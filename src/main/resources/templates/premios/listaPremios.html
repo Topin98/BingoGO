@@ -106,7 +106,7 @@
             <form action="/premios/actualizarPremio" method="POST" th:object="${pre}" class="formPremio">
                 <input id="nombrePremioDialog" type="text" th:field="*{nombre}" placeholder="Nombre..." autocomplete="off" maxlength="30" required />
                 <input id="desPremioDialog" type="text" th:field="*{descripcion}" placeholder="Descripcion..." autocomplete="off" required />
-                <input id="precioPremioDialog" type="number" th:field="*{precio}" placeholder="Precio..." autocomplete="off" min="0" max="2147483647" />
+                <input id="precioPremioDialog" type="number" th:field="*{precio}" placeholder="Precio..." autocomplete="off" min="0" max="2147483647" required/>
 				<span>Activo: </span>
 				<select id="activoPremioDialog" th:field="*{activo}">
 				  <option value="true">S&iacute;</option>

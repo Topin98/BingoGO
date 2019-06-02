@@ -35,17 +35,16 @@ public class BeansConfig {
 	public JavaMailSender getJavaMailSender() {
 		
 	    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-	    mailSender.setHost("smtp.gmail.com");
+	    mailSender.setHost("localhost");
 	    mailSender.setPort(587);
 	     
-	    mailSender.setUsername("bingogoproject@gmail.com");
-	    mailSender.setPassword("temporalGO");
+	    mailSender.setUsername("username");
+	    mailSender.setPassword("pw");
 	     
 	    Properties props = mailSender.getJavaMailProperties();
 	    props.put("mail.transport.protocol", "smtp");
 	    props.put("mail.smtp.auth", "true");
 	    props.put("mail.smtp.starttls.enable", "true");
-	    props.put("mail.debug", "true");
 	     
 	    return mailSender;
 	}
